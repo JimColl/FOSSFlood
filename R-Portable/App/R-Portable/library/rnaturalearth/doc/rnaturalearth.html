@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Andy South" />
+
+<meta name="date" content="2017-03-20" />
+
+<title>Introduction to rnaturalearth.</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to rnaturalearth.</h1>
+<h4 class="author"><em>Andy South</em></h4>
+<h4 class="date"><em>2017-03-20</em></h4>
+
+
+
+<p>This vignette is an introduction to <a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a>, an R package to hold and facilitate interaction with natural earth vector map data. <code>rnaturalearth</code> is a data package designed to provide map data that can be visualised using other R packages.</p>
+<p><a href="http://www.naturalearthdata.com/">Natural Earth</a> is a public domain map dataset including vector country and other administrative boundaries.</p>
+<p><a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a> does two main things.</p>
+<ol style="list-style-type: decimal">
+<li>Contains pre-downloaded vector maps for :
+<ul>
+<li>countries <code>ne_countries()</code></li>
+<li>states <code>ne_states()</code></li>
+<li>coastline <code>ne_coastline()</code></li>
+</ul></li>
+<li>Has <code>ne_download()</code> function to facilitate download of other vector and raster maps.</li>
+</ol>
+<p>This vignette uses <code>sp::plot</code> as a simple, quick way to show how different data can be accessed.<code>rnaturalearth</code> is designed to provide data allowing creation of more elaborate maps in other visualisation packages (e.g. <code>ggplot2</code>, <code>tmap</code> and <code>choroplethr</code>).</p>
+<div id="load-required-packages" class="section level4">
+<h4>load required packages</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rnaturalearth)
+<span class="kw">library</span>(sp)</code></pre></div>
+</div>
+<div id="maps-in-the-package." class="section level2">
+<h2>1. Maps in the package.</h2>
+<p>Pre-downloaded maps can be accessed with :</p>
+<ol style="list-style-type: decimal">
+<li><code>ne_countries()</code> for country (admin-0) boundaries</li>
+<li><code>ne_states()</code> for boundaries within countries (admin-1)</li>
+<li><code>ne_coastline()</code> for world coastline</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># world at small scale (low resolution)</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">type =</span> <span class="st">'countries'</span>, <span class="dt">scale =</span> <span class="st">'small'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># countries, UK undivided</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">type=</span><span class="st">'countries'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAEG0lEQVR4nO3d23LaQBQF0eH/fzplMDagGbVEzJytUvdDghMqbK8SN4OddrHVWvWA9ASCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIigVprv6da7cREoK9Nrd1tihemAo0+ml4gUJRP+eV3Emi9LJ/6AYsEWi/MJ2DBSwKtl+aTMOEpgaA2/KCohA0PLQ6g9lDAovKeD6BnFIEu63MEuqzOKVqaBZR3AAlECQQdBqhqaBRQ4AEkEHUUoLKdUUArawS6NlxTNzMLaDSncGUY0GCPQD9191SOTAPqDhLooc6g0o0HAPLdHU8JBC0GFb9DKB/o+od1SpFASff1iUD9g0WgW19ASYdQIFCLuo7lAV0X5QgJBOUB/fwy+LvJhQC9PMwR6KnFG8ZHo04L9PTbZWVUwdogoA1CJwfqnBiedVoJQD2hmJvpLKDHU/3n79P3hgEt3oO3OOvswWlAr4M6X2CcOzkN6HVP92o2c3Q6UPnLQAlAq4+hq5+2xgNVH0JZQFsPl7MB/bxosfn6NG92AtCtNvhSdPEhlAO06/nFOYFGCQSV3ggdAKj2kVAq0MPzVIF6td97//7EWcODgb5PDO7bBPrfM/xRoUAbZk1aLlDGxexty6w5048MNOUriwcGugxf+vjLQoF27Pqw0fGBPvw5pALtGSbQ3511f7FA25d99lMQqPRf/5823zmdE2jHffcZgXY9tDkf0L5Hfh/+DCKBPnbmN0oEinkMNOUC3inlBnrOJbxTyGOgOZfwTtufoZ/zKvbVxm9TPS/QtQ1Gp7wXu5dwCAUDbbwdOuEDxVtbvyz92RW5QCE+sUApPqlAMT7HBjrvC4crq2b/iPJIoDb4sOJnwCQCLXxaq8HpjEmod/zU/YylPKDR9auo6stf9r1o7bs3ZlY+4LX2+1v5/294H5LUbU8AzL2cJd+N3xldU9KW74IOn0skUFYCQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJB/wB05kKaPLGSsQAAAABJRU5ErkJggg==" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># map_units, UK divided into England, Scotland, Wales and Northern Ireland</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">type=</span><span class="st">'map_units'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAEQklEQVR4nO3d4XLaMBQFYfH+L90JkAC25HU6se7xePdHQyiT3H4jYzCGtptt1qoHSE8gSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCAoEqi19rrUakdMBPqaqbVvm+IJU4FG300vECjKp/z3dxJouyyf+gFWCbRdmE/ABIsE2i7NJ2GEjwSC2vCbohJmeGu1gNpbAROV97mAPlEEum2PI9Btc5yiSbOA8haQQJRA0GmAqgaNAgpcQAJRZwEqmzMKaGMage4Np6kbMwtoNE7hlGFAg3kE+qk7T+WQaUDdgQR6qzNQ6YwnAPLsjo8EglYDFZ8hlA90v7JOKRIoaV+fCNRdLK6gZ19A/X29r2rcaw+i9dUCPXpsSut9We/KGZ0EqK82ozygnz+WV9YMGwK0eJizmKr1r55SAtDqhPGBz3WBPr7clkON5WYUBDQQKj4DJgmouy0NV9OkEoB6QoP75asDvV/qv9dn+rxhQJ/zdI5xTH/OmgbE29RkojSgPZvUVKJ0oPKXgRKANh8JVh9djAeqXkJZQHuXy9WAfl602L09zRs7AehRGx51Ll1COUDj3bdAkEBQ6Z3QCYBqHwmlAr09TxWoV3vt/fsjzho8GOh5YbBvE6h3sX+DWYMktfUq2ea1f55A0BmASoXODDTlyOIZgMYzTjh1MRToF683H2x0fqCD/w2pQHSYsX/TQ+cISyBq+8lq74bHjhGXQNDoBI/1DY8d49Cf/v+1/fdBVwT61QcrXQ9o8ciPHigeOMnxP/6/Wp3hsTXkJZ9q7DrFg/7mjzo50PHjRwLtOo1q+y/+rFCgxTsT3MTWvd6mWnofnQt0b8ebeS+5F/tuz6GwCwPtPFJ4wQeKj3ZOdtkVFOITC5TikwoU43NuoOu+cLgx1eyPKI8EaoNvKz4DJhFo5XM/z6zoA3ICgXrrp+4zlvKARttXUdW/f91zoq13b8ysfIBl7fWl/P83/B4kqR2HgOaWM8mz8ZnRNSXN8ixo+dwigbISCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBII+gemJUJyl0QnogAAAABJRU5ErkJggg==" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># countries, small scale</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">scale =</span> <span class="st">'small'</span>))   </code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAEG0lEQVR4nO3d23LaQBQF0eH/fzplMDagGbVEzJytUvdDghMqbK8SN4OddrHVWvWA9ASCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIigVprv6da7cREoK9Nrd1tihemAo0+ml4gUJRP+eV3Emi9LJ/6AYsEWi/MJ2DBSwKtl+aTMOEpgaA2/KCohA0PLQ6g9lDAovKeD6BnFIEu63MEuqzOKVqaBZR3AAlECQQdBqhqaBRQ4AEkEHUUoLKdUUArawS6NlxTNzMLaDSncGUY0GCPQD9191SOTAPqDhLooc6g0o0HAPLdHU8JBC0GFb9DKB/o+od1SpFASff1iUD9g0WgW19ASYdQIFCLuo7lAV0X5QgJBOUB/fwy+LvJhQC9PMwR6KnFG8ZHo04L9PTbZWVUwdogoA1CJwfqnBiedVoJQD2hmJvpLKDHU/3n79P3hgEt3oO3OOvswWlAr4M6X2CcOzkN6HVP92o2c3Q6UPnLQAlAq4+hq5+2xgNVH0JZQFsPl7MB/bxosfn6NG92AtCtNvhSdPEhlAO06/nFOYFGCQSV3ggdAKj2kVAq0MPzVIF6td97//7EWcODgb5PDO7bBPrfM/xRoUAbZk1aLlDGxexty6w5048MNOUriwcGugxf+vjLQoF27Pqw0fGBPvw5pALtGSbQ3511f7FA25d99lMQqPRf/5823zmdE2jHffcZgXY9tDkf0L5Hfh/+DCKBPnbmN0oEinkMNOUC3inlBnrOJbxTyGOgOZfwTtufoZ/zKvbVxm9TPS/QtQ1Gp7wXu5dwCAUDbbwdOuEDxVtbvyz92RW5QCE+sUApPqlAMT7HBjrvC4crq2b/iPJIoDb4sOJnwCQCLXxaq8HpjEmod/zU/YylPKDR9auo6stf9r1o7bs3ZlY+4LX2+1v5/294H5LUbU8AzL2cJd+N3xldU9KW74IOn0skUFYCQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJB/wB05kKaPLGSsQAAAABJRU5ErkJggg==" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># countries, medium scale</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">scale =</span> <span class="st">'medium'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAEqklEQVR4nO3c646iQBBA4eb9X3qjCDbQcJzZTFURz/kzszpJV76I3FzbZJe17AGqJxAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkEHQ3oBY98M2AmkCXNYEui+cRiNcMX/H3JWxgAvGi4Sv+RwJRAkEJ094LKCGBIIEggSCBoDsAtZQjxGXxrIU/r6Uc/3SrVy/x5TPdBShxSoFo9bylP81N7LrcF1BhoPYqecaCQG3zYxJo07pBNYFGPXja8svyWN446asfWs8qirx+0pfft74lL3Ol7sGeAySvv+v9DrR1yit/gk2rS9v8O7H0ATYthz39G3R7HxCljJSz7LDXYWFrHVD63r4S0LS+foYvF4EeLrPRcCqB5hdOOzk9TXoTqge0vI4OT0ZPk7rsuAVouI0J9H4BFfIpBbRWaAsrCfR6r94+ljJJ5sJnLbv67WDeF1tr0+jEQqC+tjtUTL1sXxBo/wJKvTVfE2h7Rv98LGuYikDT/E7dX3X1zuq2/gLQ8xc3sb5Z5K3SBrv9wGmS1j2vrUC7x5PGyVn2ouNlxdfjSePkLHvV/A59PKPP2coKAk3r1en9oymjZCyKteE1IYHWRufzw0f+vmJA/QHQ4NngabLWPK//4IJAx1pns+6zulNVgbqfbb2FmHtvtRLQVmI5IWvDvwirDlB/F74/Cmrjv4mqJND299O/CqkM0Pb62ClQ+MC1gAYfcc0+4SgD1H+uY3dNev+HcTOFr3bZ+8LYfqva3ySLHLoQ0NzwHkbiXcRyQKMy36cF+tnaNcu8jXgHoMON+kihWwDhA5GLF2p02Ph6JnCIuKV+3PJJmOMmJdCz43+NWp8JHCJuqZ93/mYcN3ZtoPMnwnb2lYFOEdrZfaG/GCJikV82uLm6PHO2e/uTISoH4wkkECQQJNB1NN2XA/FO6quBPtiHRwxfFuiDwUKOpe8LFHSuURmo/waYwSWhbz8Xaz3RYMygyesCPZo//TLamMKuS9cGejT8rxpx1+3rA00nQwZdEaoNBF/8ItD1dN+9m390uQ15yXVww7CNfw8dolDDnXv091EVBuoOo18HjRn/+7k+0HwDo71+ZE1RsIuzjNAxcpc/r62bVvocJVtkMr90YRmkYAVeOUtFxtiV+m0d26rMUTaBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIGgf8qYQcT1JEFVAAAAAElFTkSuQmCC" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># not evaluated because rely on rnaturalearthhires data which are on rOpenSci so CRAN check likely to fail</span>
+
+<span class="co"># countries, large scale</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">scale =</span> <span class="st">'large'</span>))
+
+<span class="co"># states country='united kingdom'</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_states</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>))  
+<span class="co"># states geounit='england'</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_states</span>(<span class="dt">geounit =</span> <span class="st">'england'</span>)) 
+
+<span class="co"># states country='france'</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_states</span>(<span class="dt">country =</span> <span class="st">'france'</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># coastline of the world</span>
+<span class="co"># subsetting of coastline is not possible because the Natural Earth data are not attributed in that way</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_coastline</span>())</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="downloading-other-natural-earth-vectors-with-ne_download." class="section level2">
+<h2>2. Downloading other Natural Earth vectors with ne_download().</h2>
+<p>Each <a href="http://www.naturalearthdata.com/">Natural Earth</a> dataset is characterised on the website according to <code>scale</code>, <code>type</code> and <code>category</code>. <a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a> allows you to specify <code>scale</code>, <code>type</code> and <code>category</code> and will construct the url and download the corresponding file.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lakes</span>
+lakes110 &lt;-<span class="st"> </span><span class="kw">ne_download</span>(<span class="dt">scale =</span> <span class="dv">110</span>, <span class="dt">type =</span> <span class="st">'lakes'</span>, <span class="dt">category =</span> <span class="st">'physical'</span>)
+sp::<span class="kw">plot</span>(lakes110, <span class="dt">col =</span> <span class="st">'blue'</span>)
+
+<span class="co"># rivers</span>
+rivers110 &lt;-<span class="st"> </span><span class="kw">ne_download</span>(<span class="dt">scale =</span> <span class="dv">110</span>, <span class="dt">type =</span> <span class="st">'rivers_lake_centerlines'</span>, <span class="dt">category =</span> <span class="st">'physical'</span>)
+sp::<span class="kw">plot</span>(rivers110, <span class="dt">col =</span> <span class="st">'blue'</span>)</code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

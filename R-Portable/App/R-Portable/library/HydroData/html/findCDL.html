@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find Cropland Land Cover Data from the Cropand Data Layer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findCDL {HydroData}"><tr><td>findCDL {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find Cropland Land Cover Data from the Cropand Data Layer</h2>
+
+<h3>Description</h3>
+
+<p><code>findCLD</code> returns <code>Raster</code> land cover data from the USDA Cropland Data Layer Dataset (<a href="https://nassgeodata.gmu.edu/CropScape/">Cropscape</a>) for an AOI.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+findCDL(AOI, year = 2017)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>year</code></td>
+<td>
+<p>the year(s) to download. Options include 2008-2017 for most locations. Default = 2017</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and cld
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ dt = getAOI(clip = list("Devil Tower")) %&gt;% findCDL()
+ dt = getAOI(clip = list("Devil Tower")) %&gt;% findCDL(2011:2016)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,13 @@
+openadds-package	openadds-package
+as_openadd	as_openadd
+oa_cache	oa_cache
+oa_cache_delete	oa_cache
+oa_cache_delete_all	oa_cache
+oa_cache_details	oa_cache
+oa_cache_list	oa_cache
+oa_combine	oa_combine
+oa_get	oa_get
+oa_list	oa_list
+oa_readme	oa_readme
+oa_search	oa_search
+openadds	openadds-package

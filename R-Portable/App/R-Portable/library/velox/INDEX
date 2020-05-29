@@ -1,0 +1,59 @@
+BoostBoxGrid-class      An S4 class for storing Boost box grids in C++
+BoostFactory            Rcpp pointer to BoostFactory
+BoostGeometries-class   An S4 virtual class for storing Boost geometry
+                        collections in C++
+BoostGrid-class         An S4 virtual class for storing Boost grids in
+                        C++
+BoostMultiLines-class   An S4 class for storing Boost multiline
+                        collections in C++
+BoostMultiPoints-class
+                        An S4 class for storing Boost multipoint
+                        collections in C++
+BoostMultiPolygons-class
+                        An S4 class for storing Boost multipolygon
+                        collections in C++
+BoostObject-class       A S4 class for storing Boost objects in C++
+BoostPointGrid-class    An S4 class for storing Boost point grids in
+                        C++
+BoxGrid                 Rcpp pointer to BoxGrid
+MultiLineCollection     Rcpp pointer to MultiLineCollection
+MultiPointCollection    Rcpp pointer to MultiPointCollection
+MultiPolygonCollection
+                        Rcpp pointer to MultiPolygonCollection
+PointGrid               Rcpp pointer to PointGrid
+VeloxRaster-class       A Reference Class for velox rasters
+VeloxRaster_aggregate   Aggregate
+VeloxRaster_as.RasterBrick
+                        Cast a VeloxRaster as a RasterBrick object
+VeloxRaster_as.RasterLayer
+                        Cast a VeloxRaster band as a RasterLayer object
+VeloxRaster_as.RasterStack
+                        Cast a VeloxRaster as a RasterStack object
+VeloxRaster_as.matrix   Cast a VeloxRaster band as a matrix
+VeloxRaster_col2im      col2im
+VeloxRaster_crop        Crop a VeloxRaster object
+VeloxRaster_drop        Delete a raster band from a VeloxRaster
+VeloxRaster_extract     Extract Values Given Polygons
+VeloxRaster_extract_points
+                        Extract Values Given Points
+VeloxRaster_getCoordinates
+                        Get coordinates
+VeloxRaster_get_data_type
+                        Get data type of a VeloxRaster
+VeloxRaster_im2col      im2col
+VeloxRaster_meanFocal   Mean focal
+VeloxRaster_medianFocal
+                        Median focal
+VeloxRaster_rasterize   Rasterize Polygons or Lines
+VeloxRaster_sumFocal    Sum focal
+VeloxRaster_write       Write a VeloxRaster to disk as a GeoTiff file
+[,BoostMultiPolygons,ANY,ANY-method
+                        Subset a BoostGeometries object
+bg_intersects           Test whether two BoostObjects intersect
+boost                   Cast a sfc object as a BoostObject
+length,BoostGeometries-method
+                        BoostGeometries Length
+plot,BoostGeometries,ANY-method
+                        Plot BoostGeometries
+unboost                 Cast a BoostGeometries object as a sfc object
+velox                   Create a VeloxRaster object

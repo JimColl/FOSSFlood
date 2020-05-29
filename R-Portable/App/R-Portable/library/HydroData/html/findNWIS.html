@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find USGS NWIS Stream Gages</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findNWIS {HydroData}"><tr><td>findNWIS {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find USGS NWIS Stream Gages</h2>
+
+<h3>Description</h3>
+
+<p><code>findNWIS</code> returns a <code>SpatialPointsDataFrame</code>
+of all USGS NWIS gages for an Area of Interest. This dataset is accessed through the NWIS web portal and contains the following attributes:
+</p>
+
+<ul>
+<li><p> 'OBJECTID'   : <code>character</code>  Unique ID in dataset
+</p>
+</li>
+<li><p> 'feature_id'   : <code>character</code>  NHD COMID for reach
+</p>
+</li>
+<li><p> 'site_no': <code>character</code>  NWIS ID number
+</p>
+</li>
+<li><p> 'site_name'   : <code>character</code>  Name of site
+</p>
+</li>
+<li><p> 'da_sqkm'   : <code>character</code>   Area drainign to gage in square kilometers
+</p>
+</li>
+<li><p> 'lat_reachCent'    : <code>numeric</code>    Latitude of the reach center, decimil degrees
+</p>
+</li>
+<li><p> 'lon_reachCent'    : <code>numeric</code>    Longitude of the reach center, decimil degrees
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+findNWIS(AOI = NULL, siteType = "ST", paramCode = "00060",
+  startDate = NULL, endDate = NULL, active = TRUE, full = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>If TRUE, a vector of NIWS gage IDs are added to retuned list (default = <code>FALSE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>comids</code></td>
+<td>
+<p>f TRUE, a vector of NHD COMIDs IDs are added to retuned list (default = <code>FALSE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and nwis
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+co = getAOI(state = "CO") %&gt;% findNWIS()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,38 @@
+Package: geofabrik
+Type: Package
+Title: Download and read-in OpenStreetMap data from geofabrik.de
+Version: 0.1.0
+Authors@R: c(
+    person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0001-5679-6536")),
+    person("Andrea", "Gilardi", role=c("ctb"),
+      comment = c(ORCID = "0000-0002-9424-7439"))
+    )
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+URL: https://itsleeds.github.io/geofabrik/,
+        https://github.com/itsleeds/geofabrik
+BugReports: https://github.com/itsleeds/geofabrik/issues
+Depends: R (>= 3.4.0)
+Imports: sf, utils, httr
+Suggests: tibble
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: geofabrik
+RemoteUsername: ITSLeeds
+RemoteRef: master
+RemoteSha: 73dd18af8f47284167a32f9190e673603c589a6e
+GithubRepo: geofabrik
+GithubUsername: ITSLeeds
+GithubRef: master
+GithubSHA1: 73dd18af8f47284167a32f9190e673603c589a6e
+NeedsCompilation: no
+Packaged: 2020-04-08 08:39:49 UTC; Cornholio
+Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
+  Andrea Gilardi [ctb] (<https://orcid.org/0000-0002-9424-7439>)
+Maintainer: Robin Lovelace <rob00x@gmail.com>
+Built: R 3.6.3; ; 2020-04-08 08:39:49 UTC; windows

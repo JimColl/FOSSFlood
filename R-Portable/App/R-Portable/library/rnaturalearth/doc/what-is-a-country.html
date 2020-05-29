@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Andy South" />
+
+<meta name="date" content="2017-03-20" />
+
+<title>What is a country ?</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">What is a country ?</h1>
+<h4 class="author"><em>Andy South</em></h4>
+<h4 class="date"><em>2017-03-20</em></h4>
+
+
+
+<p>This vignette shows how <a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a> allows mapping countries using different definitions of what a country is. What a country is can be more complicated than you might expect.</p>
+<p>For example, from my own parochial perspective, it allows mapping the UK as a whole or separating out England, Scotland, Wales and Northern Ireland. It also allows you to exclude far away places like the Falkland Islands, or not. Mapping France it allows the inclusion or exclusion of French Guiana and islands in the South Pacific.</p>
+<p><a href="https://github.com/ropenscilabs/rnaturalearth">rnaturalearth</a> is an R package to hold and facilitate interaction with natural earth vector map data.</p>
+<p><a href="http://www.naturalearthdata.com/">Natural Earth</a> is a public domain map dataset including vector country boundaries.</p>
+<p>This vignette uses <code>sp::plot</code> as a simple, quick way to plot the data obtained using <code>rnaturalearth</code>. <code>rnaturalearth</code> data can also be used to make more elaborate maps with <code>ggplot2</code>, <code>tmap</code> and other options.</p>
+<div id="load-required-packages" class="section level4">
+<h4>load required packages</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rnaturalearth)
+<span class="kw">library</span>(sp)</code></pre></div>
+</div>
+<div id="country-types-countries-map_units-and-sovereignty." class="section level3">
+<h3>Country types : countries, map_units and sovereignty.</h3>
+<p>Natural Earth data are classified by <code>countries</code>, <code>map_units</code> and <code>sovereignty</code>. Below you will see that specifying <code>united kingdom</code> for</p>
+<ol style="list-style-type: decimal">
+<li><code>countries</code> gives the UK undivided<br />
+</li>
+<li><code>map_units</code> gives England, Scotland, Wales and Northern Ireland<br />
+</li>
+<li><code>sovereignty</code> includes the Falkland Islands</li>
+</ol>
+<p>Filtering by <code>geounit</code> can give finer control, e.g. to plot Scotland alone, or France without French Guiana.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># countries, UK undivided</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">type =</span> <span class="st">'countries'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAEG0lEQVR4nO3d23LaQBQF0eH/fzplMDagGbVEzJytUvdDghMqbK8SN4OddrHVWvWA9ASCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIigVprv6da7cREoK9Nrd1tihemAo0+ml4gUJRP+eV3Emi9LJ/6AYsEWi/MJ2DBSwKtl+aTMOEpgaA2/KCohA0PLQ6g9lDAovKeD6BnFIEu63MEuqzOKVqaBZR3AAlECQQdBqhqaBRQ4AEkEHUUoLKdUUArawS6NlxTNzMLaDSncGUY0GCPQD9191SOTAPqDhLooc6g0o0HAPLdHU8JBC0GFb9DKB/o+od1SpFASff1iUD9g0WgW19ASYdQIFCLuo7lAV0X5QgJBOUB/fwy+LvJhQC9PMwR6KnFG8ZHo04L9PTbZWVUwdogoA1CJwfqnBiedVoJQD2hmJvpLKDHU/3n79P3hgEt3oO3OOvswWlAr4M6X2CcOzkN6HVP92o2c3Q6UPnLQAlAq4+hq5+2xgNVH0JZQFsPl7MB/bxosfn6NG92AtCtNvhSdPEhlAO06/nFOYFGCQSV3ggdAKj2kVAq0MPzVIF6td97//7EWcODgb5PDO7bBPrfM/xRoUAbZk1aLlDGxexty6w5048MNOUriwcGugxf+vjLQoF27Pqw0fGBPvw5pALtGSbQ3511f7FA25d99lMQqPRf/5823zmdE2jHffcZgXY9tDkf0L5Hfh/+DCKBPnbmN0oEinkMNOUC3inlBnrOJbxTyGOgOZfwTtufoZ/zKvbVxm9TPS/QtQ1Gp7wXu5dwCAUDbbwdOuEDxVtbvyz92RW5QCE+sUApPqlAMT7HBjrvC4crq2b/iPJIoDb4sOJnwCQCLXxaq8HpjEmod/zU/YylPKDR9auo6stf9r1o7bs3ZlY+4LX2+1v5/294H5LUbU8AzL2cJd+N3xldU9KW74IOn0skUFYCQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJB/wB05kKaPLGSsQAAAABJRU5ErkJggg==" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># map_units, UK divided into England, Scotland, Wales and Northern Ireland</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">type =</span> <span class="st">'map_units'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAEQklEQVR4nO3d4XLaMBQFYfH+L90JkAC25HU6se7xePdHQyiT3H4jYzCGtptt1qoHSE8gSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCAoEqi19rrUakdMBPqaqbVvm+IJU4FG300vECjKp/z3dxJouyyf+gFWCbRdmE/ABIsE2i7NJ2GEjwSC2vCbohJmeGu1gNpbAROV97mAPlEEum2PI9Btc5yiSbOA8haQQJRA0GmAqgaNAgpcQAJRZwEqmzMKaGMage4Np6kbMwtoNE7hlGFAg3kE+qk7T+WQaUDdgQR6qzNQ6YwnAPLsjo8EglYDFZ8hlA90v7JOKRIoaV+fCNRdLK6gZ19A/X29r2rcaw+i9dUCPXpsSut9We/KGZ0EqK82ozygnz+WV9YMGwK0eJizmKr1r55SAtDqhPGBz3WBPr7clkON5WYUBDQQKj4DJgmouy0NV9OkEoB6QoP75asDvV/qv9dn+rxhQJ/zdI5xTH/OmgbE29RkojSgPZvUVKJ0oPKXgRKANh8JVh9djAeqXkJZQHuXy9WAfl602L09zRs7AehRGx51Ll1COUDj3bdAkEBQ6Z3QCYBqHwmlAr09TxWoV3vt/fsjzho8GOh5YbBvE6h3sX+DWYMktfUq2ea1f55A0BmASoXODDTlyOIZgMYzTjh1MRToF683H2x0fqCD/w2pQHSYsX/TQ+cISyBq+8lq74bHjhGXQNDoBI/1DY8d49Cf/v+1/fdBVwT61QcrXQ9o8ciPHigeOMnxP/6/Wp3hsTXkJZ9q7DrFg/7mjzo50PHjRwLtOo1q+y/+rFCgxTsT3MTWvd6mWnofnQt0b8ebeS+5F/tuz6GwCwPtPFJ4wQeKj3ZOdtkVFOITC5TikwoU43NuoOu+cLgx1eyPKI8EaoNvKz4DJhFo5XM/z6zoA3ICgXrrp+4zlvKARttXUdW/f91zoq13b8ysfIBl7fWl/P83/B4kqR2HgOaWM8mz8ZnRNSXN8ixo+dwigbISCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBII+gemJUJyl0QnogAAAABJRU5ErkJggg==" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># map_units, select by geounit to plot Scotland alone</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">geounit =</span> <span class="st">'scotland'</span>, <span class="dt">type =</span> <span class="st">'map_units'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAADuElEQVR4nO3d0W7aQBgF4eX9X7pqFBxajGfXiv89K89cRKmCtUefoI0CKe1hh7XZA9ITCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIygRqbX9Xa5++ct2U2uP6+juqvWK0tv2xenAs0Pdn7f87jUDHm8r3CgQFAkX5CETlAWX5CETFAYX5CESlAaX5CESFAcX5LAQ0aWkWUN4daB2gWUOjgALvQMsATduZBJR4B1oFaN7MIKDIO9AiQBNXCgTlAHX6tPb+TMeVLQX0j0sR1ApAX1/5ZCEQPOEs0OP4USTQFVclHdDbySECXXNZ0AG9CQQJBAl0XKqPQPNP6EsgSCBIoOPOzhDoouuSTugq9hEmUMARPQkECXRcro9ACWdwoT9uLTuEOzVDoN+/JvUU7sQOgX77ilOlAA0Pud2LFwSixpaU7RYo5SBuZErdbIFiTuL6txSuFijnKK53TOXoFYFKNwuUdBjVN6Z2skBRp0FdY4oXC5R13HE9Y6r/F7PlgL5uV/jrLEsCPW9egbQy0MlLwg4YSSCovX0ycM1FRQE917SBv64v2/I84eoDhhoFus2rO5617WPM94yBQD8fum5+calAfd9VX7ml8Iz+Xh5cAu3Vxv6pF4hvfnlpQEPfK94Q6GdOyB0oFijFJw1o5zO+7aVlAW3F+CwLdMeXv7wGswp/LJ0JRD41K8rP6u941X2f1XgW5LMg0J2fONw6WFU9eDWg8r2ZQB9n1c9dC2jC2lCgD7sE2trdNWNsKtDeu/hN2RoL9Hh/9YZAO72+0eGcAVNOHWvS2z9+Hz7l1PHK3z50O3jOseskECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQ9AePjULSCGUJ9AAAAABJRU5ErkJggg==" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># sovereignty, Falkland Islands included in UK</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">type =</span> <span class="st">'sovereignty'</span>), <span class="dt">col =</span> <span class="st">'red'</span>)
+sp::<span class="kw">plot</span>(<span class="kw">ne_coastline</span>(<span class="dt">scale =</span> <span class="dv">110</span>), <span class="dt">col =</span> <span class="st">'lightgrey'</span>, <span class="dt">lty =</span> <span class="dv">3</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># France, country includes French Guiana</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'france'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAC0ElEQVR4nO3dwU7jQBQAwcn//zRaYBdCorRWeRg8qr45h7FfyfbIp6yLHrZ++gJ+e4AiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARfsBrdmRtgNaw0KbAb3hTA61D9D69HQN3kQbAV2prDWEtAnQH46bUUaItgB6lbjlGJltH6A7P4+sPbHIz3ePaOYltAnQHY6hybYB+jrK1E6/EdD1LHd2tecXPXnr4eHMomfue15CgP5z1RN3A2Sbv+p7vjR2Avr0Lb/+fqs+j7QP0OWf0cdMA3v9VkCX97vn4wjQ4wZeQ3sDDYy3OdDzAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoOA5r6r52jO+qq14HnGu1IoFMKAYo8YhGg6ECgU/ocB2Sb3zRAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhS9AApEQ6YDL6XqAAAAAElFTkSuQmCC" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># France map_units includes French Guiana too</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'france'</span>, <span class="dt">type =</span> <span class="st">'map_units'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAC0ElEQVR4nO3dwU7jQBQAwcn//zRaYBdCorRWeRg8qr45h7FfyfbIp6yLHrZ++gJ+e4AiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARfsBrdmRtgNaw0KbAb3hTA61D9D69HQN3kQbAV2prDWEtAnQH46bUUaItgB6lbjlGJltH6A7P4+sPbHIz3ePaOYltAnQHY6hybYB+jrK1E6/EdD1LHd2tecXPXnr4eHMomfue15CgP5z1RN3A2Sbv+p7vjR2Avr0Lb/+fqs+j7QP0OWf0cdMA3v9VkCX97vn4wjQ4wZeQ3sDDYy3OdDzAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoARYAiQBGgCFAEKAIUAYoOA5r6r52jO+qq14HnGu1IoFMKAYo8YhGg6ECgU/ocB2Sb3zRAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhQBigBFgCJAEaAIUAQoAhS9AApEQ6YDL6XqAAAAAElFTkSuQmCC" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># France filter map_units by geounit to exclude French Guiana</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">geounit =</span> <span class="st">'france'</span>, <span class="dt">type =</span> <span class="st">'map_units'</span>))</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAAABlBMVEUAAAD///+l2Z/dAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAELElEQVR4nO3c4ZaaMBBA4fj+L9093dW6VLgEkswQ7v3Tbs8ahu+gIlrLwzYr0QNkTyBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIEggSCBIIOgCQCV0xuxA5YtHoNW+Dx6BViu//ogcIWfP4UqJexy6BNDy71EzpKus/hA0Q7LK5o8xQ6RqOVvIrFcCChk2MdCH0QKmzQv08Zl9/LhZgdZOfIbPmxNo47ywDD5rzAjEAAOJEgAtT3d2jTRs7gxA7yS7j41RB1EGoH97W7XXY0ZPAPR3hlLqD4ohD9dZgI7eZ7rPnwco4sYJ1t/TuRk6388yAJ0eonQ8e5wC6GeVLkZhVzLfd6fREF32JeICwhPnhSTQ2/YW94NvpCZT9NmV4UCf/q3Ng8e8QKlXFihm2fHb67XwNJcwr7bu8A1ebd3hG7zauusbvNizccyZdIdF2y/ZeeHtrTbf7GRA7Q+j6YAe7Q6jI5ezK1bvtfC4jZeubwHFXjBL/CJ1zOpDNj81UIPtd96DaKDzF+ybTBG3fu8JbvDGoUA9R7jTe/Njb5lpE5hA1OEh7gJ0eIpWb6ltbyJBh4H6/3/EHEBHxyjHb1qziQydmGPu12LPBKKyCgkUuXhNWc8WBQpdvSKBIB+Dtkt7zWMGoK47MQOQR1DH28YuXlHWx2iBYlffn0CQj0GQQJBA26U9T5wC6A5n0ieBpv2E2avTH4LpZjQJUL8dESho3bry+ggUtnBNDYYQqPcK41feX2afCwL9/zUdXb/dJANQxRDL72you/WRLgX061B5fsPFLT4ftGeKj68m+n9JVw4gfhipg2i4V0mAUKDOZ0YguLtUzNn2g52JgB5vRsuxanzqfn3Pcqn6+R+oy68Z2n/7ul/ft16unl9L9es5ff+tK39/33o5e0lVPJmv3EVPDNFspR7Vf/3fzYDqEwgSiLrTg/ShbvA0fy6BIIGo2V9qnK603an5gBpfRJsQyCNoaAJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkECQQJBAkF/ANgpQqkKmixLAAAAAElFTkSuQmCC" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># France sovereignty includes South Pacicic islands</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'france'</span>, <span class="dt">type =</span> <span class="st">'sovereignty'</span>), <span class="dt">col =</span> <span class="st">'red'</span>)
+sp::<span class="kw">plot</span>(<span class="kw">ne_coastline</span>(<span class="dt">scale =</span> <span class="dv">110</span>), <span class="dt">col =</span> <span class="st">'lightgrey'</span>, <span class="dt">lty =</span> <span class="dv">3</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="country-scales-small-medium-and-large." class="section level3">
+<h3>Country scales : small, medium and large.</h3>
+<p>The different definitions of a country outlined above are available at different scales.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># countries, large scale</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">scale=</span><span class="st">'large'</span>))
+
+<span class="co"># countries, medium scale</span>
+<span class="co"># temporarily commented out to avoid utf conversion travis error with Curacao</span>
+<span class="co"># sp::plot(ne_countries(country = 'united kingdom', scale = 'medium'))</span>
+     
+<span class="co"># countries, small scale</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_countries</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>, <span class="dt">scale =</span> <span class="st">'small'</span>))     </code></pre></div>
+</div>
+<div id="states-admin-level-1-select-by-country-or-geounit." class="section level3">
+<h3>States, admin level 1, select by country or geounit.</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># states country='united kingdom'</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_states</span>(<span class="dt">country =</span> <span class="st">'united kingdom'</span>))  
+<span class="co"># states geounit='england'</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_states</span>(<span class="dt">geounit =</span> <span class="st">'england'</span>)) 
+
+<span class="co"># states country='france'</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_states</span>(<span class="dt">country =</span> <span class="st">'france'</span>))  
+<span class="co"># states geounit='france'</span>
+sp::<span class="kw">plot</span>(<span class="kw">ne_states</span>(<span class="dt">geounit =</span> <span class="st">'france'</span>)) </code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

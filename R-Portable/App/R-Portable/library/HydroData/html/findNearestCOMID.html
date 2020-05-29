@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find Neareast COMIDs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findNearestCOMID {HydroData}"><tr><td>findNearestCOMID {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find Neareast COMIDs</h2>
+
+<h3>Description</h3>
+
+<p><code>findNearestCOMID</code> returns a <code>SpatialPointsDataFrame</code> of the 'n' number of COMIDs closest to a declared point.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+findNearestCOMID(point = NULL, n = 5, ids = FALSE,
+  streamorder = NULL, bb = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>point</code></td>
+<td>
+<p>a point described by lat/long, can be piped from <a href="../../AOI/html/geocode.html">geocode</a></p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>the number of COMIDs to find (default = 5)</p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>If TRUE,  a vector of NHD COMIDs is added to retuned list (default = <code>FALSE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>bb</code></td>
+<td>
+<p>If TRUE, the geometry of the minimum bounding area of the features is added to returned list  (default = <code>FALSE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and ap
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>See Also</h3>
+
+<p>findAirports
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+pt = geocode("University of Oregon") %&gt;% findNearestCOMID(n = 5)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

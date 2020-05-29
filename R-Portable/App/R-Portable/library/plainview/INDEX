@@ -1,0 +1,7 @@
+plainView               View raster objects interactively without
+                        background map but in any CRS
+plainViewOutput         Widget output/render function for use in Shiny
+plainview-package       Plot Raster Images Interactively on a Plain
+                        HTML Canvas
+poppendorf              Landsat 8 detail of Franconian Switzerland
+                        centered on Poppendorf

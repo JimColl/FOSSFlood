@@ -1,0 +1,11 @@
+sfencode-package	sfencode-package
+decode	decode
+encode	encode
+encode.data.frame	encode
+encode.sf	encode
+encodeCoordinates	encodeCoordinates
+geometryRow	geometryRow
+polyline_wkt	polyline_wkt
+sfAttributes	sfAttributes
+sfencode	sfencode-package
+wkt_polyline	wkt_polyline

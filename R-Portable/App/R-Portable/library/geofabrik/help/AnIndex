@@ -1,0 +1,8 @@
+geofabrik_zones	geofabrik_zones
+get_geofabrik	get_geofabrik
+gf_filename	gf_filename
+gf_find	gf_find
+gf_find_sf	gf_find_sf
+make_additional_attributes	make_additional_attributes
+make_ini_attributes	make_additional_attributes
+read_pbf	read_pbf

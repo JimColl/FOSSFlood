@@ -1,0 +1,83 @@
+CONUS                   CONUS state codes
+MazamaSpatialUtils      Mazama Science spatial data and utility
+                        functions.
+SimpleCountries         World country polygons
+SimpleCountriesEEZ      World country EEZ polygons
+SimpleTimezones         World timezone polygons
+SpatialDataDir          Directory for spatial data
+US_52                   US state codes
+US_stateCodes           Dataframe of US state codes
+codeToCountry           Convert country codes to country names
+codeToState             Convert state codes to state nnames
+convertCARBAirBasins    Convert California Air Resources Board basin
+                        shapefiles
+convertEEZCountries     Convert Exclusive Economic Zones countries
+                        shapefile
+convertGACC             Convert Geographic Area Coordination Center
+                        geojson, as defined by NIFC
+convertGADM             Convert Global Administrative Areas (GADM)
+                        Shapefile
+convertHMSSmoke         Convert NOAA Hazard Mapping System Smoke
+                        Shapefiles
+convertIndianLands      Convert Indian Lands Shapefile
+convertNWSFireZones     Convert NWS Public Forecast Zones Shapefile
+convertNaturalEarthAdm1
+                        Convert Level 1 (State) Borders Shapefile
+convertOSMTimezones     Convert OSM Timezone Shapefile
+convertPHDs             Convert Public Health Districts Shapefile
+convertSimpleCountries
+                        Convert (Simple) World Borders Shapefile
+convertSimpleCountriesEEZ
+                        Convert (Simple) World Borders Shapefile
+convertSimpleTimezones
+                        Convert SimpleTimezones Shapefile
+convertStateLegislativeDistricts
+                        Convert US dtate legislative districts
+                        shapefile
+convertTMWorldBorders   Convert World Borders Shapefile
+convertTMWorldBordersSimple
+                        Convert (Simple) World Borders Shapefile
+convertTerrestrialEcoregions
+                        Convert Terrestrial Ecoregion Shapefile
+convertUSCensusCBSA     Convert US Core Based Statistical Areas
+                        Shapefile
+convertUSCensusCongress
+                        Convert US congressional districts shapefile
+convertUSCensusCounties
+                        Convert US County Borders Shapefile
+convertUSCensusStates   Convert US Census State Shapefile
+convertWBDHUC           Convert USGS hydrologic unit shapefiles
+convertWeatherZones     Convert NWS Public Forecast Zones Shapefile
+convertWikipediaTimezoneTable
+                        Convert Wikipedia Timezone Table to Dataframe
+convertWorldEEZ         Convert World Exclusive Economic Zones
+                        Boundaries Shapefile
+convertWorldTimezones   Convert Timezone Shapefile
+countryToCode           Convert country names to country codes
+dissolve                Aggregate shapes in a SpatialPolygonsDataFrame
+getCountry              Return country names at specified locations
+getCountryCode          Return country ISO codes at specified locations
+getCountryName          Return country names at specified locations
+getHUC                  Return HUCs at specified locations
+getHUCName              Return HUC names at specified locations
+getPolygonID            Get polygonID from SPDF of interest
+getSpatialData          Return spatial data associated with a set of
+                        locations
+getSpatialDataDir       Get package data directory
+getState                Return state names at specified locations
+getStateCode            Return state ISO codes at specified locations
+getStateName            Return state names at specified locations
+getTimezone             Return Olson timezones at specified locations
+getUSCounty             Return US county name at specified locations
+getVariable             Return SPDF variable at specified locations
+installSpatialData      Install spatial datasets
+iso2ToIso3              Convert from ISO2 to ISO3 country codes
+iso3ToIso2              Convert from ISO3 to ISO2 country codes
+loadSpatialData         Load spatial datasets
+runExample              Run Shiny app example
+setSpatialDataDir       Set package data directory
+simplify                Simplify SpatialPolygonsDataFrame
+stateToCode             Convert state names to state codes
+subsetHUC               Subset pre-formatted HUC files into smaller
+                        groupings.
+summarizeByPolygon      Summarize values by polygon

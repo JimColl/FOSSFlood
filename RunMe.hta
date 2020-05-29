@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<meta charset="utf-8">
+<head>
+	<title>FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.1</title>
+	<HTA:APPLICATION
+		APPLICATIONNAME="FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.1"
+		id="FOSSFlood"
+		version="1.1"
+		scroll="yes"
+		singleinstance="yes"
+	/>
+	<style type="text/css">
+		.tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
+		.tg td{font-family:"Palatino Linotype";font-size:14px;padding:10px 5px;border-style:solid;border-width:5px;overflow:hidden;word-break:normal;border-color:black;}
+		.tg th{font-family:"Palatino Linotype";font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:5px;overflow:hidden;word-break:normal;border-color:black;}
+		.tg .tg-ea57{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:#000000}
+		.tg .tg-k1lp{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:#000000;text-align:center}
+		.tg .tg-6l0l{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:#ffffff}
+		.tg .tg-s9ax{font-weight:bold;font-size:22px;font-family:"Comic Sans MS", cursive, sans-serif !important;;border-color:#000000;text-align:center}
+		.tg .tg-o7wt{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:inherit}
+		.tg .tg-zims{white-space: pre-line;font-family:"Palatino Linotype";font-size:16px;padding:2px 2px, cursive, sans-serif !important;;border-color:#000000;vertical-align:top}
+	</style>
+</head>
+<script type="text/vbscript" id="LOGRefresh">
+' <!--
+Sub LOGRefresh()
+	set oFSO=CreateObject("Scripting.FileSystemObject")
+	set oFile=oFSO.OpenTextFile("ShinyApp.log",1)
+	text = oFile.ReadAll
+	MyDataInfo.InnerText=text
+	oFile.Close
+End Sub
+' -->
+</script>
+<script type="text/vbscript" id="OOLOAD">
+' <!--
+sub OOLOAD()
+	window.resizeTo 1705,1480
+	userAOI.Value = "66044, 66046, 66047, 66045, 66049"
+	UserOutputType.Value = "BVOSMOTM"
+	Const ForReading = 1
+	Const ForWriting = 2
+	FullName = replace(FOSSFlood.commandLine,chr(34),"")
+	arrFN=split(FullName,"\")
+	FileName = arrFN(ubound(arrFN))
+	SourceDir = replace(FullName,FileName,"")
+	x=Len(SourceDir)
+	SecondStringLen=x-2
+	SecondStringBase=Right(SourceDir,SecondStringLen)
+	SecondStringFull="LastDirectory=" & SecondStringBase & "R-Portable"
+	NewDrive=Left(SourceDir,2)
+	NewDriveString="LastDrive=" & NewDrive
+	AppDirLen=x-18
+	LPABD="PAL:LastPortableAppsBaseDir=" & Left(SourceDir,AppDirLen)
+	dim basePathFilename
+	basePathFilename = SourceDir & "R-Portable\Data\settings\R-PortableSettings.ini"
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objFile = objFSO.OpenTextFile(basePathFilename, ForReading)
+	strText = objFile.ReadAll
+	objFile.Close
+	strText = Replace(strText, "PAL:LastPortableAppsBaseDir=C:\Users\Cornholio\Desktop", LPABD)
+	strText = Replace(strText, "LastDirectory=\Users\Cornholio\Desktop\FOSSFlood-master\R-Portable", SecondStringFull)
+	strText = Replace(strText, "LastDrive=C:", NewDriveString)
+	Set objFile = objFSO.OpenTextFile(basePathFilename, ForWriting)
+	objFile.WriteLine strText
+	objFile.Close
+end sub
+' -->
+</script>
+<script type="text/vbscript" id="Shutdown">
+' <!--
+sub Shutdown()
+	iTimerID = window.setInterval("LOGRefresh()",1000)
+	dim sCurPathC
+	sCurPathC = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")
+	dim RKillPath
+	RKillPath = sCurPathC & "\shiny\killr.r"
+	Rexe           = "R-Portable\App\R-Portable\bin\Rscript.exe"
+	Ropts          = "--no-save --no-environ --no-init-file --no-restore --no-Rconsole"
+	RScriptFile    = RKillPath
+	Outfile        = "ShinyApp.log" 
+	strCommand     = Rexe & " " & Ropts & " " & RScriptFile & " 1> " & Outfile & " 2>&1"
+	intWindowStyle = 0
+	bWaitOnReturnT  = False
+	CreateObject("Wscript.Shell").Run strCommand, intWindowStyle, bWaitOnReturnT
+end sub
+' -->
+</script>
+<script type="text/vbscript" id="Zipcodes">
+' <!--
+sub Zipcodes()
+	dim sCurPathC
+	sCurPathC = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")
+	dim RKillPath
+	RKillPath = sCurPathC & "\shiny\zipcodeMap.r"
+	Rexe           = "R-Portable\App\R-Portable\bin\Rscript.exe"
+	Ropts          = "--no-save --no-environ --no-init-file --no-restore --no-Rconsole"
+	RScriptFile    = RKillPath
+	Outfile        = "ShinyApp.log" 
+	strCommand     = Rexe & " " & Ropts & " " & RScriptFile & " 1> " & Outfile & " 2>&1"
+	intWindowStyle = 0
+	bWaitOnReturnT  = True
+	CreateObject("Wscript.Shell").Run strCommand, intWindowStyle, bWaitOnReturnT
+end sub
+' -->
+</script>
+<script type="text/vbscript" id="ExecuteFOSSFlood">
+' <!--
+Sub ExecuteFOSSFlood()
+	iTimerID = window.setInterval("LOGRefresh()",5000)
+	Const ForReading = 1
+	Const ForWriting = 2
+	dim sCurPath
+	sCurPath = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")
+	dim basePathFilename
+	basePathFilename = sCurPath & "\data\misc\runShinyApp.txt"
+	dim shinyPath
+	shinyPath = sCurPath & "\shiny\"
+	dim shinyPathFilename
+	shinyPathFilename = sCurPath & "\shiny\runShinyApp.txt"
+	dim shinyRPathFilename
+	shinyRPathFilename = sCurPath & "\shiny\runShinyApp.r"
+	dim BGTXT
+	Set BGTXT = CreateObject("Scripting.FileSystemObject")
+	BGTXT.CopyFile basePathFilename, shinyPath
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objFile = objFSO.OpenTextFile(shinyPathFilename, ForReading)
+	strText = objFile.ReadAll
+	objFile.Close
+	strText = Replace(strText, "##UserZipcode", UserZipTextbox.Value)
+	For i=0 to RadioButton1.length-1
+		If RadioButton1.Item(i).Checked Then
+			val = CStr(RadioButton1.Item(i).Value)
+			strText = Replace(strText, "##UserAddressess", val)
+		End If
+	Next
+	strText = Replace(strText, "##AddressessFile", Replace(userAddressFile.Value, "\", "/"))
+	For i=0 to RadioButton2.length-1
+		If RadioButton2.Item(i).Checked Then
+			val = CStr(RadioButton2.Item(i).Value)
+			strText = Replace(strText, "##UserRoads", val)
+		End If
+	Next
+	strText = Replace(strText, "##RoadsFile", Replace(userROADFile.Value, "\", "/"))
+	For i=0 to RadioButton3.length-1
+		If RadioButton3.Item(i).Checked Then
+			val = RadioButton3.Item(i).Value
+			strText = Replace(strText, "##GridChoice", val)
+		End If
+	Next
+	For i=0 to RadioButton4.length-1
+		If RadioButton4.Item(i).Checked Then
+			val = RadioButton4.Item(i).Value
+			strText = Replace(strText, "##useForecastSource", val)
+		End If
+	Next
+	strText = Replace(strText, "##useForecastFile", Replace(userFlowFile.Value, "\", "/"))
+	strText = Replace(strText, "##UserOutputT", UserOutputType.Value)
+	Set objFile = objFSO.OpenTextFile(shinyPathFilename, ForWriting)
+	objFile.WriteLine strText
+	objFile.Close
+	dim shinyUIPathFilename
+	shinyUIPathFilename = sCurPath & "\shiny\ui.r"
+	dim shinyServerPathFilename
+	shinyServerPathFilename = sCurPath & "\shiny\server.r"
+	dim oldUIpath
+	dim oldServerPath
+	set newUI = CreateObject("Scripting.FileSystemObject")
+	set newServer = CreateObject("Scripting.FileSystemObject")
+	If UserOutputType.Value="BVCARTPos" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVCARTPos.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVOSMBW" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVOSMBW.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVESRIBW" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVESRIBW.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVCARTPosNL" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVCARTPosNL.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVSTone" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVSTone.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVESRISat" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVESRISat.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVHBHS" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVHBHS.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVOSMMap" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVOSMMap.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVESRIMap" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVESRIMap.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVOSMOTM" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVOSMOTM.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVESRIWTM" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVESRIWTM.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVESRIWP" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVESRIWP.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVESRINatGeo" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVESRINatGeo.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVSWC" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVSWC.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	ElseIf UserOutputType.Value="BVTFT" Then
+		oldUIpath = sCurPath & "\shiny\ui_bview.r"
+		oldServerPath =  sCurPath & "\shiny\server_BVTFT.r"
+		newUI.CopyFile oldUIpath, shinyUIPathFilename
+		newServer.CopyFile oldServerPath, shinyServerPathFilename
+	End If
+	dim RGTXT 
+	Set RGTXT = CreateObject("Scripting.FileSystemObject") 
+	RGTXT.DeleteFile(shinyRPathFilename) 
+	strComputer = "."
+	Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+	dim shinyPath2
+	shinyPath2 = sCurPath & "\shiny"
+	Set colFiles = objWMIService.ExecQuery _
+		("ASSOCIATORS OF {Win32_Directory.Name='"& shinyPath2 &"'} Where " _
+			& "ResultClass = CIM_DataFile")
+	For Each objFile In colFiles
+		strExtension = objFile.Extension
+		strExtension = Replace(strExtension, "txt", "r")
+		strNewName = objFile.Drive & objFile.Path & objFile.FileName & "." & strExtension
+		errResult = objFile.Rename(strNewName)
+	Next
+	dim shinyRAPPPath
+	shinyRAPPPath = sCurPath & "\shiny\runShinyApp.r"
+	Rexe           = "R-Portable\App\R-Portable\bin\Rscript.exe"
+	Ropts          = "--no-save --no-environ --no-init-file --no-restore --no-Rconsole"
+	RScriptFile    = shinyRAPPPath
+	Outfile        = "ShinyApp.log" 
+	strCommand     = Rexe & " " & Ropts & " " & RScriptFile & " 1> " & Outfile & " 2>&1"
+	intWindowStyle = 0
+	bWaitOnReturnT  = True
+	CreateObject("Wscript.Shell").Run strCommand, intWindowStyle, bWaitOnReturnT
+End Sub
+' -->
+</script>
+<body onload="OOLOAD()" onbeforeunload="Shutdown()">
+	<table class="tg" style="undefined;table-layout: fixed; width: 1650px">
+	<colgroup>
+	<col style="width: 450px">
+	<col style="width: 1200">
+	</colgroup>
+		<tr>
+			<th class="tg-6l0l" colspan="2"> <img src="data/misc/FOSSFloodLogo.jpg"> </th>
+		</tr>
+		<tr>
+			<td class="tg-s9ax">Welcome to FOSSFlood -- V 1.1</td>
+			<td class="tg-o7wt" rowspan="3">
+			<div style="width:1200;height:660px;line-height:3em;overflow:scroll;padding:2px;">
+			GIS Only:<br>
+			<img src="data/misc/GISOutputs.png"><br><br>
+			Basic Slippy Maps:<br>
+			<img src="data/misc/LeafletMaps.jpg"><br><br>
+			Impact Maps:<br>
+			<img src="data/misc/LeafletMaps.jpg"><br><br>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="tg-k1lp">See the <a href="https://arcg.is/1HGCnL">ESRI Story Maps tutorial</a> for instructions</td>
+		</tr>
+		<tr>
+			<td class="tg-ea57">
+			<fieldset>
+				<legend>User inputs</legend>
+				Enter an area of interest:<input type="text" name="userAOI" size="30"><br>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="ZIP" checked="true">Zip code string (Format as:#####, #####,...)<BR>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="HUC8">HUC8 string (Format as:########, ########,...)<BR>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="STRING">A geotaggable string
+				<br>
+				<fieldset>
+					<legend>Addresses source:</legend>
+						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OAADDS" checked="true">OpenAddresses<BR>
+						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="USERADDS">User provided:<input type="file" id="USERADDSFILE" name="USERADDSFILE">
+						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OSMADDS">OSM<BR>
+				</fieldset>
+				<fieldset>
+					<legend>Roads source:</legend>
+					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="OSM">OSM<BR>
+					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="TIGER" checked="true">TIGER<BR>
+					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="USERROADS">User Provided:<input type="file" id="USERROADSFILE" name="USERROADSFILE">
+				</fieldset>
+				<fieldset>
+					<legend>Forecast source:</legend>
+					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="NWM_SR_C" checked="true">National Water Model short range<BR>
+					<label for="ForecastProcessTimesteps">Number of time steps to process:</label>
+					<select id="ForecastProcessTimesteps" name="ForecastProcessTimesteps">
+						<option value="FPT1">1</option>
+						<option value="FPT2">2</option>
+						<option value="FPT3">3</option>
+						<option value="FPT4">4</option>
+						<option value="FPT5">5</option>
+						<option value="FPT6">6</option>
+						<option value="FPT7">7</option>
+						<option value="FPT8">8</option>
+						<option value="FPT9">9</option>
+						<option value="FPT10">10</option>
+						<option value="FPT11">11</option>
+						<option value="FPT12">12</option>
+						<option value="FPT13">13</option>
+						<option value="FPT14">14</option>
+						<option value="FPT15">15</option>
+						<option value="FPT16">16</option>
+						<option value="FPT17">17</option>
+						<option value="FPT18">18</option>
+					</select>
+					<BR><BR>
+					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USERSTAGE">User provided stage (ft)<BR>
+					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USERDISCHARGE">User provided discharge (cfs)<BR>
+					File:<input type="file" id="USERFLOWFILE" name="USERFLOWFILE"><BR>
+					<label for="archiveflag">Archive flows</label>
+					<input type="checkbox" id="archiveflag" name="archiveflag">
+				</fieldset>
+				<fieldset>
+					<legend>Spatial Tessellation:</legend>
+					<input type="radio" name="grid_radiobutton" ID="grid_radiobutton" value="Square" checked="true">Square<BR>
+					<input type="radio" name="grid_radiobutton" ID="grid_radiobutton" value="Hexagonal">Hexagonal<BR>
+				</fieldset>
+				<label for="UserOutputType">Choose output type:</label>
+				<select size="1" id="UserOutputType" name="UserOutputType">
+					<optgroup label="Outputs">
+						<option value="GIS">GIS Only</option>
+						<option value="EB1">"Current" conditions</option>
+						<option value="AB2">Summary page</option>
+						<option value="AB2">Summary and Swiper</option>
+					</optgroup>
+					<optgroup label="NWM">
+						<option value="EB1">NWM: "Current" conditions</option>
+						<option value="EB2">NWM: Next 6 hours</option>
+						<option value="EB2">NWM: Next 12 hours</option>
+					</optgroup>
+					<optgroup label="Random outputs">
+						<option value="BaseData">Base Data Viewer</option>
+						<option value="AOI">AOI finder</option>
+					</optgroup>
+				</select>
+			</fieldset>
+			<br>
+			<input type="button" value="Run FOSSFlood" name="run_button"  onClick="ExecuteFOSSFlood"><br>
+			<br><br><br>
+			Log:</td>
+		</tr>
+		<tr>
+			<td class="tg-zims" colspan="2">
+			<div id = "MyDataInfo" style="width:1650px;height:250px;line-height:1em;overflow:scroll;padding:1px;">
+			</div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

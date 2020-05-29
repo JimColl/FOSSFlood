@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Airports</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ap {HydroData}"><tr><td>ap {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Airports</h2>
+
+<h3>Description</h3>
+
+<p>Dataset containing information global Airports subset to the Daymet Domain
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ap
+</pre>
+
+
+<h3>Format</h3>
+
+<p>a <code>dataframe</code> instance, 1 row per station with columns:
+</p>
+
+<ul>
+<li><p> 'name':    A <code>character</code>  Name of airport. May or may not contain the City name.
+</p>
+</li>
+<li><p> 'city':    A <code>character</code>  Main city served by airport. May be spelled differently from Name.
+</p>
+</li>
+<li><p> 'country': A <code>character</code>  Country or territory where airport is located.
+</p>
+</li>
+<li><p> 'IATA':    A <code>character</code>  3-letter IATA code
+</p>
+</li>
+<li><p> 'ICAO':    A <code>numeric</code>    4-letter ICAO code
+</p>
+</li>
+<li><p> 'lat':     A <code>numeric</code>    Latitude of airport
+</p>
+</li>
+<li><p> 'lon':     A <code>numeric</code>    Longitude of airport
+</p>
+</li></ul>
+
+
+<h3>Source</h3>
+
+<p><a href="https://openflights.org/data.html">OpenFlights</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ airports = HydroData::ap
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

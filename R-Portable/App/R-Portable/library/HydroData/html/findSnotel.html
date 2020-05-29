@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find USDA NRCS Snotel Stations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findSnotel {HydroData}"><tr><td>findSnotel {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find USDA NRCS Snotel Stations</h2>
+
+<h3>Description</h3>
+
+<p><code>findSnotel</code> returns a <code>SpatialPointsDataFrame*</code> Objects cropped to an Area of Interest.
+Station data is extacted from <a href="https://wcc.sc.egov.usda.gov/nwcc/yearcount?network=sntl&amp;counttype=statelist&amp;state=">NRCS reports</a> and contains 11 attributes:
+</p>
+
+<ul>
+<li><p> 'NETWORK'   : <code>integer</code>  Description of Network (all = 'SNTL')
+</p>
+</li>
+<li><p> 'STATE'   : <code>character</code>  The state the station is located in
+</p>
+</li>
+<li><p> 'NAME': <code>POSITct</code>  Unique station name
+</p>
+</li>
+<li><p> 'ID'   : <code>character</code>    Unique identifier assigned by NRCS
+</p>
+</li>
+<li><p> 'START.DATE'   : <code>character</code>    Date the station made first measurment (&quot;Year-Month&quot;)
+</p>
+</li>
+<li><p> 'LAT'    : <code>numeric</code>    Latitude of station, decimil degrees
+</p>
+</li>
+<li><p> 'LON'    : <code>numeric</code>    Longitude of station, decimil degrees
+</p>
+</li>
+<li><p> 'ELEV'   : <code>character</code>     Elevation of station
+</p>
+</li>
+<li><p> 'COUNTY'   : <code>integer</code>  The county the station is located in
+</p>
+</li>
+<li><p> 'HUC12.NAME': <code>character</code>  The HUC12 name the station is located in
+</p>
+</li>
+<li><p> 'HUC12.ID': <code>character</code>  The HUC12 ID the station is located in
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+findSnotel(AOI = NULL, ids = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>If TRUE,  a vector of NHD COMIDs is added to retuned list (default = <code>FALSE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+CA.sno = getAOI(state = 'CA') %&gt;% findSnotel()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

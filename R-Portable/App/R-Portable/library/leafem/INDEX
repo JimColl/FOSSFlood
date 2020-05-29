@@ -1,0 +1,23 @@
+addCopyExtent           Copy current view extent to the clipboard
+addExtent               Add extent/bbox of spatial objects to a leaflet
+                        map
+addFeatures             Type agnositc version of 'leaflet::add*'
+                        functions.
+addFgb                  Add a flatgeobuf file to leaflet map
+addHomeButton           Add a home button / zoom-to-layer button to a
+                        map.
+addImageQuery           Add image query functionality to
+                        leaflet/mapview map.
+addLocalFile            Add vector data to leaflet map directly from
+                        the file system
+addLogo                 add a local or remote image (png, jpg, gif,
+                        bmp, ...) to a leaflet map
+addMouseCoordinates     Add mouse coordinate information at top of map.
+addRasterRGB            Add an RGB image as a layer
+addStarsImage           Add stars layer to a leaflet map
+addStaticLabels         Add static labels to 'leaflet' or 'mapview'
+                        objects
+addTileFolder           Add raster tiles from a local folder
+garnishMap              Garnish/decorate leaflet or mapview maps.
+updateLayersControl     Update the layer controls when adding layers to
+                        an existing map.

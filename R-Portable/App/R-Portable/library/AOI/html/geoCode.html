@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Geocoding</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for geocode {AOI}"><tr><td>geocode {AOI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Geocoding</h2>
+
+<h3>Description</h3>
+
+<p>A wrapper around the OpenSteetMap geocoding web-services. Users can request a lat/lon pair, spatial points, and/or a bounding box geometries.
+One or more place name can be given at a time. If a single point is requested, 'geocode' will provide a data.frame of lat/lon values and, if requested, a spatial point object and the geocode derived bounding box.
+If multiple place names are given, the returned objects will be a data.frame with columns for input name-lat-lon; if requested, a SpatialPoints object will be returned; and a minimum bounding box of all place names.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+geocode(location = NULL, zipcode = NULL, event = NULL, pt = FALSE,
+  bb = FALSE, all = FALSE, full = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>location</code></td>
+<td>
+<p><code>character</code>. Place name(s)</p>
+</td></tr>
+<tr valign="top"><td><code>zipcode</code></td>
+<td>
+<p><code>character</code>. USA zipcode(s)</p>
+</td></tr>
+<tr valign="top"><td><code>event</code></td>
+<td>
+<p><code>character</code>. a term to search for on wikipeida</p>
+</td></tr>
+<tr valign="top"><td><code>pt</code></td>
+<td>
+<p><code>logical</code>. If TRUE point geometery is appended to the returned list()</p>
+</td></tr>
+<tr valign="top"><td><code>bb</code></td>
+<td>
+<p><code>logical</code>. If TRUE bounding box geometry is appended to the returned list()</p>
+</td></tr>
+<tr valign="top"><td><code>all</code></td>
+<td>
+<p>if TRUE the point and bounding box representations are returned</p>
+</td></tr>
+<tr valign="top"><td><code>full</code></td>
+<td>
+<p><code>logical</code>. If TRUE all OSM attributes reuturned with query, else just the lat/long pair.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>at minimum a data.frame of lat/lon coordinates. Possible list with appended spatial features of type <code>sf</code> or <code>sp</code>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ ## geocode a single location
+     geocode("UCSB")
+
+ ## geocode a single location and return a SpatialPoints object
+     geocode("UCSB", pt = TRUE)
+
+ ## geocode a single location and derived bounding box of location
+     geocode("UCSB", bb = TRUE)
+
+ ## geocode multiple locations
+     geocode(c("UCSB", "Goleta", "Santa Barbara"))
+
+ ## geocode multiple points and generate a minimum bounding box of all locations and spatial points
+     geocode(c("UCSB", "Goleta", "Santa Barbara"), bb = T, pt= T)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>AOI</em> version 0.1.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

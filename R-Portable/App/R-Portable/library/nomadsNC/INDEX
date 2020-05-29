@@ -1,0 +1,13 @@
+%>%                     re-export magrittr pipe operator
+create_nomads_fst       Download and format NWM data into a FST flow
+                        matrix
+create_nomads_nc        Download and format NWM data into a
+                        timesubsetable NetCDF
+download_nomads         Download NOMADs files
+error_checking          Error Checking for confirugartion/ensemble
+                        pairs
+find_f                  Define 'f'
+get_nomads_filelist     Build file metadata for most current NWM
+                        configuration
+make_url                make NOMADS url from date and configuration
+nomadsNC                nomadsNC

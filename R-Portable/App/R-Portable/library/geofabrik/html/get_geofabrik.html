@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Download OSM data from...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for get_geofabrik {geofabrik}"><tr><td>get_geofabrik {geofabrik}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Download OSM data from [geofabrik.de](http://www.geofabrik.de/)</h2>
+
+<h3>Description</h3>
+
+<p>Download OSM data from [geofabrik.de](http://www.geofabrik.de/)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+get_geofabrik(
+  name = "west-yorkshire",
+  layer = "lines",
+  ...,
+  attributes = make_additional_attributes(layer = layer),
+  download_directory = gf_download_directory(),
+  ask = TRUE,
+  max_dist = 5,
+  op = sf::st_contains
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>String or ['sf::sf'] spatial object of the geofabrik zone
+to download. See examples.</p>
+</td></tr>
+<tr valign="top"><td><code>layer</code></td>
+<td>
+<p>Character string telling 'sf' which OSM layer to import.
+One of 'points', 'lines' (the default), 'multilinestrings', 'multipolygons' or 'other_relations'</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments passed to ['read_pbf()']</p>
+</td></tr>
+<tr valign="top"><td><code>attributes</code></td>
+<td>
+<p>Vector of character strings naming attributes to import</p>
+</td></tr>
+<tr valign="top"><td><code>download_directory</code></td>
+<td>
+<p>Where to download the data? 'tempdir()' by default.
+If you want to download your data into a persistent directory, set
+'GF_DOWNLOAD_DIRECTORY=/path/for/osm/data' in your '.Renviron' file, e.g. with
+'usethis::edit_r_environ()'.</p>
+</td></tr>
+<tr valign="top"><td><code>ask</code></td>
+<td>
+<p>Should the user be asked before downloading the file?</p>
+</td></tr>
+<tr valign="top"><td><code>max_dist</code></td>
+<td>
+<p>What is the maximum distance in fuzzy matching to tolerate before asking
+the user to select which zone to download?</p>
+</td></tr>
+<tr valign="top"><td><code>op</code></td>
+<td>
+<p>The binary spatial predicate used to identify the smallest geofabrik zones
+that matches the simple feature input in 'name'</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+get_geofabrik("isle of man")
+andorra = get_geofabrik(name = "andorra") # try other names, e.g. name = "west-yorkshire"
+head(andorra)
+cycleways_andorra = get_geofabrik("andorra", key = "highway", value = "cycleway")
+plot(cycleways_andorra)
+# user asked to choose closest match when interactive
+# get_geofabrik("kdljfdl", ask = FALSE) # not run to save time
+# get zone associated with a point
+name = sf::st_sfc(sf::st_point(c(-1.3, 50.7)), crs = 4326)
+get_geofabrik(name)
+name = sf::st_sfc(sf::st_point(c(0, 53)), sf::st_point(c(-2, 55)), crs = 4326)
+gf_find_sf(name)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>geofabrik</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,58 @@
+blue2green              Blue2green
+blue2red                Blue2red
+blue2yellow             Blue2yellow
+blues                   Blues
+brbg                    Brbg
+bugn                    Bugn
+bupu                    Bupu
+cividis                 Cividis
+cm                      Cm
+colour_palettes         Colour Palettes
+colour_values           Colour Values
+colour_values_rgb       Colour Values RGB
+convert_colour          Convert Colour
+cyan2yellow             Cyan2yellow
+diverge_hcl             Diverge_hcl
+diverge_hsv             Diverge_hsv
+get_palette             Get Palette
+gnbu                    Gnbu
+green2red               Green2red
+greens                  Greens
+greys                   Greys
+heat                    Heat
+heat_hcl                Heat_hcl
+inferno                 Inferno
+magenta2green           Magenta2green
+magma                   Magma
+matlab_like             Matlab_like
+matlab_like2            Matlab_like2
+oranges                 Oranges
+orrd                    Orrd
+piyg                    Piyg
+plasma                  Plasma
+prgn                    Prgn
+pubu                    Pubu
+pubugn                  Pubugn
+puor                    Puor
+purd                    Purd
+purples                 Purples
+rainbow                 Rainbow
+rainbow_hcl             Rainbow_hcl
+rdbu                    Rdbu
+rdgy                    Rdgy
+rdpu                    Rdpu
+rdylbu                  Rdylbu
+rdylgn                  Rdylgn
+reds                    Reds
+sequential_hcl          Sequential_hcl
+show_colours            Show Colours
+spectral                Spectral
+terrain                 Terrain
+terrain_hcl             Terrain_hcl
+topo                    Topo
+viridis                 Viridis
+ygobb                   Ygobb
+ylgn                    Ylgn
+ylgnbu                  Ylgnbu
+ylorbr                  Ylorbr
+ylorrd                  Ylorrd

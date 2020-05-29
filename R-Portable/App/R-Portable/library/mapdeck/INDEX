@@ -1,0 +1,43 @@
+%>%                     Pipe
+add_arc                 Add arc
+add_bitmap              Add bitmap
+add_column              Add column
+add_dependencies        Add Dependencies
+add_geojson             Add Geojson
+add_greatcircle         Add greatcircle
+add_grid                Add Grid
+add_heatmap             Add Heatmap
+add_hexagon             Add hexagon
+add_line                Add line
+add_mesh                Add Mesh
+add_path                Add Path
+add_pointcloud          Add Pointcloud
+add_polygon             Add Polygon
+add_scatterplot         Add Scatterplot
+add_screengrid          Add Screengrid
+add_sf                  Add sf
+add_text                Add Text
+add_title               Add Title
+add_trips               Add Trips
+capitals                Capital cities for each country
+city_trail              city_trail
+clear_arc               Clear Arc
+clear_legend            Clear Legend
+clear_tokens            Clear tokens
+geojson                 Geojson
+legend_element          Legend Element
+light_settings          Light Settings
+mapdeck                 mapdeck
+mapdeck-shiny           Shiny bindings for mapdeck
+mapdeck_dependencies    Mapdeck Dependencies
+mapdeck_dispatch        mapdeck dispatch
+mapdeck_legend          Mapdeck Legend
+mapdeck_style           Mapdeck Style
+mapdeck_tokens          Mapdeck_tokens
+mapdeck_update          Mapdeck update
+mapdeck_view            Mapdeck view
+melbourne               Polygons in and around Melbourne
+melbourne_mesh          Melbourne Mesh
+roads                   Roads in central Melbourne
+set_token               Set Token
+update_style            update style

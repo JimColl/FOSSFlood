@@ -1,0 +1,14 @@
+apply_mapshaper_commands	apply_mapshaper_commands
+check_sys_mapshaper	check_sys_mapshaper
+drop_null_geometries	drop_null_geometries
+ms_clip	ms_clip
+ms_dissolve	ms_dissolve
+ms_erase	ms_erase
+ms_explode	ms_explode
+ms_filter_fields	ms_filter_fields
+ms_filter_islands	ms_filter_islands
+ms_innerlines	ms_innerlines
+ms_lines	ms_lines
+ms_points	ms_points
+ms_simplify	ms_simplify
+rmapshaper	rmapshaper

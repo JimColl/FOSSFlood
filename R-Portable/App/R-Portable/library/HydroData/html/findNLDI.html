@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get NLDI Data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findNLDI {HydroData}"><tr><td>findNLDI {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get NLDI Data</h2>
+
+<h3>Description</h3>
+
+<p>This function acts as a formal query to the NLDI
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+findNLDI(comid = NULL, nwis = NULL, huc12 = NULL, type = NULL,
+  spatial = TRUE, resources = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>comid</code></td>
+<td>
+<p>a COMID value (see <code>findNHD</code> and <code>findNearestCOMID</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>nwis</code></td>
+<td>
+<p>a USGS station values (see <code>findUSGS</code> and <code>findNearestUSGS</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>huc12</code></td>
+<td>
+<p>a HUC12 id (see <code>findHUC</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>a type of data to return (&quot;UT&quot;, &quot;UM&quot;,&quot;DD&quot;, &quot;DM&quot;, &quot;basin&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>spatial</code></td>
+<td>
+<p>if <code>TRUE</code> returned data will be sp, else of type sf</p>
+</td></tr>
+<tr valign="top"><td><code>resources</code></td>
+<td>
+<p>what type of resources to add (&quot;comid&quot;, &quot;huc12pp&quot;, &quot;npdes_rad&quot;, &quot;nwis&quot;, &quot;wqp&quot;)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list of spatial / sf features
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

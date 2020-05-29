@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Geocoding Events</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for geocode_wiki {AOI}"><tr><td>geocode_wiki {AOI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Geocoding Events</h2>
+
+<h3>Description</h3>
+
+<p>A wrapper around the Wikipedia API to return geo-coordinates of requested inputs.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+geocode_wiki(event = NULL, pt = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>event</code></td>
+<td>
+<p><code>character</code>. a term to search for on wikipeida</p>
+</td></tr>
+<tr valign="top"><td><code>pt</code></td>
+<td>
+<p><code>logical</code>. If TRUE point geometery is appended to the returned list()</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>aa data.frame of lat/lon coordinates
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+   ## geocode an Agency
+     geocode_wiki("NOAA")
+
+ ## geocode an event
+     geocode_wiki("I have a dream speech")
+
+ ## geocode a n event
+     geocode_wiki("D day")
+
+ ## geocode a product
+     geocode_wiki("New York Times")
+
+ ## geocode an event
+     geocode_wiki("Hurricane Harvey")
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>AOI</em> version 0.1.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

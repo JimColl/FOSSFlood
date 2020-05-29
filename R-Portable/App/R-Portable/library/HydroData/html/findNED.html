@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find National Elevation Data (NED)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findNED {HydroData}"><tr><td>findNED {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find National Elevation Data (NED)</h2>
+
+<h3>Description</h3>
+
+<p><code>findNED</code> returns <code>Raster</code> elevation data from the National Elevation Dataset (<a href="https://nationalmap.gov/elevation.html">NED</a>) for an AOI.
+Data comes the the USA National Map.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+findNED(AOI = NULL, res = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>res</code></td>
+<td>
+<p>resolution of NED data. 1 equals 1 arc second, 13 equals 1/3 arc second.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and NED
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ el.paso.elev = getAOI(state = "CO", county = "El Paso") %&gt;% findNED(res = 1)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

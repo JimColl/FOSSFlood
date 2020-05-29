@@ -1,0 +1,10 @@
+plainview-package	plainview-package
+plainView	plainView
+plainview	plainView
+plainview,ANY-method	plainView
+plainView,RasterLayer-method	plainView
+plainView,RasterStackBrick-method	plainView
+plainView,SpatialPixelsDataFrame-method	plainView
+plainViewOutput	plainViewOutput
+poppendorf	poppendorf
+renderPlainView	plainViewOutput

@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: AOI Package</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for AOI {AOI}"><tr><td>AOI {AOI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>AOI Package</h2>
+
+<h3>Description</h3>
+
+<p>An area of interest (AOI) is a geographic extent. The aim of this package is to help users create these -  turning locations, place names, and political boundaries
+into servicable geometries for spatial analysis. The package is written using the simple features paradigm, projected to EPSG:4269.<br />
+</p>
+<p>The primary functions are <code><a href="geoCode.html">geocode</a></code>, <code><a href="geocode_rev.html">geocode_rev</a></code>, <code><a href="aoi_get.html">aoi_get</a></code>, and <code><a href="bbox_get.html">bbox_get</a></code>.
+The first returns a data.frame of corrdinates from place names using the OSM API; the second returns a list of descriptive features from a known place name or lat/lon pair;
+the third returns a spatial (sf) geometry from a country, state, county, or defined region, and the last an extent encompassing a set of input features.
+<code><a href="aoi_map.html">aoi_map</a></code> helps users visualize AOIs in a interactive map; and <code><a href="aoi_buffer.html">aoi_buffer</a></code> which allows AOIs to be modified by uniform distances.
+Finally, <code><a href="aoi_describe.html">aoi_describe</a></code> breaks existing spatial features into <code><a href="aoi_get.html">aoi_get</a></code> parameters to improve the reproducibility of geometry generation.
+<br />
+</p>
+<p>See the <a href="https://github.com/mikejohnson51/AOI">README</a> on github, and the project webpage for examples <a href="https://mikejohnson51.github.io/AOI/">here</a>.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>AOI</em> version 0.1.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

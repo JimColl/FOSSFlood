@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Spatial Data Download and Utility Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+<h1> Spatial Data Download and Utility Functions
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;MazamaSpatialUtils&rsquo; version 0.6.4</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+<li><a href="../demo">Code demos</a>.  Use <a href="../../utils/help/demo">demo()</a> to run them.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="MazamaSpatialUtils.html">MazamaSpatialUtils-package</a></td>
+<td>Mazama Science spatial data and utility functions.</td></tr>
+<tr><td style="width: 25%;"><a href="codeToCountry.html">codeToCountry</a></td>
+<td>Convert country codes to country names</td></tr>
+<tr><td style="width: 25%;"><a href="codeToState.html">codeToState</a></td>
+<td>Convert state codes to state nnames</td></tr>
+<tr><td style="width: 25%;"><a href="CONUS.html">CONUS</a></td>
+<td>CONUS state codes</td></tr>
+<tr><td style="width: 25%;"><a href="convertCARBAirBasins.html">convertCARBAirBasins</a></td>
+<td>Convert California Air Resources Board basin shapefiles</td></tr>
+<tr><td style="width: 25%;"><a href="convertEEZCountries.html">convertEEZCountries</a></td>
+<td>Convert Exclusive Economic Zones countries shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertGACC.html">convertGACC</a></td>
+<td>Convert Geographic Area Coordination Center geojson, as defined by NIFC</td></tr>
+<tr><td style="width: 25%;"><a href="convertGADM.html">convertGADM</a></td>
+<td>Convert Global Administrative Areas (GADM) Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertHMSSmoke.html">convertHMSSmoke</a></td>
+<td>Convert NOAA Hazard Mapping System Smoke Shapefiles</td></tr>
+<tr><td style="width: 25%;"><a href="convertIndianLands.html">convertIndianLands</a></td>
+<td>Convert Indian Lands Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertNaturalEarthAdm1.html">convertNaturalEarthAdm1</a></td>
+<td>Convert Level 1 (State) Borders Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertNWSFireZones.html">convertNWSFireZones</a></td>
+<td>Convert NWS Public Forecast Zones Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertOSMTimezones.html">convertOSMTimezones</a></td>
+<td>Convert OSM Timezone Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertPHDs.html">convertPHDs</a></td>
+<td>Convert Public Health Districts Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertSimpleCountries.html">convertSimpleCountries</a></td>
+<td>Convert (Simple) World Borders Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertSimpleCountriesEEZ.html">convertSimpleCountriesEEZ</a></td>
+<td>Convert (Simple) World Borders Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertSimpleTimezones.html">convertSimpleTimezones</a></td>
+<td>Convert SimpleTimezones Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertStateLegislativeDistricts.html">convertStateLegislativeDistricts</a></td>
+<td>Convert US dtate legislative districts shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertTerrestrialEcoregions.html">convertTerrestrialEcoregions</a></td>
+<td>Convert Terrestrial Ecoregion Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertTMWorldBorders.html">convertTMWorldBorders</a></td>
+<td>Convert World Borders Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertTMWorldBordersSimple.html">convertTMWorldBordersSimple</a></td>
+<td>Convert (Simple) World Borders Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertUSCensusCBSA.html">convertUSCensusCBSA</a></td>
+<td>Convert US Core Based Statistical Areas Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertUSCensusCongress.html">convertUSCensusCongress</a></td>
+<td>Convert US congressional districts shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertUSCensusCounties.html">convertUSCensusCounties</a></td>
+<td>Convert US County Borders Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertUSCensusStates.html">convertUSCensusStates</a></td>
+<td>Convert US Census State Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertWBDHUC.html">convertWBDHUC</a></td>
+<td>Convert USGS hydrologic unit shapefiles</td></tr>
+<tr><td style="width: 25%;"><a href="convertWeatherZones.html">convertWeatherZones</a></td>
+<td>Convert NWS Public Forecast Zones Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertWikipediaTimezoneTable.html">convertWikipediaTimezoneTable</a></td>
+<td>Convert Wikipedia Timezone Table to Dataframe</td></tr>
+<tr><td style="width: 25%;"><a href="convertWorldEEZ.html">convertWorldEEZ</a></td>
+<td>Convert World Exclusive Economic Zones Boundaries Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="convertWorldTimezones.html">convertWorldTimezones</a></td>
+<td>Convert Timezone Shapefile</td></tr>
+<tr><td style="width: 25%;"><a href="countryToCode.html">countryToCode</a></td>
+<td>Convert country names to country codes</td></tr>
+<tr><td style="width: 25%;"><a href="dissolve.html">dissolve</a></td>
+<td>Aggregate shapes in a SpatialPolygonsDataFrame</td></tr>
+<tr><td style="width: 25%;"><a href="getCountry.html">getCountry</a></td>
+<td>Return country names at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getCountryCode.html">getCountryCode</a></td>
+<td>Return country ISO codes at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getCountryName.html">getCountryName</a></td>
+<td>Return country names at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getHUC.html">getHUC</a></td>
+<td>Return HUCs at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getHUCName.html">getHUCName</a></td>
+<td>Return HUC names at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getPolygonID.html">getPolygonID</a></td>
+<td>Get polygonID from SPDF of interest</td></tr>
+<tr><td style="width: 25%;"><a href="getSpatialData.html">getSpatialData</a></td>
+<td>Return spatial data associated with a set of locations</td></tr>
+<tr><td style="width: 25%;"><a href="getSpatialDataDir.html">getSpatialDataDir</a></td>
+<td>Get package data directory</td></tr>
+<tr><td style="width: 25%;"><a href="getState.html">getState</a></td>
+<td>Return state names at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getStateCode.html">getStateCode</a></td>
+<td>Return state ISO codes at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getStateName.html">getStateName</a></td>
+<td>Return state names at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getTimezone.html">getTimezone</a></td>
+<td>Return Olson timezones at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getUSCounty.html">getUSCounty</a></td>
+<td>Return US county name at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="getVariable.html">getVariable</a></td>
+<td>Return SPDF variable at specified locations</td></tr>
+<tr><td style="width: 25%;"><a href="installSpatialData.html">installSpatialData</a></td>
+<td>Install spatial datasets</td></tr>
+<tr><td style="width: 25%;"><a href="iso2ToIso3.html">iso2ToIso3</a></td>
+<td>Convert from ISO2 to ISO3 country codes</td></tr>
+<tr><td style="width: 25%;"><a href="iso3ToIso2.html">iso3ToIso2</a></td>
+<td>Convert from ISO3 to ISO2 country codes</td></tr>
+<tr><td style="width: 25%;"><a href="loadSpatialData.html">loadSpatialData</a></td>
+<td>Load spatial datasets</td></tr>
+<tr><td style="width: 25%;"><a href="MazamaSpatialUtils.html">MazamaSpatialUtils</a></td>
+<td>Mazama Science spatial data and utility functions.</td></tr>
+<tr><td style="width: 25%;"><a href="runExample.html">runExample</a></td>
+<td>Run Shiny app example</td></tr>
+<tr><td style="width: 25%;"><a href="setSpatialDataDir.html">setSpatialDataDir</a></td>
+<td>Set package data directory</td></tr>
+<tr><td style="width: 25%;"><a href="SimpleCountries.html">SimpleCountries</a></td>
+<td>World country polygons</td></tr>
+<tr><td style="width: 25%;"><a href="SimpleCountriesEEZ.html">SimpleCountriesEEZ</a></td>
+<td>World country EEZ polygons</td></tr>
+<tr><td style="width: 25%;"><a href="SimpleTimezones.html">SimpleTimezones</a></td>
+<td>World timezone polygons</td></tr>
+<tr><td style="width: 25%;"><a href="simplify.html">simplify</a></td>
+<td>Simplify SpatialPolygonsDataFrame</td></tr>
+<tr><td style="width: 25%;"><a href="SpatialDataDir.html">SpatialDataDir</a></td>
+<td>Directory for spatial data</td></tr>
+<tr><td style="width: 25%;"><a href="stateToCode.html">stateToCode</a></td>
+<td>Convert state names to state codes</td></tr>
+<tr><td style="width: 25%;"><a href="subsetHUC.html">subsetHUC</a></td>
+<td>Subset pre-formatted HUC files into smaller groupings.</td></tr>
+<tr><td style="width: 25%;"><a href="summarizeByPolygon.html">summarizeByPolygon</a></td>
+<td>Summarize values by polygon</td></tr>
+<tr><td style="width: 25%;"><a href="US_52.html">US_52</a></td>
+<td>US state codes</td></tr>
+<tr><td style="width: 25%;"><a href="US_stateCodes.html">US_stateCodes</a></td>
+<td>Dataframe of US state codes</td></tr>
+</table>
+</body></html>

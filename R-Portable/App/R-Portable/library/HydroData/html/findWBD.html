@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find Watershed Boundary Geometries (WBD/HUC)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findWBD {HydroData}"><tr><td>findWBD {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find Watershed Boundary Geometries (WBD/HUC)</h2>
+
+<h3>Description</h3>
+
+<p>The United States Geological Survey maintains a hierarchical system of hydrologic units each assigned a
+unique code (HUC). The hierarchical level is described by the number of digits in the code. A two-digit code (eg. HUC 2) is the coarsest unit of aggregation while the HUC 12 is the finest resolution.
+The spatial geometries of these units are stored in the Watershed Boundary Dataset with coverage of the United States.
+<code>findWBD</code> returns a <code>SpatialPolygonsDataFrame*</code> of WBD boundaries for the specified level within an AOI. Pending the query,
+data comes from the USGS CIDA server or the USGS staged products FTP.
+</p>
+<p>Below you can see the general factors for each HUC level:\
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: center;">
+  Name </td><td style="text-align: center;"> Digits </td><td style="text-align: center;"> Average Size (sqmiles) </td><td style="text-align: center;"> Example Name </td><td style="text-align: center;"> Example Code </td>
+</tr>
+<tr>
+ <td style="text-align: center;">
+  Region </td><td style="text-align: center;"> 2 </td><td style="text-align: center;"> 177,560 </td><td style="text-align: center;"> Pacific Northwest </td><td style="text-align: center;"> 17 </td>
+</tr>
+<tr>
+ <td style="text-align: center;">
+  Subregion </td><td style="text-align: center;"> 4 </td><td style="text-align: center;">  16,800  </td><td style="text-align: center;"> Lower Snake </td><td style="text-align: center;"> 1706</td>
+</tr>
+<tr>
+ <td style="text-align: center;">
+  Basin </td><td style="text-align: center;"> 6 </td><td style="text-align: center;"> 10,596  </td><td style="text-align: center;"> Lower Snake </td><td style="text-align: center;"> 170601 </td>
+</tr>
+<tr>
+ <td style="text-align: center;">
+  Subbasin </td><td style="text-align: center;"> 8 </td><td style="text-align: center;"> 700  </td><td style="text-align: center;"> Imnaha River </td><td style="text-align: center;"> 17060102 </td>
+</tr>
+<tr>
+ <td style="text-align: center;">
+  Watershed </td><td style="text-align: center;"> 10 </td><td style="text-align: center;"> 227 </td><td style="text-align: center;"> Upper Imnaha River </td><td style="text-align: center;"> 1706010201 </td>
+</tr>
+<tr>
+ <td style="text-align: center;">
+  Subwatershed </td><td style="text-align: center;"> 12 </td><td style="text-align: center;"> 40 </td><td style="text-align: center;"> North Fork Imnaha River </td><td style="text-align: center;"> 170601020101 </td>
+</tr>
+<tr>
+ <td style="text-align: center;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+findWBD(AOI, level = 8, subbasins = FALSE, crop = TRUE,
+  ids = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>level</code></td>
+<td>
+<p>defines the HUC level of interest (default = 8)</p>
+</td></tr>
+<tr valign="top"><td><code>subbasins</code></td>
+<td>
+<p>If TRUE, all subbasins of the supplied level will be joined to retuned list</p>
+</td></tr>
+<tr valign="top"><td><code>crop</code></td>
+<td>
+<p>If TRUE, all objects are cropped to the AOI boundaries (default = <code>TRUE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>If TRUE,  a vector of finest resolution HUC codes is added to returned list (default = <code>FALSE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Get Cropped HUC8s for AOI
+ getAOI(list("UCSB", 10, 10)) %&gt;% findWBD()
+
+# Get Cropped HUC10s for AOI
+ getAOI(list("UCSB", 10, 10)) %&gt;% findWBD(level = 10)
+
+# Get Cropped HUC8s, HUC10s and HUC12s for AOI
+ getAOI(clip = list("UCSB", 10, 10)) %&gt;% findWBD(level = 8, subbasins = TRUE)
+
+# Get uncropped HUC10s for AOI
+ getAOI(clip = list("UCSB", 10, 10)) %&gt;% findWBD(level = 10, crop = FALSE)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find Airport Data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findAirports {HydroData}"><tr><td>findAirports {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find Airport Data</h2>
+
+<h3>Description</h3>
+
+<p><code>findAirports</code> returns a <code>SpatialPointsDataframe</code> of all airports within an AOI.
+Data comes from the <a href="https://openflights.org/data.html">Openflights</a> database and includes the following attributes:
+</p>
+
+<ul>
+<li><p> 'name'   : <code>character</code>  Name of airport. May or may not contain the City name.
+</p>
+</li>
+<li><p> 'city'   : <code>character</code>  Main city served by airport. May be spelled differently from Name.
+</p>
+</li>
+<li><p> 'country': <code>character</code>  Country or territory where airport is located.
+</p>
+</li>
+<li><p> 'IATA'   : <code>character</code>  3-letter IATA code
+</p>
+</li>
+<li><p> 'ICAO'   : <code>numeric</code>    4-letter ICAO code
+</p>
+</li>
+<li><p> 'lat'    : <code>numeric</code>    Latitude of airport
+</p>
+</li>
+<li><p> 'lon'    : <code>numeric</code>    Longitude of airport
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+findAirports(AOI = NULL, ids = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>If TRUE,  a vector of airport ICAO codes is added to retuned list (default = <code>FALSE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list of minimum length 2: AOI and ap
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ap = getAOI(state = "CO", county = "El Paso") %&gt;% findAirports()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

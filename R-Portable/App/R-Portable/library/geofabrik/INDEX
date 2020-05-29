@@ -1,0 +1,12 @@
+geofabrik_zones         sf data frame containing attributes and
+                        geometries of geofrabric download zones
+get_geofabrik           Download OSM data from
+                        [geofabrik.de](http://www.geofabrik.de/)
+gf_filename             Get the filename of a file downloaded from
+                        geofabrik
+gf_find                 Find geofabrik zones
+gf_find_sf              Find geofabrik zones based on sf or sfc object
+make_additional_attributes
+                        Get modified version of config file for reading
+                        .pbf files with GDAL/sf
+read_pbf                Read pbf files with additional attributes

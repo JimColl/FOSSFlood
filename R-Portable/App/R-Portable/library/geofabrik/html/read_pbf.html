@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read pbf files with additional attributes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for read_pbf {geofabrik}"><tr><td>read_pbf {geofabrik}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read pbf files with additional attributes</h2>
+
+<h3>Description</h3>
+
+<p>Read pbf files with additional attributes
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+read_pbf(
+  dsn,
+  layer = "lines",
+  key = NULL,
+  value = NULL,
+  selected_columns = "*",
+  attributes = make_additional_attributes(layer = layer),
+  ini_file = NULL,
+  append = TRUE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dsn</code></td>
+<td>
+<p>The location of the file</p>
+</td></tr>
+<tr valign="top"><td><code>layer</code></td>
+<td>
+<p>Which layer to read in? One of
+&quot;points&quot;           &quot;lines&quot;            &quot;multipolygons&quot;    &quot;multilinestrings&quot; or &quot;other_relations&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>key</code></td>
+<td>
+<p>Character string defining the key values to subset the data from, e.g. '&quot;highway&quot;'</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>The value(s) the 'key' can take, e.g. '&quot;cycleway&quot;'</p>
+</td></tr>
+<tr valign="top"><td><code>selected_columns</code></td>
+<td>
+<p>The columns to return in the output</p>
+</td></tr>
+<tr valign="top"><td><code>attributes</code></td>
+<td>
+<p>Vector of character strings naming attributes to import</p>
+</td></tr>
+<tr valign="top"><td><code>ini_file</code></td>
+<td>
+<p>A modified version of https://github.com/OSGeo/gdal/raw/master/gdal/data/osmconf.ini</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+<p>Should the columns named in 'attributes' be appended to the default columns?
+'TRUE' by default.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+pbf_url = geofabrik_zones$pbf_url[geofabrik_zones$name == "Isle of Wight"]
+f = file.path(tempdir(), "test.osm.pbf")
+download.file(pbf_url, f)
+# testing read_sf
+sf::st_layers(f)
+res = sf::read_sf(f) # works
+res = sf::read_sf(f, query = "select * from lines") # works
+res = sf::read_sf(f, query = "select * from multipolygons") # works
+res = read_pbf(f, layer = "multipolygons")
+q = "select * from lines where highway = 'cycleway'"
+res_cycleways = sf::read_sf(f, layer = "lines", query = q)
+res_cycleways = read_pbf(f, key = "highway", value = "cycleway") # more concise
+res = read_pbf(f)
+names(res)
+res = read_pbf(f, layer = "points")
+names(res)
+res = read_pbf(f, selected_columns = "highway") # only return highway column
+names(res)
+res_cycleway = res = read_pbf(f, layer = "lines", key = "highway", value = "cycleway")
+plot(res_cycleway)
+# uncomment to get big dataset
+# f_en = gf_filename("England")
+# u_en = geofabrik_zones$pbf_url[geofabrik_zones$name == "England"]
+# download.file(u_en, f_en)
+# cycleway_en = read_pbf(f_en, layer = "lines", key = "highway", value = "cycleway")
+# plot(cycleway_en$geometry)
+# pryr::object_size(cycleway_en)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>geofabrik</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

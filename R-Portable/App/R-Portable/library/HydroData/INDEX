@@ -1,0 +1,41 @@
+%>%                     re-export magrittr pipe operator
+HydroData               HydroData
+ap                      Airports
+col_elev                Color Palletes Usefull for NLCD, CDL and NED
+                        plotting
+download.url            Download data from URL via httr::GET
+explore                 Explore Spatial HydroData Objects
+findAirports            Find Airport Data
+findCDL                 Find Cropland Land Cover Data from the Cropand
+                        Data Layer
+findGAGESII             Find GAGESII points and basins
+findNED                 Find National Elevation Data (NED)
+findNHD                 Find National Hydrography River Networks
+findNID                 Find Dams in the US Army Core National
+                        Inventory (NID)
+findNLCD                Find National Land Cover Products (NLCD)
+findNLDI                Get NLDI Data
+findNWIS                Find USGS NWIS Stream Gages
+findNearestAirports     Find the Airports nearest a point
+findNearestCOMID        Find Neareast COMIDs
+findNearestHUC12        Find Neareast HUC12 boundaries
+findNearestNWIS         Find Neareast NWIS stations
+findNearestWaterbodies
+                        Find Neareast NHD Waterbodies
+findRoads               Find US Census Bureau TIGER Road Networks
+findSSURGO              Find SSURGO Maps and Mapunit Aggregated
+                        Attributes
+findSnotel              Find USDA NRCS Snotel Stations
+findWBD                 Find Watershed Boundary Geometries (WBD/HUC)
+findWaterPoly           Find Water Polygon
+findWaterbodies         Find National Hydrography Dataset Waterbodies
+meta.data               Return HydroData Object metadata
+mosaic.hd               Mosaic
+query_cida              CIDA Server Query
+return.what             Choose what to return for HydroData Calls
+saveHD                  Save File
+snotel                  Snotel Stations
+to_sf                   Convert Spatial HydroData Objects to Simple
+                        Features
+usgsStations            USGS NWIS station information
+writeHD                 Write Data to disk

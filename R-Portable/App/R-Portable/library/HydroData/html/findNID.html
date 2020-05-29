@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find Dams in the US Army Core National Inventory (NID)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findNID {HydroData}"><tr><td>findNID {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find Dams in the US Army Core National Inventory (NID)</h2>
+
+<h3>Description</h3>
+
+<p><code>findNID</code> returns a <code>SpatialPointsDataFrame</code>
+of all US Army Corps Dams for an Area of Interest from the National Inventory of Dams dataset.
+The National Inventory of Dams (NID) is a congressionally authorized database documenting dams in the United States and its territories
+This dataset is accessed through the <code>dams</code> R package and contains 61 attributes, perhaps most notably:
+</p>
+
+<ul>
+<li><p> 'Dam_Name'   : <code>character</code>  Dam Name
+</p>
+</li>
+<li><p> 'NID_ID'   : <code>character</code>  Unique ID for the dam
+</p>
+</li>
+<li><p> 'River': <code>character</code>  Name of the river
+</p>
+</li>
+<li><p> 'Owner_Type'   : <code>character</code>  Type of Owner
+</p>
+</li>
+<li><p> 'Dam_Type'   : <code>character</code>   Type of Dam
+</p>
+</li>
+<li><p> 'Primary_Purpose'    : <code>numeric</code>    Primary Purpose served
+</p>
+</li>
+<li><p> 'Dam_Length'    : <code>numeric</code>    Length of the dam
+</p>
+</li>
+<li><p> 'Dam_Height'   : <code>numeric</code>  Height of the dam
+</p>
+</li>
+<li><p> 'Max_Discharge'   : <code>numeric</code>  Maximum Discharge
+</p>
+</li>
+<li><p> 'Max_Storage': <code>character</code>  Maximum Storage
+</p>
+</li>
+<li><p> 'Normal_Storage': <code>character</code>  Normal Storage
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+findNID(AOI = NULL, ids = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>If TRUE, a vector of Dam IDs is added to retuned list (default = <code>FALSE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and dams
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Find all dams in Texas
+tx.dams = getAOI(state = "TX") %&gt;% findNID()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,9 @@
+decode                  Decode Polyline
+encode                  Encode
+encodeCoordinates       Encode coordinates
+geometryRow             Geometry Row
+polyline_wkt            Polyline WKT
+sfAttributes            sf Attributes
+sfencode-package        A short title line describing what the package
+                        does
+wkt_polyline            WKT Polyline

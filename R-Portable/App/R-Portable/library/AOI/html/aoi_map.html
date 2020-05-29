@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate Leafet map and tool set for AOI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for aoi_map {AOI}"><tr><td>aoi_map {AOI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate Leafet map and tool set for AOI</h2>
+
+<h3>Description</h3>
+
+<p>Provides a precanned leaflet layout  for checking, and refining AOI queries. Useful <code>leaflet</code> tools allow for the marking of points, measuring of distances, and  panning and zooming.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+aoi_map(AOI = NULL, returnMap = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>any spatial object (<code>raster</code>, <code>sf</code>, <code>sp</code>). Can be piped (%&gt;%) from <code><a href="aoi_get.html">aoi_get</a></code>. If <code>AOI = NULL</code>, base map of CONUS will be returned.</p>
+</td></tr>
+<tr valign="top"><td><code>returnMap</code></td>
+<td>
+<p><code>logical</code>. If <code>FALSE</code> (default) the input AOI is returned and the leaflet map printed. If <code>TRUE</code> the leaflet map is returned and printed.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a <code>leaflet</code> html object
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+## Generate an empty map:
+     aoi_map()
+
+## Check a defined AOI:
+     AOI = getAOI(clip = list("UCSB", 10, 10))
+     aoi_map(AOI)
+
+## Chain to AOI calls:
+     getAOI(clip = list("UCSB", 10, 10)) %&gt;% aoi_map()
+
+## Add layers with standard leaflet functions:
+     r = getAOI("UCSB") %&gt;%  # get AOI
+         HydroData::findNWIS() # get SpatialPointsDataframe of local USGS gages
+
+     aoi_map(r$AOI) %&gt;%
+        addMarkers(data = r$nwis, popup = r$nwis$site_no)
+
+## Save map for reference:
+     m = getAOI("Kansas City") %&gt;% aoi_map()
+     htmlwidgets::saveWidget(m, file = paste0(getwd(), "/myMap.html"))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>AOI</em> version 0.1.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: geocodeOSM</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for geocodeOSM {AOI}"><tr><td>geocodeOSM {AOI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>geocodeOSM</h2>
+
+<h3>Description</h3>
+
+<p>Geocode via Open Street Maps API. <code>geocodeOSM</code> takes an input string and converts it to a geolocation.
+Addtionally it can return the location as a simple features point and the minimun bounding area
+of the location extent.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+geocodeOSM(location, pt = FALSE, bb = FALSE, all = FALSE,
+  full = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>location</code></td>
+<td>
+<p>a place name</p>
+</td></tr>
+<tr valign="top"><td><code>pt</code></td>
+<td>
+<p>if TRUE a simple feature point is appended to returned list</p>
+</td></tr>
+<tr valign="top"><td><code>bb</code></td>
+<td>
+<p>if TRUE the OSM bounding area of the location is appended to returned list</p>
+</td></tr>
+<tr valign="top"><td><code>all</code></td>
+<td>
+<p>if TRUE the point and bounding box representations are returned</p>
+</td></tr>
+<tr valign="top"><td><code>full</code></td>
+<td>
+<p><code>logical</code>. If TRUE all OSM attributes reuturned with query, else just the lat/long pair.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>at minimum a data.frame of lat, long
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+geocodeOSM("UCSB")
+geocodeOSM("Garden of the Gods", bb = TRUE)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>AOI</em> version 0.1.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

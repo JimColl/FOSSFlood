@@ -1,0 +1,5 @@
+dams                    Dams in the United States from the National
+                        Inventory of Dams (NID).
+get_nid                 Retrieve desired data on dams from
+                        pre-processed NID data
+nid_cleaned             Dams from the NID database

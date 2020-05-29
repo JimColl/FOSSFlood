@@ -1,0 +1,627 @@
+---
+title: "spatialwidget"
+author: "David Cooley"
+date: "`r Sys.Date()`"
+output: 
+    html_document:
+        toc: true
+        toc_float: true
+        number_sections: false
+        theme: flatly
+header-includes: 
+    - \usepackage{tikz}
+    - \usetikzlibrary{arrows}
+vignette: >
+  %\VignetteIndexEntry{spatialwidget}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "# "
+)
+
+library(spatialwidget)
+library(sfheaders)
+library(geojsonsf)
+
+```
+
+# Spatialwidget
+
+This package is designed to convert R data to JSON, ready for plotting on a map in an `htmlwidget`. 
+
+# Design
+
+The basic idea of this package is to take an `sf` object or data.frame 
+
+```{r}
+head( widget_capitals )
+```
+
+And convert it into pseudo-geojson ready to be parsed by javascript inside an htmlwidget
+
+```{r}
+js <- spatialwidget::widget_point(
+  data = widget_capitals
+  , fill_colour = "country"
+  , legend = TRUE
+  )
+
+substr( js$data, 1, 200 )
+```
+
+```{r}
+substr( js$legend, 1, 100 )
+```
+
+
+Notice the `fill_colour` column is now a hex colour, and the `geometry` column has been converted into `Point` coordinates. 
+
+This is basically it. The R object is now represented as JSON, having had a column of data changed into hex colours.
+
+---
+
+# R Interface
+
+Here I describe the R functions available to you. However, these are deliberately limited in their capability, as this library is not intended to be used directly at the R-level. Instead, it's designed to be integrated into packages at the C++ level, where you will call the C++ functions directly.  
+
+---
+
+There are 4 R functions you can call for creating POINTs, LINEs, POLYGONs or origin-destination shapes. Each of these functions returns a list with two elements, `data` and `legend`.
+
+- data : the R `data.frame` or `sf` object converted to pseudo-GeoJSON
+- legend : a summary of the values and colours suitable for a legend on the map
+
+## Pseudo-GeoJSON
+
+The `data` is returned as **pseudo-GeoJSON**. Some plotting libraries can use more than one geometry, such as [`mapdeck::add_arc()`](https://github.com/SymbolixAU/mapdeck/blob/master/R/map_layer_arc.R), which uses an origin and destination. So spatialwidget needs to handle multiple geometries.
+
+Typical GeoJSON will take the form
+
+```js
+[{"type":"Feature", "properties":{},"geometry":{"type":"Point","coordinates":[0,0]}}]
+```
+
+Whereas I’ve nested the geometries one-level deeper, so the pseudo-GeoJSON i’m using takes the form
+
+```js
+[{"type":"Feature", "properties":{},"geometry":{"myGeometry":{"type":"Point","coordinates":[0,0]}}}]
+```
+
+Where the `myGeometry` object is defined on a per-application bases. You are free to call this whatever you want inside your library, and have as many as you want. 
+
+## Examples
+
+### Points
+
+```{r}
+l <- widget_point(
+  widget_capitals[1:2, ]
+  , fill_colour = "country"
+  , legend = T
+  )
+
+substr( l$data, 1, 200 )
+```
+
+### Lines
+
+```{r}
+l <- widget_line(
+  widget_roads[1:2, ]
+  , stroke_colour = "ROAD_NAME"
+  , legend = T
+  )
+
+substr( l$data, 1, 200 )
+```
+
+### Polygon
+
+```{r}
+l <- widget_polygon(
+  widget_melbourne[1:2, ]
+  , fill_colour = "AREASQKM16"
+  , legend = F
+  )
+
+substr( l$data, 1, 200 )
+```
+
+
+---
+
+# C++ API
+
+The `spatialwidget::api::` namespace has 5 functions for converting your data into pseudo-geojson. Here are their definitions, the input data they expect and the type of output they produce. 
+
+### many-`sfc`-column `sf` to pseudo-geojson
+
+```c++
+/*
+ * sf object with one or many sfc columns
+ *
+ * expects `data` to be an sf object, where the geometry_columns is a string vector
+ * containing the sfc colunm names (of sf) you want to use as the geometry objects
+ * inside the GeoJSON
+ */
+inline Rcpp::List create_geojson(
+    Rcpp::DataFrame& data,
+    Rcpp::List& params,
+    Rcpp::List& lst_defaults,
+    std::unordered_map< std::string, std::string >& layer_colours,
+    Rcpp::StringVector& layer_legend,
+    int& data_rows,
+    Rcpp::StringVector& parameter_exclusions,
+    Rcpp::StringVector& geometry_columns,
+    bool jsonify_legend
+  )
+```
+
+**in** - `sf` object with one or many `sfc` columns
+
+**out** - geometries left as-is, returned in pseudo-geojson
+
+---
+
+### single-`sfc`-column `sf` to standard geojson
+
+```c++
+/*
+ * expects `data` to be an sf object, where the geometry_column is a string vector
+ * of the sfc column names (of sf) you want to use as the geometry object inside the GeoJSON.
+ *
+ */
+inline Rcpp::List create_geojson(
+    Rcpp::DataFrame& data,
+    Rcpp::List& params,
+    Rcpp::List& lst_defaults,
+    std::unordered_map< std::string, std::string >& layer_colours,
+    Rcpp::StringVector& layer_legend,
+    int& data_rows,
+    Rcpp::StringVector& parameter_exclusions,
+    std::string& geometry_column,              // single geometry column from sf object
+    bool jsonify_legend
+)
+```
+
+**in** - `sf` object with one `sfc` column
+
+**out** - returns standard geojson
+
+---
+
+### `data.frame` with lon & lat columns to pseudo-geojson
+
+
+```c++
+/*
+ * expects `data` to be data.frame withn lon & lat columns. The geometry_columns
+ * argument is a named list, list(myGeometry = c("lon","lat")), where 'myGeometry'
+ * will be returned inside the 'geometry' object of the GeoJSON
+ */
+inline Rcpp::List create_geojson(
+    Rcpp::DataFrame& data,
+    Rcpp::List& params,
+    Rcpp::List& lst_defaults,
+    std::unordered_map< std::string, std::string >& layer_colours,
+    Rcpp::StringVector& layer_legend,
+    int& data_rows,
+    Rcpp::StringVector& parameter_exclusions,
+    Rcpp::List& geometry_columns,
+    bool jsonify_legend
+)
+```
+
+**in** - `data.frame` with lon & lat columns (each row is a POINT)
+
+**out** - pseudo-geojson
+
+---
+
+### `data.frame` with lon, lat & elevation columns to pseudo-geojson
+
+```c++
+/*
+ * expects `data` to be data.frame withn lon & lat & elev columns. The 'bool elevation'
+ * argument must be set to 'true', and the 'geometry_columns' should contain an 'elevation'
+ * value - 'geometry_column <- list( geometry = c("lon","lat","elevation") )'
+ */
+inline Rcpp::List create_geojson(
+    Rcpp::DataFrame& data,
+    Rcpp::List& params,
+    Rcpp::List& lst_defaults,
+    std::unordered_map< std::string, std::string >& layer_colours,
+    Rcpp::StringVector& layer_legend,
+    int& data_rows,
+    Rcpp::StringVector& parameter_exclusions,
+    Rcpp::List& geometry_columns,
+    bool jsonify_legend,
+    bool elevation
+)
+```
+
+**in** - `data.frame` with lon, lat and elevation columns (each row is a POINT)
+
+**out** - pseudo-gejson
+
+---
+
+## C++ arguments
+
+This set of arguments are commong to all the C++ functions
+
+### Rcpp::DataFrame data
+
+This will either be a data.frame with lon & lat columns, or an `sf` object.
+
+### Rcpp::List params
+
+A named list. The names are the arguments of the calling R function which will be supplied to the javascript widget. These are typically columns of `data`, or a single value that will be applied to all rows of `data`.
+
+For example, an R function will look like
+
+```r
+add_layer <- function(
+  data, 
+  fill_colour = NULL,
+  stroke_colour = NULL,
+  another_argument = TRUE
+)
+```
+
+And the list passed to c++ will be
+
+```r
+l <- list()
+l[["fill_colour"]] <- force( fill_colour )
+l[["stroke_colour"]] <- force( stroke_colour ) 
+```
+
+In this case, the `another_argument` is not passed to the javascript widget as part of the data, so we don't include it in our list.
+
+The javascript function inside a `htmlwidget` will then access the `stroke_colour` and `fill_colour` properties from the data. 
+
+This example code is taken from the javascript binding of `mapdeck::add_polygon()` to show you how I use it.
+
+```js
+const polygonLayer = new PolygonLayer({
+    getLineColor: d => hexToRGBA2( d.properties.stroke_colour ),
+    getFillColor: d => hexToRGBA2( d.properties.fill_colour ),
+  });
+```
+
+### Rcpp::List lst_defaults
+
+Either a named list, or an empty list.
+
+You can use this list to supply default values to the widget.
+
+```c++
+
+Rcpp::List scatterplot_defaults(int n) {
+	return Rcpp::List::create(
+		_["fill_colour"] = mapdeck::defaults::default_fill_colour(n)
+	);
+}
+
+// use Either a named list, 
+Rcpp::List lst_defaults = scatterplot_defaults( data_rows );  // initialise with defaults
+
+// or an empty object
+Rcpp::List lst_defaults;
+
+```
+
+### std::unordered_map< std::string, std::string > layer_colours
+
+A c++ `unorderd_map` specifying colours and their associated opacity. 
+
+```c++
+std::unordered_map< std::string, std::string > polygon_colours = {
+  	{ "fill_colour", "fill_opacity" },
+  	{ "stroke_colour", "stroke_opacity"}
+  };
+```
+
+These values will match the colour parameters used in the `params` list
+
+```r
+l <- list()
+l[["fill_colour"]] <- force( fill_colour )
+l[["stroke_colour"]] <- force( stroke_colour ) 
+```
+
+But you don't have to supply the opacity, it will be set to 'opaque' by default. 
+
+
+### Rcpp::StringVector layer_legend
+
+A vector of the colour values you want to use in a lenged. 
+
+```c++
+const Rcpp::StringVector polygon_legend = Rcpp::StringVector::create(
+  	"fill_colour", "stroke_colour"
+  );
+```
+
+In this example, both `fill_colour` and `stroke_colour` will be returned in the legend data. 
+
+### int data_rows
+
+The number of rows of `data`. 
+
+### Rcpp::StringVector parameter_exclusions
+
+A vector describing the elements of `params` which will be excluded from the final JSON data. 
+
+```c++
+Rcpp::StringVector parameter_exclusions = Rcpp::StringVector::create("palette","legend","na_colour");
+```
+
+
+
+### bool jsonify_legend
+
+A logical value indicating if you want the legend data returned as JSON (TRUE) or a a list (FALSE)
+
+
+## Function-dependent arguments
+
+---
+
+### geometry_columns
+
+Either an `Rcpp::List` or `Rcpp::StringVector`. 
+
+The `List` is used for `data.frame`s with lon & lat columns. 
+
+```r
+df <- data.frame(lon = 0, lat = 0)
+geometry_column <- list( geometry = c("lon","lat") )
+```
+
+The `StringVector` is used for `sf` objects to specify the geometry columns.
+
+```r
+sf <- sf::st_sf( origin = sf::st_sfc( sf::st_point(c(0,0 ) ) ) )
+geometry_column <- c( "origin" )
+```
+
+### bool elevation
+
+The `elevation` argument is used when the `data.frame` has a column of elevation data. When using the elevation you also need to supply this column in the `geometry_column` list. 
+
+```r
+geometry_column <- list( geometry = c("lon","lat","elevation") )
+```
+
+## Example
+
+Here's an example implementation of the R, cpp and hpp files required to convert R data to pseudo-GeoJSON
+
+**widgetpoint.R**
+
+```r
+#' Widget Point
+#'
+#' Converts an `sf` object with POINT geometriers into JSON for plotting in an htmlwidget
+#'
+#' @param data `sf` object with POINT geometries
+#' @param fill_colour string specifying column of `sf` to use for the fill colour
+#' @param legend logical indicating if legend data will be returned
+#' @param json_legend logical indicating if the lgend will be returned as JSON or a list
+#'
+#' @examples
+#'
+#' l <- widget_point( data = capitals, fill_colour = "country", legend = FALSE )
+#'
+#' @export
+widget_point <- function( data,
+                          fill_colour,
+                          legend = TRUE,
+                          json_legend = TRUE ) {
+
+  l <- list()
+  l[["fill_colour"]] <- force( fill_colour )
+  l[["legend"]] <- legend
+
+  js_data <- rcpp_widget_point( data, l, c("geometry"), json_legend )
+
+  return( js_data )
+}
+```
+
+**widgetpoint.cpp**
+
+```c++
+#include <Rcpp.h>
+#include "spatialwidget/spatialwidget.hpp"
+#include "spatialwidget/spatialwidget_defaults.hpp"
+#include "spatialwidget/layers/widgetpoint.hpp"
+
+// [[Rcpp::export]]
+Rcpp::List rcpp_widget_point(
+    Rcpp::DataFrame data,
+    Rcpp::List params,
+    Rcpp::StringVector geometry_columns,
+    bool jsonify_legend ) {
+
+  int data_rows = data.nrows();
+  Rcpp::List defaults = point_defaults( data_rows );
+
+  std::unordered_map< std::string, std::string > point_colours = spatialwidget::widgetpoint::point_colours;
+  Rcpp::StringVector point_legend = spatialwidget::widgetpoint::point_legend;
+  Rcpp::StringVector parameter_exclusions = Rcpp::StringVector::create("legend","legend_options","palette","na_colour");
+
+  return spatialwidget::api::create_geojson(
+    data,
+    params,
+    defaults,
+    point_colours,
+    point_legend,
+    data_rows,
+    parameter_exclusions,
+    geometry_columns,
+    jsonify_legend
+  );
+}
+```
+
+**/layers/widgetpoint.hpp**
+
+```c++
+#ifndef SPATIALWIDGET_WIDGETPOINT_H
+#define SPATIALWIDGET_WIDGETPOINT_H
+
+#include <Rcpp.h>
+namespace spatialwidget {
+namespace widgetpoint {
+
+// map between colour and opacity values
+  std::unordered_map< std::string, std::string > point_colours = {
+    { "fill_colour", "fill_opacity" }
+  };
+
+  // vector of possible legend components
+  Rcpp::StringVector point_legend = Rcpp::StringVector::create(
+    "fill_colour"
+  );
+
+} // namespace widgetpoint
+} // namespace spatialwidget
+
+#endif
+```
+
+## Atomising geojson
+
+As well as creating pseudo-GeoJSON, most of the functions also **atomise** the data. 
+
+When converting an `sf` object to GeoJSON it will typically create a FeatureCollection. 'Atomising' means it treats each row of the `sf` as it's own Feature, and stores each one in a separate JSON object inside a JSON array (i.e., without combining them into a Feature Collection).
+
+For example, we can create a GeoJSON FeatureCollection, convert it to `sf` and back again
+
+```{r}
+feat1 <- '{"type":"Feature","properties":{"id":1},"geometry":{"type":"Point","coordinates":[0,0]}}'
+feat2 <- '{"type":"Feature","properties":{"id":2},"geometry":{"type":"Point","coordinates":[1,1]}}'
+geojson <- paste0('[{"type":"FeatureCollection","features":[',feat1,',',feat2,']}]')
+sf <- geojsonsf::geojson_sf( geojson )
+sf
+```
+
+and going back the other way completes the round-trip and creates a FeatureCollection.
+
+```{r}
+geo <- geojsonsf::sf_geojson( sf )
+geo
+```
+
+If we set it to 'atomise' when converting to geojson, an array of `Features` is returned
+
+```{r}
+geojsonsf::sf_geojson( sf, atomise = TRUE )
+```
+
+
+This structure is useful for sending to an htmlwidget because each object in the array can be parsed independently, without having to worry about iterating or parsing the entire Featurecollection.
+
+Therefore, most of the GeoJSON functions inside spatialwidget will return the 'atomised' form. 
+
+# GeoJSON C++ API
+
+You can by-pass the `spatialwidget::api::` namepsace and call the `spatialwidget::geojson::` api directly. However, doing so will only convert your data to pseudo-geojson, it won't create colours or legends. 
+
+Here are the function definitions, the input data they expect and the type of output they produce. 
+
+---
+
+### multi-`sfc`-column `sf` to atomised pseudo-geojson
+
+
+```
+  /*
+  * a variation on the atomise function to return an array of atomised features
+  */
+  inline Rcpp::StringVector to_geojson_atomise(
+      Rcpp::DataFrame& sf,
+      Rcpp::StringVector& geometries ) {
+```
+
+```{r}
+geojson <- spatialwidget:::rcpp_geojson_sf(sf = widget_arcs, geometries = c("origin","destination"))
+substr( geojson, 1, 500)
+```
+
+**in** - `sf` object with one or more `sfc` columns
+
+**out** - atomised pseudo-geojson
+
+---
+
+### single-`sfc`-column `sf` to standard geojson
+
+```
+inline Rcpp::StringVector to_geojson( Rcpp::DataFrame& sf, std::string geom_column )
+```
+
+```{r}
+geojson <- spatialwidget:::rcpp_geojson( sf = widget_capitals, geometry = "geometry")
+substr( geojson, 1, 300)
+```
+
+
+**in** - `sf` object with one `sfc` column
+
+**out** - standard GeoJSON
+
+---
+
+### `data.frame` with lon & lat columsn to atomised pseudo-geojson
+
+
+```
+  inline Rcpp::StringVector to_geojson_atomise(
+      Rcpp::DataFrame& df,
+      Rcpp::List& geometries ) // i.e., list(origin = c("start_lon", "start_lat", destination = c("end_lon", "end_lat")))
+  {
+```
+
+```{r}
+df <- sfheaders::sf_to_df( widget_capitals )
+
+geojson <- spatialwidget:::rcpp_geojson_df(df = df, list(geometry = c("x","y")) )
+substr( geojson, 1, 500 )
+```
+
+**in** - `data.frame` with lon & lat columns
+
+**out** - pseudo-GeoJSON atomised
+
+---
+
+### `data.frame` with lon, lat and elevation columns to atomised pseudo-geojson
+
+
+```
+  // list of geometries is designed for lon & lat columns of data
+  inline Rcpp::StringVector to_geojson_z_atomise(
+      Rcpp::DataFrame& df,
+      Rcpp::List& geometries ) // i.e., list(origin = c("start_lon", "start_lat", destination = c("end_lon", "end_lat")))
+  {
+```
+
+```{r}
+df$z <- sample(1:500, size = nrow(df), replace = TRUE )
+geojson <- spatialwidget:::rcpp_geojson_dfz( df, geometries = list(geometry = c("x","y","z") ) )
+substr( geojson, 1, 500 )
+
+```
+
+**in** - `data.frame` with lon, lat and elevation columns
+
+**out** - pseudo-GeoJSON atomised
+

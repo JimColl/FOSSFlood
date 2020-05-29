@@ -1,0 +1,105 @@
+---
+title: "Introduction to geojsonlint"
+author: "Scott Chamberlain and Andy Teucher"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to geojsonlint}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  warning = FALSE, 
+  message = FALSE
+)
+```
+
+Tools for linting 'GeoJSON'.
+
+GeoJSON linters available in `geojsonlint`
+
+* `geojson_hint()` - [GeoJSON hint JS library](https://www.npmjs.com/package/geojsonhint)
+* `geojson_validate()` - [is-my-json-valid JS library](https://www.npmjs.com/package/is-my-json-valid) using a GeoJSON
+schema from [https://github.com/SchemaStore/schemastore](https://github.com/SchemaStore/schemastore)
+
+## Install
+
+Stable version from CRAN
+
+```{r eval=FALSE}
+install.packages("geojsonlint")
+```
+
+Development version from GitHub
+
+```{r eval=FALSE}
+remotes::install_github("ropensci/geojsonlint")
+```
+
+```{r}
+library("geojsonlint")
+```
+
+## Good GeoJSON
+
+geojsonhint JS library
+
+```{r}
+geojson_hint(x = '{"type": "Point", "coordinates": [-100, 80]}')
+```
+
+is-my-json-valid JS library
+
+```{r}
+geojson_validate(x = '{"type": "Point", "coordinates": [-100, 80]}')
+```
+
+## Bad GeoJSON
+
+geojsonhint JS library
+
+```{r}
+geojson_hint('{"type": "FooBar"}')
+```
+
+is-my-json-valid JS library
+
+```{r}
+geojson_validate('{ "type": "FeatureCollection" }')
+```
+
+## Bad GeoJSON - with reason for failure
+
+geojsonhint JS library
+
+```{r}
+geojson_hint('{"type": "FooBar"}', inform = TRUE)
+```
+
+is-my-json-valid JS library
+
+```{r}
+geojson_validate('{ "type": "FeatureCollection" }', inform = TRUE)
+```
+
+## Bad GeoJSON - stop on validation failure
+
+geojsonhint JS library
+
+```{r eval=FALSE}
+geojson_hint('{"type": "FooBar"}', error = TRUE)
+#> Error: Line 1
+#>    - The type FooBar is unknown
+```
+
+is-my-json-valid JS library
+
+```{r eval=FALSE}
+geojson_validate('{ "type": "FeatureCollection" }', error = TRUE)
+#> Error: 1 error validating json:
+#> 	- data: no (or more than one) schemas match
+```

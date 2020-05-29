@@ -1,0 +1,9 @@
+widget_arcs             Origin Destination points between Sydney,
+                        Australia and other capitals cities
+widget_capitals         Capital cities for each country
+widget_line             Widget Line
+widget_melbourne        Melbourne
+widget_od               Widget OD
+widget_point            Widget Point
+widget_polygon          Widget Polygon
+widget_roads            Roads in central Melbourne

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert clip unit ot geometry</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getClip {AOI}"><tr><td>getClip {AOI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Convert clip unit ot geometry</h2>
+
+<h3>Description</h3>
+
+<p><code>getClip</code> generates a Spatial object based on a point; bounding box dimisions; and their relation to the point.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getClip(x, km = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>location</code></td>
+<td>
+<p>Defined by a location or lat, long pair</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>define the height of the desired bounding box in miles</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>define the width of the desired bounding box in miles</p>
+</td></tr>
+<tr valign="top"><td><code>origin</code></td>
+<td>
+<p>define the position of the point with respect to the bounding box. Default is set to center. Options include </p>
+
+<ul>
+<li><p>&quot;center&quot;
+</p>
+</li>
+<li><p>&quot;lowerleft&quot;
+</p>
+</li>
+<li><p>&quot;lowerright&quot;
+</p>
+</li>
+<li><p>&quot;upperright&quot;
+</p>
+</li>
+<li><p>&quot;upperleft&quot;
+</p>
+</li></ul>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a <code>SpatialPolygons</code> object projected to <em>EPSG:4269</em>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>AOI</em> version 0.1.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

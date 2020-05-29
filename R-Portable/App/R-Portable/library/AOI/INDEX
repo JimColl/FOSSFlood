@@ -1,0 +1,15 @@
+AOI                     AOI Package
+aoi_buffer              Buffer AOI
+aoi_describe            Describe an AOI
+aoi_get                 Get Area of Interest (AOI) geometry
+aoi_inside              Is Inside
+aoi_map                 Generate Leafet map and tool set for AOI
+bbox_coords             Return bounding box coordinates of a spatial
+                        (sp/sf/raster) object
+bbox_get                Get Spatial Bounding Box
+geocode                 Geocoding
+geocodeOSM              geocodeOSM
+geocode_rev             Reverse Geocoding
+geocode_wiki            Geocoding Events
+list_states             Returns a data.frame of valid states with
+                        abbreviations and regions

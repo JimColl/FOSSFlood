@@ -1,0 +1,14 @@
+%>%                     re-export magrittr pipe operator
+align_rasters           Align Rasters of possibly differnt
+                        diminsions/stats
+crop_project            Crop and Reproject tiff using GDAL
+download_ut             Download HAND, RC, and Cathmask rasters by HUC6
+downloader              Function to download data from URL to out
+                        directory using httr.
+findHUC6                Identify HUC6 Units within AOI
+getRawData              Download, process, and save HAND, catchmask and
+                        Rating Curve Data
+get_rc_table            Extract Rating Curve Table
+map_flood               Map flood extents from processed data
+merge_rasters           Merge Rasters
+nc_flow_mat             Build named flow matrix from CONUS netcdf file

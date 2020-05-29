@@ -1,0 +1,10 @@
+nomadsNC-package	nomadsNC
+%>%	pipe
+create_nomads_fst	create_nomads_fst
+create_nomads_nc	create_nomads_nc
+download_nomads	download_nomads
+error_checking	error_checking
+find_f	find_f
+get_nomads_filelist	get_nomads_filelist
+make_url	make_url
+nomadsNC	nomadsNC

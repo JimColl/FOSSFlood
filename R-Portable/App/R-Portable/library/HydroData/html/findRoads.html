@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find US Census Bureau TIGER Road Networks</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findRoads {HydroData}"><tr><td>findRoads {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find US Census Bureau TIGER Road Networks</h2>
+
+<h3>Description</h3>
+
+<p><code>findRoads</code> returns a <code>SpatialLinesDataFrame</code> of TIGER road networks cropped to an Area of Interest.
+This dataset is accessed through the US Census geo portal and contains the following attributes:
+</p>
+
+<ul>
+<li><p> 'LINEARID'   : <code>character</code>  Linear feature identifier
+</p>
+</li>
+<li><p> 'FULLNAME'   : <code>character</code>  Feature Name
+</p>
+</li>
+<li><p> 'RTTYP': <code>character</code>  Route Type Code
+</p>
+</li>
+<li><p> 'MTFCC'   : <code>character</code>  Road Classification
+</p>
+
+<ul>
+<li><p> S1100   Primary Roads
+</p>
+</li>
+<li><p> R1011   Railroad Feature (Main, Spur, or Yard)
+</p>
+</li>
+<li><p> R1051   Carline, Streetcar Track, Monorail, Other Mass Transit Rail)
+</p>
+</li>
+<li><p> R1052   Cog Rail Line, Incline Rail Line, Tram
+</p>
+</li>
+<li><p> S1100   Primary Road
+</p>
+</li>
+<li><p> S1200   Secondary Road
+</p>
+</li></ul>
+
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+findRoads(AOI = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and tiger
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+AOI  = getAOI(clip = list("UCSB", 10, 10)) %&gt;% findRoads()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

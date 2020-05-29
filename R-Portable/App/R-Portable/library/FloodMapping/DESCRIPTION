@@ -1,0 +1,32 @@
+Package: FloodMapping
+Title: Map Flood extents using HAND and the National Water Model
+Version: 0.0.0.9000
+Authors@R: person("Mike", "Johnson", role = c("aut", "cre"), email = "mike.johnson@geog.ucsb.edu")
+Maintainer: Mike Johnson <jmj00@ucdb.com>
+BugReports: https://github.com/mikejohnson51/FloodMapping/issues
+Description: This package aggregates the needed data to map flood extents using 
+    the Height Above Nearest Drainage (HAND) products and the National Water Model forecasts. Users 
+    can define their region of interest and monitor real-time flood extents or look a back     
+    to past events archived by the NWM.
+Encoding: UTF-8
+Depends: R(>= 3.3.0),
+Imports: dplyr, data.table, doParallel, fastmatch, fst, foreach,
+        gdalUtilities, httr, magrittr, parallel, raster, RNetCDF, sf,
+        stats
+License: MIT + file LICENSE
+LazyData: true
+RoxygenNote: 6.1.1
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: FloodMapping
+RemoteUsername: mikejohnson51
+RemoteRef: master
+RemoteSha: 15b17d95496772ca0bfb3363f591a9b68bbc3d5e
+GithubRepo: FloodMapping
+GithubUsername: mikejohnson51
+GithubRef: master
+GithubSHA1: 15b17d95496772ca0bfb3363f591a9b68bbc3d5e
+NeedsCompilation: no
+Packaged: 2020-05-24 22:25:12 UTC; Cornholio
+Author: Mike Johnson [aut, cre]
+Built: R 3.6.3; ; 2020-05-24 22:25:13 UTC; windows

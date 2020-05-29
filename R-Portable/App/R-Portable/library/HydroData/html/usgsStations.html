@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: USGS NWIS station information</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for usgsStations {HydroData}"><tr><td>usgsStations {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>USGS NWIS station information</h2>
+
+<h3>Description</h3>
+
+<p>Dataset containing information about USGS stations in the United States
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+usgsStations
+</pre>
+
+
+<h3>Format</h3>
+
+<p>a <code>dataframe</code> instance, 1 row per station with columns:
+</p>
+
+<ul>
+<li><p> 'OBJECTID':      A <code>character</code> Object id in the dataset
+</p>
+</li>
+<li><p> 'feature_id':    A <code>character</code> NHD COMID of reach
+</p>
+</li>
+<li><p> 'site_no':       A <code>character</code> USGS site number
+</p>
+</li>
+<li><p> 'site_name':     A <code>character</code> USGS site name
+</p>
+</li>
+<li><p> 'da_sqkm':       A <code>numeric</code>   Area that drains to the location in square kilometers
+</p>
+</li>
+<li><p> 'lat_reachCent': A <code>numeric</code>   Latitude of NHD reach center
+</p>
+</li>
+<li><p> 'lon_reachCent': A <code>numeric</code>   Longitude of NHD reach center
+</p>
+</li></ul>
+
+
+<h3>Source</h3>
+
+<p>Compiled from USGS and NHD datasets
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ usgs = HydroData::usgsStations
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

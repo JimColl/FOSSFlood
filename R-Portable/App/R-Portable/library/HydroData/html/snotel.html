@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Snotel Stations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for snotel {HydroData}"><tr><td>snotel {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Snotel Stations</h2>
+
+<h3>Description</h3>
+
+<p><code>snotel</code>NRCS SNOTEL station metadata
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+snotel
+</pre>
+
+
+<h3>Format</h3>
+
+<p>a <code>dataframe</code> instance, 1 row per station with columns:
+</p>
+
+<ul>
+<li><p> 'NETWORK':    A <code>integer</code> Network of interest
+</p>
+</li>
+<li><p> 'STATE':      A <code>integer</code>  State abbriviation
+</p>
+</li>
+<li><p> 'NAME':       A <code>character</code> Site name
+</p>
+</li>
+<li><p> 'START.DATE': A <code>integer</code>    Day of first measurement
+</p>
+</li>
+<li><p> 'LAT':        A <code>integer</code> Station Latitude
+</p>
+</li>
+<li><p> 'LONG':       A <code>character</code>  Station Longitude
+</p>
+</li>
+<li><p> 'ELEV':       A <code>character</code> Station Elevation
+</p>
+</li>
+<li><p> 'COUNTY':     A <code>character</code>  County
+</p>
+</li>
+<li><p> 'HUC12.NAME': A <code>character</code>  HUC 12 Name
+</p>
+</li>
+<li><p> 'HUC12.ID':   A <code>character</code>  HUC 12 code
+</p>
+</li></ul>
+
+
+<h3>Source</h3>
+
+<p><a href="https://wcc.sc.egov.usda.gov/nwcc/yearcount?network=sntl&amp;state=&amp;counttype=statelist">SNOTEL INFORMATION</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ tiles = HydroData::snotelStations.rda
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

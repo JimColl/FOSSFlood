@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find National Hydrography River Networks</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findNHD {HydroData}"><tr><td>findNHD {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find National Hydrography River Networks</h2>
+
+<h3>Description</h3>
+
+<p><code>findNHD</code> returns a <code>SpatialLinesDataframe</code> of all NHDFlowlines reaches within an AOI.
+Data comes from the USGS CIDA server and contain 90 attributes, perhaps most notably:
+</p>
+
+<ul>
+<li><p> 'comid'   : <code>integer</code>  Integer value that uniquely identifies the occurrence of each feature in the NHD
+</p>
+</li>
+<li><p> 'reachcode'   : <code>character</code>  Unique identifier for a ‘reach’. The first eight numbers are the WBD_HUC8
+</p>
+</li>
+<li><p> 'fdate': <code>POSITct</code>  Date of last feature modification
+</p>
+</li>
+<li><p> 'gnis_id'   : <code>character</code>    Unique identifier assigned by GNIS
+</p>
+</li>
+<li><p> 'gnis_name'   : <code>character</code>    Proper name, term, or expression by which a particular geographic entity is known
+</p>
+</li>
+<li><p> 'lengthkm'    : <code>numeric</code>    Length of linear feature based on Albers Equal Area
+</p>
+</li>
+<li><p> 'areasqkm'    : <code>numeric</code>    Area of areal feature based on Albers Equal Area,
+</p>
+</li>
+<li><p> 'flowdir'   : <code>character</code>     Direction of flow relative to coordinate order.
+</p>
+</li>
+<li><p> 'wbareacomi'   : <code>integer</code>  The COMID of the waterbody through which the flowline flows.
+</p>
+</li>
+<li><p> 'ftype': <code>character</code>  unique identifier of a feature type
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+findNHD(AOI = NULL, comid = NULL, nwis = NULL, streamorder = NULL,
+  crop = T)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+<tr valign="top"><td><code>ids</code></td>
+<td>
+<p>If TRUE,  a vector of NHD COMIDs is added to retuned list (default = <code>FALSE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and nhd
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+nhd  = getAOI(clip = list("Tuscaloosa, AL", 10, 10)) %&gt;% findNHD()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

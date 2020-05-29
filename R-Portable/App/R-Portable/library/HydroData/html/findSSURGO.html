@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find SSURGO Maps and Mapunit Aggregated Attributes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findSSURGO {HydroData}"><tr><td>findSSURGO {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find SSURGO Maps and Mapunit Aggregated Attributes</h2>
+
+<h3>Description</h3>
+
+<p>SSURGO is a geospatial database of soils produced by the Natural Resources Conservation Service (NRCS). <code>findSSURGO</code>
+returns a <code>SpatialPolygonsDataFrame</code> of SSURGO map units and the Mapunit aggregated attributes (muaggatt table) associated with each MUKEY. In total 43 attributes are returned,
+all of which can be found in the [SSURGO documentation](https://sdmdataaccess.sc.egov.usda.gov/documents/TableColumnDescriptionsReport.pdf). The MUAGGATT values cover a wide range of
+soil realted questions however if a user is interested in the full range of tabular data associated with the SSURGO map units we suggest checking out the FedData package.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+findSSURGO(AOI)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AOI</code></td>
+<td>
+<p>A Spatial* or simple features geometry, can be piped from <a href="../../AOI/html/getAOI.html">getAOI</a></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list() of minimum length 2: AOI and ssurgo
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+AOI  = getAOI(clip = list("UCSB", 10, 10)) %&gt;% findSSURGO()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

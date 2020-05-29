@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get modified version of config file for reading .pbf files...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for make_additional_attributes {geofabrik}"><tr><td>make_additional_attributes {geofabrik}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get modified version of config file for reading .pbf files with GDAL/sf</h2>
+
+<h3>Description</h3>
+
+<p>This function provides a user friendly interface to the [GDAL OSM driver](https://gdal.org/drivers/vector/osm.html)
+via 'sf'. See https://github.com/r-spatial/sf/issues/1157 for details.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+make_additional_attributes(layer)
+
+make_ini_attributes(
+  attributes,
+  layer,
+  defaults = get_ini_layer_defaults(layer),
+  append = TRUE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>layer</code></td>
+<td>
+<p>Which layer to read in? One of
+&quot;points&quot;           &quot;lines&quot;            &quot;multipolygons&quot;    &quot;multilinestrings&quot; or &quot;other_relations&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>attributes</code></td>
+<td>
+<p>Vector of character strings naming attributes to import</p>
+</td></tr>
+<tr valign="top"><td><code>defaults</code></td>
+<td>
+<p>The default attributes</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+<p>Should the columns named in 'attributes' be appended to the default columns?
+'TRUE' by default.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Default additional attributes were taken from https://taginfo.openstreetmap.org/keys
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector representing an ini file.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+make_ini_attributes("oneway", "lines")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>geofabrik</em> version 0.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

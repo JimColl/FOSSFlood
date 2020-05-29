@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get Area of Interest (AOI) geometry</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for aoi_get {AOI}"><tr><td>aoi_get {AOI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get Area of Interest (AOI) geometry</h2>
+
+<h3>Description</h3>
+
+<p>Generate a spatial geometry from:
+</p>
+
+<ol>
+<li><p>  Country name, 2-digit or 3-digit ISO abbriviation(s)
+</p>
+</li>
+<li><p>  Country Region (Asia, Africa, Europe, South America, Antarctica, Seven seas (open ocean), Oceania (Australia), North America,
+</p>
+</li>
+<li><p>  US state name(s) or abbreviation
+</p>
+</li>
+<li><p>  US region (Northeast, South, North Central, West)
+</p>
+</li>
+<li><p>  US state, county pair(s)
+</p>
+</li>
+<li><p>  a spatial, sf or raster object
+</p>
+</li>
+<li><p>  a clip unit (see details)
+</p>
+</li></ol>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+aoi_get(x = NULL, country = NULL, state = NULL, county = NULL,
+  km = FALSE, union = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p><code>spatial</code>. <code>raster</code>, <code>sf</code> or a <code>list</code> object (see details for list parameters)</p>
+</td></tr>
+<tr valign="top"><td><code>country</code></td>
+<td>
+<p><code>character</code>. Full name, ISO 3166-1 2 or 3 digit code. Not case senstive. Data comes from Natural Earth and CIA Worldfact book.</p>
+</td></tr>
+<tr valign="top"><td><code>state</code></td>
+<td>
+<p><code>character</code>. Full name or two character abbriviation. Not case senstive. If <code>state = 'conus'</code>, the lower 48 states will be returned. If <code>state = 'all'</code>, all states will be returned.</p>
+</td></tr>
+<tr valign="top"><td><code>county</code></td>
+<td>
+<p><code>character</code>. County name(s). Requires <code>state</code> input. Not case senstive. If 'all' then all counties in a state are returned</p>
+</td></tr>
+<tr valign="top"><td><code>km</code></td>
+<td>
+<p><code>logical</code>. If <code>TRUE</code> distances are in kilometers, default is <code>FALSE</code> with distances in miles</p>
+</td></tr>
+<tr valign="top"><td><code>union</code></td>
+<td>
+<p><code>logical</code>. If TRUE objects are unioned into a single object</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A <code>clip</code> unit can be described by just a place name (eg 'UCSB'). In doing so the associated boundaries determined by <code><a href="geoCode.html">geocode</a></code> will be returned.
+To have greater control over the clip unit it can be defined as a list with a minimum of 3 inputs:
+</p>
+
+<ol>
+<li><p>  A point: </p>
+
+<ul>
+<li><p>  'place name' (<code>character</code>) ex: &quot;UCSB&quot; - or -
+</p>
+</li>
+<li><p> 'lat/lon' pair: ex: &quot;-36, -120&quot;
+</p>
+</li></ul>
+
+</li>
+<li><p>  A bounding box height (<code>numeric</code>) </p>
+
+<ul>
+<li><p>in miles ex: 10
+</p>
+</li></ul>
+
+</li>
+<li><p> A bounding box width (<code>numeric</code>)</p>
+
+<ul>
+<li><p>in miles ex: 10
+</p>
+</li></ul>
+
+</li></ol>
+
+<p>The bounding box is always drawn in relation to the point. By default the point is treated
+as the center of the box. To define the realtive location of the point to the bounding box,
+a fourth input can be used:
+</p>
+
+<ol>
+<li><p> Origin </p>
+
+<ul>
+<li><p> 'center' (default)
+</p>
+</li>
+<li><p> 'upperleft'
+</p>
+</li>
+<li><p> 'upperright'
+</p>
+</li>
+<li><p> 'lowerleft'
+</p>
+</li>
+<li><p> 'lowerright'
+</p>
+</li></ul>
+
+</li></ol>
+
+<p>In total, 1 to 5 elements can be used to define <code>clip</code> element and <strong>ORDER MATTERS</strong> (point, height, width, origin).
+Acceptable variations include:
+</p>
+
+<ul>
+<li><p> 1 member: (1) place name </p>
+
+<ul>
+<li> <p><em>&quot;UCSB&quot;</em></p>
+</li></ul>
+
+</li>
+<li><p> 1 member: (1) lat/lon pair </p>
+
+<ul>
+<li> <p><em>c(36, -119)</em></p>
+</li></ul>
+
+</li>
+<li><p> 3 members: (1) location name, (2) height, (3) width </p>
+
+<ul>
+<li> <p><em>list(&quot;UCSB&quot;, 10, 10) </em></p>
+</li></ul>
+
+</li>
+<li><p> 4 members: (1) lat, (2) lon, (3) height, (4) width</p>
+
+<ul>
+<li> <p><em>list(36, -120, 10, 10) </em></p>
+</li></ul>
+
+</li>
+<li><p> 4 members: (1) place name, (2) height, (3) width, (4) origin</p>
+
+<ul>
+<li> <p><em>list(&quot;UCSB&quot;, 10, 10, &quot;lowerright) </em></p>
+</li></ul>
+
+</li>
+<li><p> 5 members: (1) lat, (2) lon, (3) height, (4) width, (5) origin</p>
+
+<ul>
+<li> <p><em>list(36,-120, 10, 10, &quot;upperright) </em></p>
+</li></ul>
+
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p>a sf geometry projected to <em>EPSG:4269</em>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+#Get AOI for a country
+    aoi_get(country = "Brazil")
+
+# Get AOI for a location
+    aoi_get("Sacramento")
+
+# Get AOI defined by a state(s)
+    aoi_get(state = 'CA')
+    aoi_get(state = c('CA', 'nevada'))
+
+# Get AOI defined by all states, or the lower 48
+    aoi_get(state = 'all')
+    aoi_get(state = 'conus')
+
+# Get AOI defined by state &amp; county pair(s)
+    aoi_get(state = 'California', county = 'Santa Barbara')
+    aoi_get(state = 'CA', county = c('Santa Barbara', 'ventura'))
+
+# Get AOI defined by state &amp; county pair(s)
+    aoi_get(state = 'California', county = 'Santa Barbara')
+    aoi_get(state = 'CA', county = c('Santa Barbara', 'ventura'))
+
+# Get AOI defined by state &amp; all counties
+    aoi_get(state = 'California', county = 'all')
+
+# Get AOI defined by external spatial file:
+    aoi_get(sf::read_sf('./la_metro.shp'))
+    aoi_get(raster('./AOI.tif'))
+
+# Get AOI defined by 10 mile bounding box using lat/lon
+    aoi_get(clip = c(35, -119, 10, 10))
+
+# Get AOI defined by 10 mile2 bounding box using the 'KMART near UCSB' as lower left corner
+    aoi_get(clip = list('KMART near UCSB', 10, 10, 'lowerleft'))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>AOI</em> version 0.1.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

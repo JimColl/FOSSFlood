@@ -1,0 +1,21 @@
+USAboundaries           USAboundaries: Historical and Contemporary
+                        Boundaries of the United States of America
+install_data_package    Install the 'USAboundariesData' package after
+                        checking with the user
+state_codes             State codes and abbreviations for U.S. states
+                        and territories
+state_plane             Projections from the State Plane Coordinate
+                        System
+state_proj              Data for projections from the State Plane
+                        Coordinate System
+states_contemporary_lores
+                        U.S. state boundaries
+us_boundaries           Get historical or contemporary boundaries of
+                        the United States
+us_cities               City locations and populations (historical and
+                        contemporary)
+us_congressional        Congressional district boundaries
+                        (contemporary)
+us_counties             County boundaries (contemporary and historical)
+us_states               State boundaries (contemporary and historical)
+us_zipcodes             Zip Code Tabulation Areas (contemporary)

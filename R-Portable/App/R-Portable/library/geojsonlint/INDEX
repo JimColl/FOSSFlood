@@ -1,0 +1,15 @@
+as.location             Convert a path or URL to a location object.
+canada_cities           This is the same data set from the maps
+                        library, named differently
+geojson_hint            Validate GeoJSON using geojsonhint Javascript
+                        library
+geojson_lint            Validate GeoJSON using geojsonlint.com web
+                        service
+geojson_validate        Validate GeoJSON using is-my-json-valid
+                        Javascript library
+geojsonlint-package     *GeoJSON Linting*
+gj_write                Write inputs to a geojson file
+states                  This is the same data set from the ggplot2
+                        library
+us_cities               This is the same data set from the maps
+                        library, named differently

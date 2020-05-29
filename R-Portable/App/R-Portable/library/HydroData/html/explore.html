@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Explore Spatial HydroData Objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for explore {HydroData}"><tr><td>explore {HydroData}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Explore Spatial HydroData Objects</h2>
+
+<h3>Description</h3>
+
+<p><code>explore</code> can be used to explore spatial HydroData objects obtained from
+Namely:
+findGHCN
+findNHD
+findReservoir
+findtiger
+findSnotel
+findUSGS
+findWaterbodies
+findWS
+findap
+getCLD
+getKoppen
+getNED
+getNLCD
+getWaterUse
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+explore(input = NULL, save = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>input</code></td>
+<td>
+<p>a single, or list, of HydroData objects</p>
+</td></tr>
+<tr valign="top"><td><code>save</code></td>
+<td>
+<p>(logical) should the leaflet HTML be saved to disk?</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>leaflet map object
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Mike Johnson
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Find USGS station near UCSB
+
+ucsb.nwis = findUSGS(clip_unit = list("UCSB", 10, 10))
+explore(ucsb.nwis)
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>HydroData</em> version 0.0.7 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,31 @@
+check_data_exist        check whether the requested data exist on
+                        Natural Earth
+check_rnaturalearthdata
+                        Check whether to install rnaturalearthdata and
+                        install if necessary
+check_rnaturalearthhires
+                        Check whether to install rnaturalearthhires and
+                        install if necessary
+check_scale             check that this scale is present in Natural
+                        Earth
+countries               world country polygons from Natural Earth
+get_data                Get data from within the package
+install_rnaturalearthdata
+                        Install the naturalearthdata package after
+                        checking with the user
+install_rnaturalearthhires
+                        Install the naturalearthhires package after
+                        checking with the user
+ne_as_sf                coerce return object to sf if option set
+ne_coastline            Get natural earth world coastline
+ne_countries            Get natural earth world country polygons
+ne_download             download data from Natural Earth and
+                        (optionally) read into R
+ne_file_name            return a natural earth filename based on
+                        arguments
+ne_load                 load a Natural Earth vector that has already
+                        been downloaded to R using 'ne_download'
+ne_states               Get natural earth world state (admin level 1)
+                        polygons
+rnaturalearth           rnaturalearth : world map data from Natural
+                        Earth
