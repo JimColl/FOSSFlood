@@ -39,21 +39,21 @@ user.output.hardclip <- TRUE 										# If TRUE, Hard clip data to aoi shape, d
 user.output.archive <- FALSE  										# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
 
 # -- Dev Comment/uncomment with ctrl-shift-c
-user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
-user.aoi.string <- "03216"
-user.aoi.source <- "zctas"
-user.address.source <- "OpenAddresses"
-user.address.file <- ""
-user.road.source <- "TIGER Lines 2018"
-user.road.file <- ""
-user.forecast.source <- "NWM_SR_C"
-user.forecast.timesteps <- as.numeric("6")
-user.forecast.file <- ""
-user.forecast.members <- as.list(1) 
-user.output.choice <- "BVOSMOTM" 
-user.output.grid <- "Square" 
-user.output.hardclip <- TRUE 
-user.output.archive <- FALSE
+#user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
+#user.aoi.string <- "03216"
+#user.aoi.source <- "zctas"
+#user.address.source <- "OpenAddresses"
+#user.address.file <- ""
+#user.road.source <- "TIGER Lines 2018"
+#user.road.file <- ""
+#user.forecast.source <- "NWM_SR_C"
+#user.forecast.timesteps <- as.numeric("6")
+#user.forecast.file <- ""
+#user.forecast.members <- as.list(1) 
+#user.output.choice <- "BVOSMOTM" 
+#user.output.grid <- "Square" 
+#user.output.hardclip <- TRUE 
+#user.output.archive <- FALSE
 
 print(paste("-- Welcome to FOSSFlood - Running FOSSFlood in", basedir)) # This should look something like C:/Users/.../FOSSFlood-master
 print("-- Pre-Preloading constants --")
