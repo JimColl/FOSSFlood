@@ -23,18 +23,18 @@ basedir <- getwd()   # This should look something like C:/Users/.../FOSSFlood-ma
 # * and run the entire body of the code :)
 
 # -- USER Inputs -------------------------------------------------------------------------
-user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
-user.aoi.source <- "ZIP" 										# "zctas", "huc8", "string"
-user.address.source <- "OAADDS" 						# "OpenStreetMap_Addresses", "OpenAddresses", "User_Provided_Addresses"
-user.address.file <- "" 							# Empty "" or filepath to addresses
-user.road.source <- "TIGER"  							# "TIGER_Lines_2018", "OpenStreetMaps", "User_Provided_Roads"
-user.road.file <- "" 									# Empty or filepath to addresses
-user.forecast.source <- "NWM_SR_C" 						# "NWM_SR_C", USER_DIS, USER_STAGE
+user.aoi.string <- "##USERSTRING"
+user.aoi.source <- "##AOITYPE" 										# "zctas", "huc8", "string"
+user.address.source <- "##USERADDRESSSOURCE" 						# "OpenStreetMap_Addresses", "OpenAddresses", "User_Provided_Addresses"
+user.address.file <- "##USERADDRESSFILE" 							# Empty "" or filepath to addresses
+user.road.source <- "##USERROADSOURCE"  							# "TIGER_Lines_2018", "OpenStreetMaps", "User_Provided_Roads"
+user.road.file <- "##USERROADFILE" 									# Empty or filepath to addresses
+user.forecast.source <- "##USERFORECASTSOURCE" 						# "NWM_SR_C", USER_DIS, USER_STAGE
 user.forecast.timesteps <- as.numeric("##USERFORECASTTIMESTEPS") 	# number
-user.forecast.file <- "" 							# Empty "" or filepath to flows.fst
-user.forecast.members <- as.list("FPT1") 			# unused - DEV
-user.output.choice <- "EB1" 							# GIS_O  basedata  impacts
-user.output.grid <- "Square" 								# "Square", "Hexagon"
+user.forecast.file <- "##USERFORECASTFILE" 							# Empty "" or filepath to flows.fst
+user.forecast.members <- as.list("##USERFORECASTMEMBERS") 			# unused - DEV
+user.output.choice <- "##USERMAPOUTPUT" 							# GIS_O  basedata  impacts
+user.output.grid <- "##USERMAPINDEX" 								# "Square", "Hexagon"
 user.output.hardclip <- TRUE 										# If TRUE, Hard clip data to aoi shape, defaults to bb
 user.output.archive <- FALSE  										# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
 
@@ -1530,7 +1530,6 @@ shinyApp(
   },
   options = list(launch.browser=launch.browser)
 )
-
 
 
 

@@ -33,10 +33,10 @@ user.forecast.source <- "##USERFORECASTSOURCE" 						# "NWM_SR_C", USER_DIS, USE
 user.forecast.timesteps <- as.numeric("##USERFORECASTTIMESTEPS") 	# number
 user.forecast.file <- "##USERFORECASTFILE" 							# Empty "" or filepath to flows.fst
 user.forecast.members <- as.list("##USERFORECASTMEMBERS") 			# unused - DEV
-user.output.choice <- "##USERMAPOUTPUT" 							# Unused
+user.output.choice <- "##USERMAPOUTPUT" 							# GIS_O  basedata  impacts
 user.output.grid <- "##USERMAPINDEX" 								# "Square", "Hexagon"
-user.output.hardclip <- TRUE 										# If TRUE, Hard clip data to aoi shape, defaults to bb
-user.output.archive <- FALSE  										# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
+user.output.hardclip <- "##HARDCLIP" 										# If TRUE, Hard clip data to aoi shape, defaults to bb
+user.output.archive <- "##ARCHIVE"  										# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
 
 # -- Dev Comment/uncomment with ctrl-shift-c
 #user.aoi.string <- "66044, 66046, 66047, 66045, 66049"

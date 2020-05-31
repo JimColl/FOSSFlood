@@ -38,33 +38,7 @@ End Sub
 sub OOLOAD()
 	window.resizeTo 1705,1480
 	userAOI.Value = "66044, 66046, 66047, 66045, 66049"
-	UserOutputType.Value = "BVOSMOTM"
-	Const ForReading = 1
-	Const ForWriting = 2
-	FullName = replace(FOSSFlood.commandLine,chr(34),"")
-	arrFN=split(FullName,"\")
-	FileName = arrFN(ubound(arrFN))
-	SourceDir = replace(FullName,FileName,"")
-	x=Len(SourceDir)
-	SecondStringLen=x-2
-	SecondStringBase=Right(SourceDir,SecondStringLen)
-	SecondStringFull="LastDirectory=" & SecondStringBase & "R-Portable"
-	NewDrive=Left(SourceDir,2)
-	NewDriveString="LastDrive=" & NewDrive
-	AppDirLen=x-18
-	LPABD="PAL:LastPortableAppsBaseDir=" & Left(SourceDir,AppDirLen)
-	dim basePathFilename
-	basePathFilename = SourceDir & "R-Portable\Data\settings\R-PortableSettings.ini"
-	Set objFSO = CreateObject("Scripting.FileSystemObject")
-	Set objFile = objFSO.OpenTextFile(basePathFilename, ForReading)
-	strText = objFile.ReadAll
-	objFile.Close
-	strText = Replace(strText, "PAL:LastPortableAppsBaseDir=C:\Users\Cornholio\Desktop", LPABD)
-	strText = Replace(strText, "LastDirectory=\Users\Cornholio\Desktop\FOSSFlood-master\R-Portable", SecondStringFull)
-	strText = Replace(strText, "LastDrive=C:", NewDriveString)
-	Set objFile = objFSO.OpenTextFile(basePathFilename, ForWriting)
-	objFile.WriteLine strText
-	objFile.Close
+	UserOutputType.Value = "impacts"
 end sub
 ' -->
 </script>
@@ -128,122 +102,46 @@ Sub ExecuteFOSSFlood()
 	Set objFile = objFSO.OpenTextFile(shinyPathFilename, ForReading)
 	strText = objFile.ReadAll
 	objFile.Close
-	strText = Replace(strText, "##UserZipcode", UserZipTextbox.Value)
-	For i=0 to RadioButton1.length-1
-		If RadioButton1.Item(i).Checked Then
-			val = CStr(RadioButton1.Item(i).Value)
-			strText = Replace(strText, "##UserAddressess", val)
+	strText = Replace(strText, "##USERSTRING", userAOI.Value)
+	For i=0 to aoi_radiobutton.length-1
+		If aoi_radiobutton.Item(i).Checked Then
+			val = CStr(aoi_radiobutton.Item(i).Value)
+			strText = Replace(strText, "##AOITYPE", val)
 		End If
 	Next
-	strText = Replace(strText, "##AddressessFile", Replace(userAddressFile.Value, "\", "/"))
-	For i=0 to RadioButton2.length-1
-		If RadioButton2.Item(i).Checked Then
-			val = CStr(RadioButton2.Item(i).Value)
-			strText = Replace(strText, "##UserRoads", val)
+	For i=0 to add_radiobutton.length-1
+		If add_radiobutton.Item(i).Checked Then
+			val = CStr(add_radiobutton.Item(i).Value)
+			strText = Replace(strText, "##USERADDRESSSOURCE", val)
 		End If
 	Next
-	strText = Replace(strText, "##RoadsFile", Replace(userROADFile.Value, "\", "/"))
-	For i=0 to RadioButton3.length-1
-		If RadioButton3.Item(i).Checked Then
-			val = RadioButton3.Item(i).Value
-			strText = Replace(strText, "##GridChoice", val)
+	strText = Replace(strText, "##USERADDRESSFILE", Replace(USERADDSFILE.Value, "\", "/"))
+	For i=0 to road_radiobutton.length-1
+		If road_radiobutton.Item(i).Checked Then
+			val = CStr(road_radiobutton.Item(i).Value)
+			strText = Replace(strText, "##USERROADSOURCE", val)
 		End If
 	Next
-	For i=0 to RadioButton4.length-1
-		If RadioButton4.Item(i).Checked Then
-			val = RadioButton4.Item(i).Value
-			strText = Replace(strText, "##useForecastSource", val)
+	strText = Replace(strText, "##USERROADFILE", Replace(USERROADSFILE.Value, "\", "/"))
+	For i=0 to forecast_radiobutton.length-1
+		If forecast_radiobutton.Item(i).Checked Then
+			val = forecast_radiobutton.Item(i).Value
+			strText = Replace(strText, "##USERFORECASTSOURCE", val)
 		End If
 	Next
-	strText = Replace(strText, "##useForecastFile", Replace(userFlowFile.Value, "\", "/"))
-	strText = Replace(strText, "##UserOutputT", UserOutputType.Value)
+	For i=0 to grid_radiobutton.length-1
+		If grid_radiobutton.Item(i).Checked Then
+			val = grid_radiobutton.Item(i).Value
+			strText = Replace(strText, "##USERMAPINDEX", val)
+		End If
+	Next
+	strText = Replace(strText, "##HARDCLIP", CStr(clipflag.Checked))
+	strText = Replace(strText, "##ARCHIVE", CStr(archiveflag.Checked))
+	strText = Replace(strText, "##USERFORECASTFILE", Replace(USERFLOWFILE.Value, "\", "/"))
+	strText = Replace(strText, "##USERFORECASTMEMBERS", ForecastProcessTimesteps.Value)
+	strText = Replace(strText, "##USERMAPOUTPUT", UserOutputType.Value)
 	Set objFile = objFSO.OpenTextFile(shinyPathFilename, ForWriting)
 	objFile.WriteLine strText
-	objFile.Close
-	dim shinyUIPathFilename
-	shinyUIPathFilename = sCurPath & "\shiny\ui.r"
-	dim shinyServerPathFilename
-	shinyServerPathFilename = sCurPath & "\shiny\server.r"
-	dim oldUIpath
-	dim oldServerPath
-	set newUI = CreateObject("Scripting.FileSystemObject")
-	set newServer = CreateObject("Scripting.FileSystemObject")
-	If UserOutputType.Value="BVCARTPos" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVCARTPos.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVOSMBW" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVOSMBW.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVESRIBW" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVESRIBW.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVCARTPosNL" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVCARTPosNL.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVSTone" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVSTone.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVESRISat" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVESRISat.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVHBHS" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVHBHS.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVOSMMap" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVOSMMap.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVESRIMap" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVESRIMap.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVOSMOTM" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVOSMOTM.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVESRIWTM" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVESRIWTM.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVESRIWP" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVESRIWP.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVESRINatGeo" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVESRINatGeo.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVSWC" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVSWC.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	ElseIf UserOutputType.Value="BVTFT" Then
-		oldUIpath = sCurPath & "\shiny\ui_bview.r"
-		oldServerPath =  sCurPath & "\shiny\server_BVTFT.r"
-		newUI.CopyFile oldUIpath, shinyUIPathFilename
-		newServer.CopyFile oldServerPath, shinyServerPathFilename
-	End If
 	dim RGTXT 
 	Set RGTXT = CreateObject("Scripting.FileSystemObject") 
 	RGTXT.DeleteFile(shinyRPathFilename) 
@@ -288,9 +186,9 @@ End Sub
 			<div style="width:1200;height:660px;line-height:3em;overflow:scroll;padding:2px;">
 			GIS Only:<br>
 			<img src="data/misc/GISOutputs.png"><br><br>
-			Basic Slippy Maps:<br>
+			Base Data Viewer:<br>
 			<img src="data/misc/LeafletMaps.jpg"><br><br>
-			Impact Maps:<br>
+			Impact Dashboard:<br>
 			<img src="data/misc/LeafletMaps.jpg"><br><br>
 			</div>
 			</td>
@@ -305,18 +203,18 @@ End Sub
 				Enter an area of interest:<input type="text" name="userAOI" size="30"><br>
 				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="ZIP" checked="true">Zip code string (Format as:#####, #####,...)<BR>
 				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="HUC8">HUC8 string (Format as:########, ########,...)<BR>
-				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="STRING">A geotaggable string
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="STRING">A geotaggable string<br>
 				<br>
 				<fieldset>
 					<legend>Addresses source:</legend>
 						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OAADDS" checked="true">OpenAddresses<BR>
+						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OSMADDS">Open Street Maps<BR>
 						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="USERADDS">User provided:<input type="file" id="USERADDSFILE" name="USERADDSFILE">
-						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OSMADDS">OSM<BR>
 				</fieldset>
 				<fieldset>
 					<legend>Roads source:</legend>
-					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="OSM">OSM<BR>
 					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="TIGER" checked="true">TIGER<BR>
+					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="OSM">Open Street Maps<BR>
 					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="USERROADS">User Provided:<input type="file" id="USERROADSFILE" name="USERROADSFILE">
 				</fieldset>
 				<fieldset>
@@ -372,7 +270,9 @@ End Sub
 						<option value="BaseData">Base Data Viewer</option>
 						<option value="AOI">AOI finder</option>
 					</optgroup>
-				</select>
+				</select><BR>
+				<label for="clipflag">Hard clip outputs to AOI</label>
+				<input type="checkbox" id="clipflag" name="clipflag">
 			</fieldset>
 			<br>
 			<input type="button" value="Run FOSSFlood" name="run_button"  onClick="ExecuteFOSSFlood"><br>
