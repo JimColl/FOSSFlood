@@ -24,19 +24,22 @@ basedir <- getwd()   # This should look something like C:/Users/.../FOSSFlood-ma
 
 # -- USER Inputs -------------------------------------------------------------------------
 user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
-user.aoi.source <- "ZIP" 										# "zctas", "huc8", "string"
-user.address.source <- "OAADDS" 						# "OpenStreetMap_Addresses", "OpenAddresses", "User_Provided_Addresses"
+user.aoi.source <- "zctas" 										# "zctas", "huc8", "string"
+user.address.source <- "OpenAddresses" 						# "OpenStreetMap_Addresses", "OpenAddresses", "User_Provided_Addresses"
 user.address.file <- "" 							# Empty "" or filepath to addresses
-user.road.source <- "TIGER"  							# "TIGER_Lines_2018", "OpenStreetMaps", "User_Provided_Roads"
+user.road.source <- "TIGER_Lines_2018"  							# "TIGER_Lines_2018", "OpenStreetMaps", "User_Provided_Roads"
 user.road.file <- "" 									# Empty or filepath to addresses
 user.forecast.source <- "NWM_SR_C" 						# "NWM_SR_C", USER_DIS, USER_STAGE
-user.forecast.timesteps <- as.numeric("##USERFORECASTTIMESTEPS") 	# number
+user.forecast.timesteps <- as.numeric("6") 	# number
 user.forecast.file <- "" 							# Empty "" or filepath to flows.fst
-user.forecast.members <- as.list("FPT1") 			# unused - DEV
-user.output.choice <- "EB1" 							# GIS_O  basedata  impacts
+user.forecast.members <- as.list("##USERFORECASTMEMBERS") 			# unused - DEV
+user.output.choice <- "" 							# GIS_O  basedata  impacts
 user.output.grid <- "Square" 								# "Square", "Hexagon"
 user.output.hardclip <- TRUE 										# If TRUE, Hard clip data to aoi shape, defaults to bb
 user.output.archive <- FALSE  										# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
+
+user.address.source <- stringr::str_replace_all(user.address.source,"_"," ")
+user.road.source <- stringr::str_replace_all(user.road.source,"_"," ")
 
 # -- Dev Comment/uncomment with ctrl-shift-c
 #user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
@@ -243,9 +246,7 @@ make_grid <- function(x, type, cell_width, cell_area, clip = FALSE) {
   # First warning: although coordinates are longitude/latitude, st_intersects assumes that they are planar
   if (clip) {
     g <- sf::st_as_sf(g)[x, ]
-  } else {
-    g <- sf::st_as_sf(g)
-  }
+  } else { g <- sf::st_as_sf(g) }
   # Second warning: st_centroid does not give correct centroids for longitude/latitude data
   centroids = sf::st_coordinates(sf::st_centroid(g))
   colnames(centroids) <- c("lon", "lat")
@@ -331,8 +332,7 @@ getRuntimeTimestamp <- function() {
 # Parse user inputs
 #/////////////////////////////////////
 print(paste("-- Welcome to FOSSFlood - Running FOSSFlood for", user.aoi.string))
-user.address.source <- stringr::str_replace_all(user.address.source,"_"," ")
-user.road.source <- stringr::str_replace_all(user.road.source,"_"," ")
+
 if(user.aoi.source %in% c("zctas", "huc8")) {
   user.aoi.stringlist <- as.list(strsplit(user.aoi.string, ", ")[[1]])
   user.aoi.filepath <- gsub(", ", "_", user.aoi.string)
@@ -345,7 +345,7 @@ if(user.aoi.source %in% c("zctas", "huc8")) {
     featurefile <- sf::read_sf(paste0(basedir, "/data/misc/huc8.shp"))
     user.aoi.call <- base::subset(featurefile, (featurefile$HUC8 %in% user.aoi.stringlist))
   }
-} else if(userAOIType == "string") {
+} else if(user.aoi.source == "string") {
   user.aoi.call <- user.aoi.string
   user.aoi.stringlist <- as.list(strsplit(user.aoi.string, ", ")[[1]])
   user.aoi.filepath <- gsub(", ", "_", user.aoi.stringlist)
@@ -441,9 +441,9 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
       tigerroads_tmp <- rbind(tigerroads_tmp, tigerroads)
     }
     tigerroads <- tigerroads_tmp
-  } else {
+  } else
     tigerroads <- quiet(tigris::roads(unique(aoiCounties$STATEFP),unique(aoiCounties$COUNTYFP), year = 2018, refresh = TRUE))
-  }
+  
   tigerroads_Proj <- sf::st_transform(sf::st_as_sf(tigerroads), sf::st_crs(4326))
   tigerroads_Proj_Sub <- suppressMessages(tigerroads_Proj[xx$aoi.bb, ])
   var.out.bool <- names(tigerroads_Proj_Sub) %in% c("FULLNAME", "RTTYP")
@@ -588,6 +588,7 @@ if(user.aoi.source %in% c("zctas", "huc8")) {
 } else {
   xx$aoi.path <- paste0(basedir,"/AOI/", user.aoi.filepath,"/",user.aoi.filepath,".shp")
 }
+
 xx$aoi.shp <- sf::read_sf(xx$aoi.path)
 xx$aoi.shp_t <- sf::st_transform(xx$aoi.shp, sf::st_crs(3857))
 xx$catch.path = paste0(basedir,"/AOI/", user.aoi.filepath,"/catchmask_",user.aoi.filepath,".tif")
@@ -612,9 +613,13 @@ xx$osmadd.path <- paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_osm.shp")
 xx$oaadd.path <- paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_oa.shp")
 
 # Addresses
-if(user.address.source == "OpenAddresses") { xx$address.path <- xx$oaadd.path } 
-else if (user.address.source == "OpenStreetMap Addresses") { xx$address.path <- xx$osmadd.path } 
-else if(user.address.source == "User Provided Addresses") { xx$address.path <- user.address.file }
+if(user.address.source == "OpenAddresses") { 
+  xx$address.path <- xx$oaadd.path 
+} else if (user.address.source == "OpenStreetMap Addresses") { 
+  xx$address.path <- xx$osmadd.path 
+} else if (user.address.source == "User Provided Addresses") { 
+  xx$address.path <- user.address.file 
+}
 tryCatch(xx$address.point <- sf::read_sf(xx$address.path),
          error = function(e) {
            print("-- !ALERT! Invalid addresses provided, defaulting to OpenAddresses database --")
@@ -625,9 +630,13 @@ tryCatch(xx$address.point <- sf::read_sf(xx$address.path),
 )
 
 # Roads
-if(user.road.source == "OpenStreetMaps") { xx$road.path <- xx$osmroads.path } 
-else if (user.road.source == "TIGER Lines 2018") { xx$road.path <- xx$tigerroads.path } 
-else if(user.road.source == "UserRoads") { xx$road.path <- user.road.file }  
+if(user.road.source == "OpenStreetMaps") { 
+  xx$road.path <- xx$osmroads.path 
+} else if (user.road.source == "TIGER Lines 2018") { 
+  xx$road.path <- xx$tigerroads.path 
+} else if(user.road.source == "UserRoads") { 
+  xx$road.path <- user.road.file 
+}  
 tryCatch(xx$road.line <- sf::read_sf(xx$road.path),
          error = function(e) {
            print("-- !ALERT! Invalid addresses provided, defaulting to TIGER database --")
@@ -651,10 +660,10 @@ print("-- Downloading flows --")
 # Flows in cms
 if(user.forecast.source=="USER_DIS") {
   xx$nwm.flow = fst::read.fst(user.forecast.file)
-  user.forecast.timesteps <- 
+  user.forecast.timesteps <- 6
 } else if(user.forecast.source=="USER_STAGE") {
   xx$nwm.flow = fst::read.fst(xx$nwm.flow)
-  user.forecast.timesteps <- 
+  user.forecast.timesteps <- 6
 } else if(user.forecast.source=="NWM_SR_C") {
   user.forecast.gen <- getMostRecentForecast()
   xx$nwm.flow = nomadsNC::create_nomads_fst(type = "short_range", num = user.forecast.timesteps, dstfile = paste0(basedir,"/AOI/",user.aoi.filepath,"/flows.fst"))
@@ -750,7 +759,7 @@ if(all(xx$address.point$ffreq==0,na.rm = TRUE) | user.output.choice=="basedata")
       TitleBlock <- magick::image_annotate(TitleBlock, "User Provided Discharge", font = 'Georgia', location = "+305+328", size = 20)
     } else { TitleBlock <- magick::image_annotate(TitleBlock, "User Provided Stage", font = 'Georgia', location = "+305+328", size = 20) }
     magick::image_annotate(TitleBlock, Sys.time(), font = 'Georgia', location = "+303+355", size = 20)
-  } else {
+  } else if(user.forecast.source=="NWM_SR_C") {
     if(user.forecast.source=="NWM_SR_C") {
       TitleBlock <- magick::image_annotate(TitleBlock, "National Water Model Short Range Forecast", font = 'Georgia', location = "+305+328", size = 20)
     }
@@ -803,8 +812,8 @@ if(all(xx$address.point$ffreq==0,na.rm = TRUE) | user.output.choice=="basedata")
   
   DISCLAIMERString =
     "SOURCES: TIGER 2018, OpenStreetMaps, OpenAddresses, and the Free and Open Source Community - DISCLAIMER OF WARRANTY: The University disclaims all warranties, including all implied warranties of accuracy, merchantability, and fitness for a particular purpose. User expressly waives any claim that it may have 
-against the University, its employees or agents and shall not be liable for any direct, indirect, consequential, special, punitive or other damages arising from or related to the use of the FOSSFlood application and 
-the decisions made based on its outputs."
+  against the University, its employees or agents and shall not be liable for any direct, indirect, consequential, special, punitive or other damages arising from or related to the use of the FOSSFlood application and 
+  the decisions made based on its outputs."
   
   #/////////////////////////////////////
   # Launch shiny
@@ -815,12 +824,12 @@ the decisions made based on its outputs."
   browser.chromeium = file.path(paste0(basedir, '/ChromiumPortable/App/Chromium/64/chrome.exe'))
   launch.browser = function(appUrl, browser.path=browser.chromeium) {
     system(sprintf('"%s" --disable-gpu --app="data:text/html,<html>
-                 <head>
-                 <title>System Configuration</title>
-                 </head>
-                 <body>
-                 <script>window.resizeTo(830,675);window.location=\'%s\';</script>
-                 </body></html>" &', browser.path, appUrl), wait=FALSE)
+                   <head>
+                   <title>System Configuration</title>
+                   </head>
+                   <body>
+                   <script>window.resizeTo(830,675);window.location=\'%s\';</script>
+                   </body></html>" &', browser.path, appUrl), wait=FALSE)
   }
   rRuntime <- Sys.time() - rStarttime
   
@@ -1186,7 +1195,7 @@ if(user.forecast.source=="USER_DIS" || user.forecast.source=="USER_STAGE") {
     TitleBlock <- magick::image_annotate(TitleBlock, "User Provided Discharge", font = 'Georgia', location = "+305+328", size = 20)
   } else { TitleBlock <- magick::image_annotate(TitleBlock, "User Provided Stage", font = 'Georgia', location = "+305+328", size = 20) }
   magick::image_annotate(TitleBlock, Sys.time(), font = 'Georgia', location = "+303+355", size = 20)
-} else {
+} else if(user.forecast.source=="NWM_SR_C") {
   if(user.forecast.source=="NWM_SR_C") {
     TitleBlock <- magick::image_annotate(TitleBlock, "National Water Model Short Range Forecast", font = 'Georgia', location = "+305+328", size = 20)
   }

@@ -138,8 +138,8 @@ Sub ExecuteFOSSFlood()
 	strText = Replace(strText, "##HARDCLIP", CStr(clipflag.Checked))
 	strText = Replace(strText, "##ARCHIVE", CStr(archiveflag.Checked))
 	strText = Replace(strText, "##USERFORECASTFILE", Replace(USERFLOWFILE.Value, "\", "/"))
-	strText = Replace(strText, "##USERFORECASTMEMBERS", ForecastProcessTimesteps.Value)
 	strText = Replace(strText, "##USERMAPOUTPUT", UserOutputType.Value)
+	strText = Replace(strText, "##USERFORECASTTIMESTEPS", ForecastProcessTimesteps.Value)
 	Set objFile = objFSO.OpenTextFile(shinyPathFilename, ForWriting)
 	objFile.WriteLine strText
 	dim RGTXT 
@@ -201,49 +201,49 @@ End Sub
 			<fieldset>
 				<legend>User inputs</legend>
 				Enter an area of interest:<input type="text" name="userAOI" size="30"><br>
-				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="ZIP" checked="true">Zip code string (Format as:#####, #####,...)<BR>
-				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="HUC8">HUC8 string (Format as:########, ########,...)<BR>
-				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="STRING">A geotaggable string<br>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="zctas" checked="true">Zip code string (Format as:#####, #####,...)<BR>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="huc8">HUC8 string (Format as:########, ########,...)<BR>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="string">A geotaggable string<br>
 				<br>
 				<fieldset>
 					<legend>Addresses source:</legend>
-						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OAADDS" checked="true">OpenAddresses<BR>
-						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OSMADDS">Open Street Maps<BR>
-						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="USERADDS">User provided:<input type="file" id="USERADDSFILE" name="USERADDSFILE">
+						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OpenAddresses" checked="true">OpenAddresses<BR>
+						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OpenStreetMap_Addresses">Open Street Maps<BR>
+						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="User_Provided_Addresses">User provided:<input type="file" id="USERADDSFILE" name="USERADDSFILE">
 				</fieldset>
 				<fieldset>
 					<legend>Roads source:</legend>
-					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="TIGER" checked="true">TIGER<BR>
-					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="OSM">Open Street Maps<BR>
-					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="USERROADS">User Provided:<input type="file" id="USERROADSFILE" name="USERROADSFILE">
+					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="TIGER_Lines_2018" checked="true">TIGER<BR>
+					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="OpenStreetMaps">Open Street Maps<BR>
+					<input type="radio" name="road_radiobutton" ID="road_radiobutton" value="User_Provided_Roads">User Provided:<input type="file" id="USERROADSFILE" name="USERROADSFILE">
 				</fieldset>
 				<fieldset>
 					<legend>Forecast source:</legend>
 					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="NWM_SR_C" checked="true">National Water Model short range<BR>
 					<label for="ForecastProcessTimesteps">Number of time steps to process:</label>
 					<select id="ForecastProcessTimesteps" name="ForecastProcessTimesteps">
-						<option value="FPT1">1</option>
-						<option value="FPT2">2</option>
-						<option value="FPT3">3</option>
-						<option value="FPT4">4</option>
-						<option value="FPT5">5</option>
-						<option value="FPT6">6</option>
-						<option value="FPT7">7</option>
-						<option value="FPT8">8</option>
-						<option value="FPT9">9</option>
-						<option value="FPT10">10</option>
-						<option value="FPT11">11</option>
-						<option value="FPT12">12</option>
-						<option value="FPT13">13</option>
-						<option value="FPT14">14</option>
-						<option value="FPT15">15</option>
-						<option value="FPT16">16</option>
-						<option value="FPT17">17</option>
-						<option value="FPT18">18</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6" selected="selected">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
 					</select>
 					<BR><BR>
-					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USERSTAGE">User provided stage (ft)<BR>
-					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USERDISCHARGE">User provided discharge (cfs)<BR>
+					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USER_STAGE">User provided stage (ft)<BR>
+					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USER_DIS">User provided discharge (cfs)<BR>
 					File:<input type="file" id="USERFLOWFILE" name="USERFLOWFILE"><BR>
 					<label for="archiveflag">Archive flows</label>
 					<input type="checkbox" id="archiveflag" name="archiveflag">
@@ -251,7 +251,7 @@ End Sub
 				<fieldset>
 					<legend>Spatial Tessellation:</legend>
 					<input type="radio" name="grid_radiobutton" ID="grid_radiobutton" value="Square" checked="true">Square<BR>
-					<input type="radio" name="grid_radiobutton" ID="grid_radiobutton" value="Hexagonal">Hexagonal<BR>
+					<input type="radio" name="grid_radiobutton" ID="grid_radiobutton" value="Hexagon">Hexagonal<BR>
 				</fieldset>
 				<label for="UserOutputType">Choose output type:</label>
 				<select size="1" id="UserOutputType" name="UserOutputType">
