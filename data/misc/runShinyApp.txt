@@ -718,7 +718,7 @@ names(xx$flood.grid)[raster::nlayers(xx$flood.grid)] <- 'ffreq'
 
 if(user.output.choice=="GIS_O") {
   setwd(paste0(basedir,"/AOI/",user.aoi.filepath,"/output"))
-  writeRaster(xx$flood.grid, filename=names(xx$flood.grid), bylayer=TRUE,format="GTiff")
+  raster::writeRaster(xx$flood.grid, filename=names(xx$flood.grid), bylayer=TRUE,format="GTiff")
   print(paste0("-- Flood innundation rasters written to: ",getwd()," --"))
   setwd(basedir)
   if(user.output.choice=="GIS_O") {stop()}
@@ -1319,7 +1319,7 @@ rRuntime <- Sys.time() - rStarttime
 #
 
 # =============================================================================================================================
-# ShiyWidgets example galary
+# ShiyWidgets example gallery
 # =============================================================================================================================
 # shinyWidgets::shinyWidgetsGallery()
 # =============================================================================================================================
