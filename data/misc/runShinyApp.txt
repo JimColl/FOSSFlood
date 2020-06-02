@@ -42,21 +42,21 @@ user.address.source <- stringr::str_replace_all(user.address.source,"_"," ")
 user.road.source <- stringr::str_replace_all(user.road.source,"_"," ")
 
 # -- Dev Comment/uncomment with ctrl-shift-c
-#user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
-#user.aoi.string <- "03216"
-#user.aoi.source <- "zctas"
-#user.address.source <- "OpenAddresses"
-#user.address.file <- ""
-#user.road.source <- "TIGER Lines 2018"
-#user.road.file <- ""
-#user.forecast.source <- "NWM_SR_C"
-#user.forecast.timesteps <- as.numeric("6")
-#user.forecast.file <- ""
-#user.forecast.members <- as.list(1) 
-#user.output.choice <- "BVOSMOTM" 
-#user.output.grid <- "Square" 
-#user.output.hardclip <- TRUE 
-#user.output.archive <- FALSE
+user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
+user.aoi.string <- "03216"
+user.aoi.source <- "zctas"
+user.address.source <- "OpenAddresses"
+user.address.file <- ""
+user.road.source <- "TIGER Lines 2018"
+user.road.file <- ""
+user.forecast.source <- "NWM_SR_C"
+user.forecast.timesteps <- as.numeric("6")
+user.forecast.file <- ""
+user.forecast.members <- as.list(1)
+user.output.choice <- "BVOSMOTM"
+user.output.grid <- "Square"
+user.output.hardclip <- TRUE
+user.output.archive <- FALSE
 
 print(paste("-- Welcome to FOSSFlood - Running FOSSFlood in", basedir)) # This should look something like C:/Users/.../FOSSFlood-master
 print("-- Pre-Preloading constants --")
@@ -179,39 +179,6 @@ suppressMessages(library(geofabrik))
 suppressMessages(library(timeSeries))
 
 options(tigris_use_cache = FALSE)
-
-#/////////////////////////////////////
-# Block below runs only if this is the first time you have run FOSSFlood, unpacks and creates the zip code files, installs needed dependencies for printing
-#/////////////////////////////////////
-if (!file.exists(paste0(basedir, "/data/misc/zctas.shp"))) {
-  print("-- Unpacking FOSSFlood for first use: Downloading zctas --")
-  # Create ZCTA
-  zctasShape <- tigris::zctas(cb = TRUE)
-  zctasShapeProj <- sf::st_transform(sf::st_as_sf(zctasShape), sf::st_crs(4326))
-  sf::write_sf(sf::st_as_sf(zctasShapeProj), paste0(basedir, "/data/misc/zctas.shp"), delete_layer = TRUE, quiet = TRUE)
-}
-if (!file.exists(paste0(basedir, "/data/misc/huc8.shp"))) {
-  print("-- Welcome to FOSSFlood - Unpacking FOSSFlood for first use: Downloading HUC units (this may take a while)--")
-  httr::GET('https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.zip', write_disk(paste0(basedir, "/data/misc/WBD_National_GDB.zip")), overwrite=TRUE)
-  unzip(paste0(basedir, "/data/misc/WBD_National_GDB.zip"), exdir = paste0(basedir, "/data/misc"))
-  HUC8Shape <- sf::read_sf(dsn = paste0(basedir, "/data/misc/WBD_National_GDB.gdb"), layer = "WBDHU8")
-  HUC8ShapeProj <- sf::st_transform(HUC8Shape, sf::st_crs(4326))
-  sf::write_sf(sf::st_as_sf(HUC8ShapeProj), paste0(basedir, "/data/misc/huc8.shp"), delete_layer = TRUE, quiet = TRUE)
-  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.gdb"), recursive = TRUE)
-  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.zip"), recursive = TRUE)
-  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.gdb"), recursive = TRUE)
-  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.xml"))
-  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.jpg"))
-}
-if (is.null(webshot:::find_phantom())) {
-  print("-- Unpacking FOSSFlood for first use: Installing dependencies --")
-  webshot::install_phantomjs()
-}
-if (is.null(rmarkdown::pandoc_available())) {
-  print("-- Pandoc is needed in order to print outputs, please follow the installation prompts as they appear.")
-  installr::install.pandoc(use_regex = TRUE, to_restart = FALSE)
-}
-
 #/////////////////////////////////////
 # Helper Functions                                     
 #/////////////////////////////////////
@@ -328,6 +295,40 @@ getRuntimeTimestamp <- function() {
   return (c(currentDate,ztime))
 }
 
+
+#/////////////////////////////////////
+# Block below runs only if this is the first time you have run FOSSFlood, unpacks and creates the zip code files, installs needed dependencies for printing
+#/////////////////////////////////////
+if (!file.exists(paste0(basedir, "/data/misc/zctas.shp"))) {
+  print("-- Unpacking FOSSFlood for first use: Downloading zctas --")
+  # Create ZCTA
+  zctasShape <- quiet(tigris::zctas(cb = FALSE))
+  zctasShapeProj <- sf::st_transform(sf::st_as_sf(zctasShape), sf::st_crs(4326))
+  sf::write_sf(sf::st_as_sf(zctasShapeProj), paste0(basedir, "/data/misc/zctas.shp"), delete_layer = TRUE, quiet = TRUE)
+}
+if (!file.exists(paste0(basedir, "/data/misc/huc8.shp"))) {
+  print("-- Welcome to FOSSFlood - Unpacking FOSSFlood for first use: Downloading HUC units (this may take a while)--")
+  httr::GET('https://prd-tnm.s3.amazonaws.com/StagedProducts/Hydrography/WBD/National/GDB/WBD_National_GDB.zip', write_disk(paste0(basedir, "/data/misc/WBD_National_GDB.zip")), overwrite=TRUE)
+  unzip(paste0(basedir, "/data/misc/WBD_National_GDB.zip"), exdir = paste0(basedir, "/data/misc"))
+  HUC8Shape <- sf::read_sf(dsn = paste0(basedir, "/data/misc/WBD_National_GDB.gdb"), layer = "WBDHU8")
+  HUC8ShapeProj <- sf::st_transform(HUC8Shape, sf::st_crs(4326))
+  sf::write_sf(sf::st_as_sf(HUC8ShapeProj), paste0(basedir, "/data/misc/huc8.shp"), delete_layer = TRUE, quiet = TRUE)
+  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.gdb"), recursive = TRUE)
+  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.zip"), recursive = TRUE)
+  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.gdb"), recursive = TRUE)
+  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.xml"))
+  unlink(paste0(basedir, "/data/misc/WBD_National_GDB.jpg"))
+}
+if (is.null(webshot:::find_phantom())) {
+  print("-- Unpacking FOSSFlood for first use: Installing dependencies --")
+  webshot::install_phantomjs(force = FALSE)
+}
+if (is.null(rmarkdown::pandoc_available())) {
+  print("-- Pandoc is needed in order to print outputs, please follow the installation prompts as they appear.")
+  installr::install.pandoc(use_regex = TRUE, to_restart = FALSE)
+}
+
+
 #/////////////////////////////////////
 # Parse user inputs
 #/////////////////////////////////////
@@ -358,7 +359,7 @@ tryCatch({quiet(geosphere::areaPolygon(sf::as_Spatial(AOI$geometry))>0)},
            print("-- Malformed input: The features were not located in the AOI.  Double check that your features exist and that you entered them in correctly.")
            stop(e)
          })
-xx = FloodMapping::getRawData(AOI,paste0(basedir,"/AOI/"),user.aoi.filepath)
+xx = quiet(FloodMapping::getRawData(AOI,paste0(basedir,"/AOI/"),user.aoi.filepath))
 
 # generate base data as needed
 if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
@@ -508,8 +509,7 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   # Open Addresses ---------------------------------------------------------------------------------
   # Error correcting: not set for areas that cross state boundaries
   print("-- Downloading OpenAddresses --")
-  validOA <- openadds::oa_list() %>% 
-    filter(str_detect(processed, paste0("/us/",tolower(cdlTools::fips(aoiCounties$STATEFP[1], to = "Abbreviation")))))
+  validOA <- openadds::oa_list() %>% dplyr::filter(str_detect(processed, paste0("/us/",tolower(cdlTools::fips(aoiCounties$STATEFP[1], to = "Abbreviation")))))
   urls = validOA$processed 
   out = list()
   for( i in 1:length(validOA$processed)) {
@@ -666,7 +666,7 @@ if(user.forecast.source=="USER_DIS") {
   user.forecast.timesteps <- 6
 } else if(user.forecast.source=="NWM_SR_C") {
   user.forecast.gen <- getMostRecentForecast()
-  xx$nwm.flow = nomadsNC::create_nomads_fst(type = "short_range", num = user.forecast.timesteps, dstfile = paste0(basedir,"/AOI/",user.aoi.filepath,"/flows.fst"))
+  xx$nwm.flow = quiet(nomadsNC::create_nomads_fst(type = "short_range", num = user.forecast.timesteps, dstfile = paste0(basedir,"/AOI/",user.aoi.filepath,"/flows.fst")))
 }
 if(user.output.archive) { write.fst(xx$nwm.flow, paste0(basedir,"/AOI/",user.aoi.filepath,"output/",user.forecast.source,getMostRecentForecast()[1],"_",getMostRecentForecast()[2],"_flows.fst")) }
 xx$nwm.discharge <- fst::read.fst(xx$nwm.flow)
