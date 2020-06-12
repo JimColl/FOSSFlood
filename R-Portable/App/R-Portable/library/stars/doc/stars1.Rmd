@@ -1,22 +1,20 @@
 ---
 title: "1. introduction"
 author: "Edzer Pebesma"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 2
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{1. introduction}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
+**For a better version of the stars vignettes see** https://r-spatial.github.io/stars/articles/
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(collapse = TRUE)
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.width = 6)
 ev = suppressWarnings(require(starsdata, quietly = TRUE))
 ```
 
@@ -78,9 +76,9 @@ For this particular dataset (and most other raster datasets), we see that offset
 
 `read_stars` reads all bands from a raster dataset, or optionally a subset of raster datasets, into a single `stars` array structure. While doing so, raster values (often UINT8 or UINT16) are converted to double (numeric) values, and scaled back to their original values if needed if the file encodes the scaling parameters.
 
-The data structure `stars` is a generalisation of the `tbl_cube` found in `dplyr`; we can convert to that by
-```{r}
-library(dplyr)
+The data structure `stars` is a generalisation of the `tbl_cube` found in `cubelyr`; we can convert to that by
+```{r eval=ev}
+library(cubelyr)
 as.tbl_cube(x)
 ```
 but this will cause a loss of certain properties (cell size,
@@ -212,6 +210,7 @@ file_list = system.file(paste0("netcdf/", x), package = "starsdata")
 
 Next, we select sea surface temperature (`sst`), and drop the singular `zlev` (depth) dimension using `adrop`:
 ```{r eval=ev}
+library(dplyr)
 library(abind)
 z <- y %>% select(sst) %>% adrop()
 ```
@@ -300,7 +299,7 @@ traffic = array(rpois(prod(n), 10), dim = n) # simulated traffic counts
 ```
 
 This array contains the simple feature geometries of origin and destination so that we can directly plot every slice without additional table joins. If we want to represent such an array as a `tbl_cube`, the simple feature geometry dimensions need to be replaced by indexes:
-```{r}
+```{r eval=ev}
 st %>% as.tbl_cube()
 ```
 

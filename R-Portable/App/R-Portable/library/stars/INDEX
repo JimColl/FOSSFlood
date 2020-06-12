@@ -33,6 +33,7 @@ st_intersects.stars     spatial intersect predicate for stars and sfc
 st_join.stars           Spatially join a stars and an 'sf' object
 st_mosaic               build mosaic (composite) of several spatially
                         disjoint stars objects
+st_raster_type          get the raster type (if any) of a stars object
 st_rasterize            rasterize simple feature geometries
 st_sfc2xy               replace POINT simple feature geometry list with
                         an x y raster

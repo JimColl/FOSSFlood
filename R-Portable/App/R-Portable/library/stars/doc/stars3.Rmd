@@ -1,22 +1,20 @@
 ---
 title: "3. stars tidyverse methods"
 author: "Edzer Pebesma"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 2
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{3. stars tidyverse methods}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+**For a better version of the stars vignettes see** https://r-spatial.github.io/stars/articles/
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(collapse = TRUE)
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.width = 6)
 #ev = FALSE
 ev = TRUE
 ```

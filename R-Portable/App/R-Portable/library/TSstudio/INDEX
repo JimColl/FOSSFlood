@@ -1,0 +1,50 @@
+Coffee_Prices           Coffee Prices: Robusta and Arabica
+EURO_Brent              Crude Oil Prices: Brent - Europe
+Michigan_CS             University of Michigan Consumer Survey, Index
+                        of Consumer Sentiment
+USUnRate                US Monthly Civilian Unemployment Rate
+USVSales                US Monthly Total Vehicle Sales
+US_indicators           US Key Indicators - data frame format
+USgas                   US monthly natural gas consumption
+arima_diag              Diagnostic Plots for ARIMA Models
+ccf_plot                Time Series Cross Correlation Lags
+                        Visualization
+check_res               Visualization of the Residuals of a Time Series
+                        Model
+create_model            A Functional Approach for Building the
+                        'train_model' Components
+forecast_sim            Forecasting simulation
+plot_error              Plot the Models Error Rates on the Testing
+                        Partitions
+plot_forecast           Plotting Forecast Object
+plot_grid               Visualizing Grid Search Results
+plot_model              Plot the Models Performance on the Testing
+                        Partitions
+res_hist                Histogram Plot of the Residuals Values
+test_forecast           Visualize of the Fitted and the Forecasted vs
+                        the Actual Values
+train_model             Train, Test, Evaluate, and Forecast Multiple
+                        Time Series Forecasting Models
+ts_cor                  An Interactive Visualization of the ACF and
+                        PACF Functions
+ts_decompose            Visualization of the Decompose of a Time Series
+                        Object
+ts_grid                 Tuning Time Series Forecasting Models
+                        Parameters with Grid Search
+ts_heatmap              Heatmap Plot for Time Series
+ts_info                 Get the Time Series Information
+ts_lags                 Time Series Lag Visualization
+ts_ma                   Moving Average Method for Time Series Data
+ts_plot                 Plotting Time Series Objects
+ts_polar                Polor Plot for Time Series Object
+ts_quantile             Quantile Plot for Time Series
+ts_reshape              Transform Time Series Object to Data Frame
+                        Format
+ts_seasonal             Seasonality Visualization of Time Series Object
+ts_split                Split Time Series Object for Training and
+                        Testing Partitions
+ts_sum                  Summation of Multiple Time Series Objects
+ts_surface              3D Surface Plot for Time Series
+ts_to_prophet           Transform Time Series Object to Prophet input
+xts_to_ts               Converting 'xts' object to 'ts' object
+zoo_to_ts               Converting 'zoo' object to 'ts' object

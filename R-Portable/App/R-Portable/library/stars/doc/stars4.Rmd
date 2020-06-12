@@ -1,22 +1,20 @@
 ---
 title: '4. stars data model'
 author: "Edzer Pebesma"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 2
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{4. stars data model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+**For a better version of the stars vignettes see** https://r-spatial.github.io/stars/articles/
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(collapse = TRUE)
+knitr::opts_chunk$set(fig.height = 4.5)
+knitr::opts_chunk$set(fig.width = 6)
 set.seed(13579)
 ```
 
@@ -216,7 +214,12 @@ We can construct the curvilinear `stars` raster by calling `st_as_stars` on thre
 ```{r eval=EVAL}
 nit.c = read_stars(s5p, sub = "//PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column",
 	curvilinear = c("//PRODUCT/longitude", "//PRODUCT/latitude"), driver = NULL)
-nit.c[[1]][nit.c[[1]] > 9e+36] = NA
+if (inherits(nit.c[[1]], "units")) {
+	threshold = units::set_units(9e+36, mol/m^2)
+} else {
+	threshold = 9e+36
+}
+nit.c[[1]][nit.c[[1]] > threshold] = NA
 st_crs(nit.c) = 4326
 nit.c
 ```

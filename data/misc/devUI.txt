@@ -1,0 +1,240 @@
+impactUI <- dashboardPage(
+  skin = "blue",
+  dashboardHeader(title="FOSSFlood V 1.1",tags$li(class="dropdown",actionButton("home","Home"),actionButton("save","Save data"),actionButton("print", "Print"))),
+  dashboardSidebar(
+    sidebarMenu(id = "sidebar",
+                h3("Map controls"),
+                pickerInput(inputId='userbasemap',label='Select a base map:',choices=basemapchoices,selected=basemapchoices[2]$`Minimal maps`[2]),
+                shinyWidgets::switchInput(inputId="gridColor",label="Grid color",onLabel="Black",offLabel="White",value=TRUE),
+                shinyWidgets::switchInput(inputId="aoiColor",label="AOI shading",onLabel="Black",offLabel="White",value=TRUE),
+                menuItem("summarytab", tabName = "Summary", icon = icon("dashboard")),
+                menuItem("swipertab", icon = icon("th"), tabName = "Swiper")
+    )
+  ),
+  dashboardBody(
+    tabItems(
+      tabItem(tabName = "Summary",
+              tags$head(tags$script('
+                          // Define function to set height of "map" and "map_container"
+                                  setHeight = function() {
+                                  var window_height = $(window).height();
+                                  var header_height = $(".main-header").height();
+                                  
+                                  var boxHeight = window_height - header_height - 80;
+                                  
+                                  $("#map").height(boxHeight);
+                                  $("#summary_map").height(boxHeight - 20);
+                                  };
+                                  
+                                  // Set input$box_height when the connection is established
+                                  $(document).on("shiny:connected", function(event) {
+                                  setHeight();
+                                  });
+                                  
+                                  // Refresh the box height on every window resize event    
+                                  $(window).on("resize", function(){
+                                  setHeight();
+                                  });
+                                  '),
+                        tags$style(type="text/css", "#titleblock img {max-width: 100%; width: 100%; height: auto;}")),
+              fluidRow(
+                column(width = 4,
+                       box(width = NULL, status = "primary",imageOutput("titleblock")),
+                       tabBox(title = tagList(shiny::icon("gear"), "Summary Tables"), width = NULL,
+                              tabPanel(title = tagList(shiny::icon("th"), "Map index"),
+                                       DT::dataTableOutput("mapindextable")),
+                              tabPanel(title = tagList(shiny::icon("home"), "Addresses impacted"),
+                                       DT::dataTableOutput("addressimpacts")),
+                              tabPanel(title = tagList(shiny::icon("road"), "Roads impacted"),
+                                       DT::dataTableOutput("roadimpacts"))
+                       ),
+                       box(title = "Map controls", width = NULL, status = "primary",
+                           radioGroupButtons(inputId="summaryviewlayer",
+                                             label="View impacts as:",
+                                             choices=c("Wet House Hours","Count of Impacted Addresses","Maximum Impact Depth","Individual Points"),individual = TRUE,
+                                             checkIcon = list(yes = tags$i(class = "fa fa-circle", style = "color: steelblue"),no = tags$i(class = "fa fa-circle-o", style = "color: steelblue")))
+                       ),
+                       box(title = "Warnings/Credits", width = NULL, status = "primary",DISCLAIMERString)
+                ),
+                column(width = 8,
+                       tabBox(title = tagList(shiny::icon("chart-line"), "Time series"), width = NULL,
+                              tabPanel(title = tagList(shiny::icon("chart-area"), "Area innundated"),
+                                       plotOutput("summarychart")),
+                              tabPanel(title = tagList(shiny::icon("home"), "Addresses impacted"),
+                                       "string")
+                       ),
+                       box(width = NULL, solidHeader = FALSE, status = "warning",leafletOutput("summary_map"))
+                )
+              )
+      ),
+      
+      tabItem(tabName = "Swiper",
+              h2("Widgets tab content")
+      )
+    )
+  )
+)
+impactSERVER <- function(input, output, session) {
+  # TitleBlocks ========================================
+  output$titleblock <- renderImage({
+    tmpfile <- TitleBlock %>%
+      magick::image_write(tempfile(fileext='jpg'), format = 'jpg')
+    list(
+      src = tmpfile,
+      filetype = "image/jpg",
+      deleteFile = TRUE
+    )
+  })
+  
+  # InforBoxes ========================================
+  output$selected_var <- renderText({
+    paste0("t_",gsub(":",".",gsub("-",".",gsub(" ",".",as.character(as.POSIXlt(input$SwiperTimestep, origin="1970-01-01"))))))
+  })
+  
+  # Maps ========================================
+  summary_map_reactive <- reactive({
+    gridcolor <- "Black"
+    aoiColor <- "Black"
+    sumvisfill <- T
+    
+    leaflet() %>%
+      addProviderTiles("Stamen.TonerBackground", group = "Base Map") %>%
+      addMapPane("bg", zIndex = 410) %>%
+      # addMapPane("flood", zIndex = 412) %>%
+      addMapPane("flow", zIndex = 414) %>%
+      addMapPane("gage", zIndex = 416) %>%
+      addMapPane("roadimpact", zIndex = 418) %>%
+      addMapPane("road", zIndex = 420) %>%
+      addMapPane("add", zIndex = 422) %>%
+      addMapPane("index", zIndex = 424) %>%
+      addMapPane("indexlabels", zIndex = 426) %>%
+      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
+      addRasterImage(x=xx$flood.grid$ffreq,colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+      addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
+      # addMarkers(gages)
+      addPolylines(data=xx$road.poly[[length(xx$nwm.timestep)+1]], color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts") %>%
+      addPolylines(data=xx$road.line,color= ~xx$vis_roadpal(type),options=pathOptions(pane="road"),group="Roads") %>%
+      addAwesomeMarkers(data=subset(xx$address.point, ffreq>0),
+                        icon=xx$address.point.standard, 
+                        options=pathOptions(pane="add"),
+                        clusterOptions=markerClusterOptions(),
+                        group="Addresses") %>%
+      addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      addLabelOnlyMarkers(data=subset(xx$mapindex.point, `Wet House Hours`>0), label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+      addLayersControl(
+        overlayGroups = c("Flowlines","Roads","Flooding","Road Impacts","Addresses","Borders","Index","Index Labels"),
+        options = layersControlOptions(collapsed = FALSE)
+      ) %>% 
+      hideGroup("Roads") %>% 
+      hideGroup("Addresses")  
+  })
+  output$summary_map <- renderLeaflet({
+    summary_map_reactive()
+  })
+  observe({
+    gridcolor <- ifelse(input$gridColor==TRUE,"Black","White")
+    aoiColor <- ifelse(input$aoiColor==TRUE,"Black","White")
+    
+    if(input$summaryviewlayer=="Individual Points") {
+      leafletProxy("summary_map") %>%
+        clearGroup("Base Map") %>%
+        clearGroup("Borders") %>%
+        clearGroup("Index") %>%
+        addProviderTiles(input$userbasemap,group = "Base Map") %>%
+        addPolygons(data=xx$aoi.shp, color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        showGroup("Addresses")
+    } else if(input$summaryviewlayer=="Wet House Hours") {
+      leafletProxy("summary_map") %>%
+        clearGroup("Base Map") %>%
+        clearGroup("Borders") %>%
+        clearGroup("Index") %>%
+        addProviderTiles(input$userbasemap, group = "Base Map") %>%
+        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        hideGroup("Addresses")
+    } else if(input$summaryviewlayer=="Count of Impacted Addresses") {
+      leafletProxy("summary_map") %>%
+        clearGroup("Base Map") %>%
+        clearGroup("Borders") %>%
+        clearGroup("Index") %>%
+        addProviderTiles(input$userbasemap, group = "Base Map") %>%
+        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.IHCpal(`Uniquely Impacted Addresses`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        hideGroup("Addresses")
+    } else if(input$summaryviewlayer=="Maximum Impact Depth") {
+      leafletProxy("summary_map") %>%
+        clearGroup("Base Map") %>%
+        clearGroup("Borders") %>%
+        clearGroup("Index") %>%
+        addProviderTiles(input$userbasemap, group = "Base Map") %>%
+        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        hideGroup("Addresses")
+    }
+  })
+  
+  # Tables ========================================
+  output$summarychart <- renderPlot({
+    timeSeries::plot(xx$chart.summary, plot.type="s", col="blue", lwd=2, ylab="Number", main="Summary") 
+  })
+  
+  # Tables ========================================
+  output$mapindextable<-DT::renderDataTable({
+    DT::datatable(as.data.frame(xx$mapindex.point[which(xx$mapindex.point$`Wet House Hours`>0),]) %>% select(`Index Label`,`Wet House Hours`,`Uniquely Impacted Addresses`,`Maximum Impact Depth`), 
+                  editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
+  })
+  observe({
+    if (length(input$mapindextable_rows_selected)) {
+      leafletProxy("summary_map") %>%
+        flyTo(xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][1],
+              xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][2],17)
+    }
+  })
+  output$addressimpacts<-DT::renderDataTable({
+    DT::datatable(as.data.frame(xx$address.mapbook[which(xx$address.mapbook$ffreq>0),]) %>% select(address,`Index Label`,dataset), 
+                  editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
+  })
+  observe({
+    if (length(input$addressimpacts_rows_selected)) {
+      leafletProxy("summary_map") %>%
+        flyTo(xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][1],
+              xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][2],17)
+    }
+  })
+  # There are better ways to do this...
+  output$roadimpacts<-DT::renderDataTable({
+    DT::datatable(as.data.frame(xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),]) %>% select(`Index Label`,name), 
+                  editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
+  })
+  observe({
+    if (length(input$roadimpacts_rows_selected)) {
+      leafletProxy("summary_map") %>%
+        flyTo(xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][1],
+              xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][2],17)
+    }
+  })
+  
+  # Events ========================================
+  observeEvent(input$home, {
+    updateTabItems(session, "sidebar", "home")
+  })
+  observeEvent(input$save, {
+    raster::writeRaster(xx$flood.grid, filename=names(xx$flood.grid), bylayer=TRUE,format="GTiff")
+    shinyalert(title = "Saved flood rasters!", type = "success")
+  })
+  observeEvent(input$print, {
+    mapshot(user_created_map(), file=paste0(getwd(), '/exported_map.png'))
+    shinyalert(title = "Print complete, see /shiny!", type = "success")
+  })
+  
+  session$onSessionEnded(stopApp)
+}
+
+finalUI <- impactUI
+finalSERVER <- impactSERVER
+shinyApp(
+  ui = finalUI,
+  server = finalSERVER,
+  options = list(launch.browser=launch.browser)
+)

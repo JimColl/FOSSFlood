@@ -1,3 +1,37 @@
+# version 0.4-1
+
+* `st_warp` (stars native) flips longitudes a full cycle; #256, #264, #269
+
+* handle axis order in `st_transform` (needs sf >= 0.9-1)
+
+* depend on sf 0.9-0 
+
+* adapt to cubelyr split-off from dplyr; add cubelyr to Suggests; https://github.com/hadley/cubelyr/issues/2
+
+* add `droplevels` method
+
+* handle color tables, category tables and raster attribute tables read through GDAL; #128, #245; https://github.com/r-spatial/mapview/issues/208
+
+* handle dimension `crs` specially, for proxy objects now.
+
+* handle new-style `crs` objects from upcoming sf, moving away from proj4strings
+
+* handle full `crs` objects as `refsys` element in a spatial dimensions, rather than proj4string only
+
+* `st_raster_type(x)` reveals the raster type of `x`; #248, https://github.com/mtennekes/tmap/issues/368
+
+* add `st_as_stars.OpenStreetMap` method; #241 by @mtennekes
+
+* add `st_flip` to flip arrays along one or more dimensions without changing dimension properties
+
+* add `as.owin` method to convert (2D raster) stars objects to spatstat `owin`; https://github.com/r-spatial/sf/issues/1233
+
+* for temporal aggregation, `aggregate.stars` now also takes `by` arguments like "week", "month", or "5 days" 
+
+* add `st_as_stars` method for `xts` objects; improve `as.xts` for `stars` objects
+
+* skip some tests on solaris
+
 # version 0.4-0
 
 * `plot` now uses all data to figure out breaks, in order to also find extremes; #216
