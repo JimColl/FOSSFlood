@@ -2,11 +2,11 @@
 <html lang="en">
 <meta charset="utf-8">
 <head>
-	<title>FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.1</title>
+	<title>FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.2</title>
 	<HTA:APPLICATION
-		APPLICATIONNAME="FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.1"
+		APPLICATIONNAME="FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.2"
 		id="FOSSFlood"
-		version="1.1"
+		version="1.2"
 		scroll="yes"
 		singleinstance="yes"
 	/>
@@ -36,7 +36,7 @@ End Sub
 <script type="text/vbscript" id="OOLOAD">
 ' <!--
 sub OOLOAD()
-	window.resizeTo 1705,14800
+	window.resizeTo 1705,1685
 	userAOI.Value = "66044, 66046, 66047, 66045, 66049"
 	UserOutputType.Value = "impacts"
 end sub
@@ -181,14 +181,14 @@ End Sub
 			<th class="tg-6l0l" colspan="2"> <img src="data/misc/FOSSFloodLogo.jpg"> </th>
 		</tr>
 		<tr>
-			<td class="tg-s9ax">Welcome to FOSSFlood -- V 1.1</td>
-			<td class="tg-o7wt" rowspan="3">
-			<div style="width:1200;height:660px;line-height:3em;overflow:scroll;padding:2px;">
-			GIS Only:<br>
-			<img src="data/misc/GISOutputs.png"><br><br>
-			Base Data Viewer:<br>
+			<td class="tg-s9ax">Welcome to FOSSFlood -- V 1.2</td>
+			<td class="tg-o7wt" align="center" valign="top" rowspan="3">
+			<div style="width:1200;height:900px;line-height:3em;overflow:scroll;padding:2px;">
+			<b>--- GIS Rasters Only ---</b><br>
+			<img src="data/misc/GIS_O.PNG"><br><br>
+			<b>--- Base Data Viewer ---</b><br>
 			<img src="data/misc/LeafletMaps.jpg"><br><br>
-			Impact Dashboard:<br>
+			<b>--- Impact Dashboard ---</b><br>
 			<img src="data/misc/LeafletMaps.jpg"><br><br>
 			</div>
 			</td>
@@ -259,7 +259,7 @@ End Sub
 						<option value="GIS">GIS Only</option>
 						<option value="EB1">"Current" conditions</option>
 						<option value="AB2">Summary page</option>
-						<option value="AB2">Summary and Swiper</option>
+						<option value="impacts">Summary and Swiper</option>
 					</optgroup>
 					<optgroup label="NWM">
 						<option value="EB1">NWM: "Current" conditions</option>
