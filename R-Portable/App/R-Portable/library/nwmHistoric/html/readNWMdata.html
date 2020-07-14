@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: NWM Reanalysis Extraction</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for readNWMdata {nwmHistoric}"><tr><td>readNWMdata {nwmHistoric}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>NWM Reanalysis Extraction</h2>
+
+<h3>Description</h3>
+
+<p>Download hourly flow values for an NHD COMID from the National Water Model version 2.0. Returned data is availiable between &quot;1993-01-01&quot; and &quot;2017-12-31&quot; but can be subset using a startDate and endDate.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+readNWMdata(
+  comid = NULL,
+  siteNumber = NULL,
+  startDate = "1993-01-01",
+  endDate = "2018-12-31",
+  tz = "UTC",
+  version = 2
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>comid</code></td>
+<td>
+<p>a NHD common identifier</p>
+</td></tr>
+<tr valign="top"><td><code>siteNumber</code></td>
+<td>
+<p>a USGS NWIS site number (eight digits)</p>
+</td></tr>
+<tr valign="top"><td><code>startDate</code></td>
+<td>
+<p>a start date (YYYY-MM-DD)</p>
+</td></tr>
+<tr valign="top"><td><code>endDate</code></td>
+<td>
+<p>an end date (YYYY-MM-DD)</p>
+</td></tr>
+<tr valign="top"><td><code>tz</code></td>
+<td>
+<p>the desired timezone of the data. Can be found with 'OlsonNames()'</p>
+</td></tr>
+<tr valign="top"><td><code>version</code></td>
+<td>
+<p>the NWM version to extract (current = 1.2 or 2.0 (default))</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>data.frame
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>nwmHistoric</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

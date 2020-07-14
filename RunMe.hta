@@ -29,7 +29,7 @@ Sub LOGRefresh()
 	set oFile=oFSO.OpenTextFile("ShinyApp.log",1)
 	text = oFile.ReadAll
 	MyDataInfo.InnerText=text
-	oFile.Close
+	MyDataInfo.doScroll("pageDown")
 End Sub
 ' -->
 </script>
@@ -82,7 +82,7 @@ end sub
 <script type="text/vbscript" id="ExecuteFOSSFlood">
 ' <!--
 Sub ExecuteFOSSFlood()
-	iTimerID = window.setInterval("LOGRefresh()",5000)
+	iTimerID = window.setInterval("LOGRefresh()",10000)
 	Const ForReading = 1
 	Const ForWriting = 2
 	dim sCurPath
@@ -184,12 +184,12 @@ End Sub
 			<td class="tg-s9ax">Welcome to FOSSFlood -- V 1.2</td>
 			<td class="tg-o7wt" align="center" valign="top" rowspan="3">
 			<div style="width:1200;height:900px;line-height:3em;overflow:scroll;padding:2px;">
+			<b>--- Impact Dashboard ---</b><br>
+			<img src="data/misc/Impacts.PNG"><br><br>
+			<b>--- Base Data Viewer ---</b><br>
+			<img src="data/misc/Basedata.PNG"><br><br>
 			<b>--- GIS Rasters Only ---</b><br>
 			<img src="data/misc/GIS_O.PNG"><br><br>
-			<b>--- Base Data Viewer ---</b><br>
-			<img src="data/misc/LeafletMaps.jpg"><br><br>
-			<b>--- Impact Dashboard ---</b><br>
-			<img src="data/misc/LeafletMaps.jpg"><br><br>
 			</div>
 			</td>
 		</tr>
@@ -201,8 +201,8 @@ End Sub
 			<fieldset>
 				<legend>User inputs</legend>
 				Enter an area of interest:<input type="text" name="userAOI" size="30"><br>
-				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="zctas" checked="true">Zip code string (Format as:#####, #####,...)<BR>
-				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="huc8">HUC8 string (Format as:########, ########,...)<BR>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="zctas" checked="true">Zip code string (Format as:#####, #####, ...)<BR>
+				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="huc8">HUC8 string (Format as:########, ########, ...)<BR>
 				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="string">A geotaggable string<br>
 				<br>
 				<fieldset>
@@ -256,15 +256,9 @@ End Sub
 				<label for="UserOutputType">Choose output type:</label>
 				<select size="1" id="UserOutputType" name="UserOutputType">
 					<optgroup label="Outputs">
-						<option value="GIS">GIS Only</option>
-						<option value="EB1">"Current" conditions</option>
-						<option value="AB2">Summary page</option>
-						<option value="impacts">Summary and Swiper</option>
-					</optgroup>
-					<optgroup label="NWM">
-						<option value="EB1">NWM: "Current" conditions</option>
-						<option value="EB2">NWM: Next 6 hours</option>
-						<option value="EB2">NWM: Next 12 hours</option>
+						<option value="impacts">Impact Dashboard</option>
+						<option value="basedata">Base Data and Map Books</option>
+						<option value="GIS_O">GIS Only</option>
 					</optgroup>
 					<optgroup label="Random outputs">
 						<option value="BaseData">Base Data Viewer</option>
@@ -272,7 +266,7 @@ End Sub
 					</optgroup>
 				</select><BR>
 				<label for="clipflag">Hard crop outputs to AOI shape</label>
-				<input type="checkbox" id="clipflag" name="clipflag">
+				<input type="checkbox" id="clipflag" name="clipflag" checked>
 			</fieldset>
 			<br>
 			<input type="button" value="Run FOSSFlood" name="run_button"  onClick="ExecuteFOSSFlood"><br>

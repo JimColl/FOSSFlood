@@ -21,12 +21,12 @@ RemoteHost: api.github.com
 RemoteRepo: FloodMapping
 RemoteUsername: mikejohnson51
 RemoteRef: master
-RemoteSha: 15b17d95496772ca0bfb3363f591a9b68bbc3d5e
+RemoteSha: 12aceee07f678d5b53771b50f282039471e12c7c
 GithubRepo: FloodMapping
 GithubUsername: mikejohnson51
 GithubRef: master
-GithubSHA1: 15b17d95496772ca0bfb3363f591a9b68bbc3d5e
+GithubSHA1: 12aceee07f678d5b53771b50f282039471e12c7c
 NeedsCompilation: no
-Packaged: 2020-05-24 22:25:12 UTC; Cornholio
+Packaged: 2020-07-03 14:23:56 UTC; Cornholio
 Author: Mike Johnson [aut, cre]
-Built: R 3.6.3; ; 2020-05-24 22:25:13 UTC; windows
+Built: R 3.6.3; ; 2020-07-03 14:23:57 UTC; windows

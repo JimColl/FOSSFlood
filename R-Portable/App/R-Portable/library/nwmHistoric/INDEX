@@ -1,0 +1,22 @@
+add_waterYear           Add Water Year Column
+aggregate_dowy          Aggregate by DOWY
+aggregate_j             Aggregate by Julien Day
+aggregate_m             Aggregate by Month
+aggregate_record        Aggregate by Record
+aggregate_s             Aggregate by Season
+aggregate_wy            Aggregate by Water Year
+aggregate_wym           Aggregate by Water Year - Month
+aggregate_wymd          Aggregate by Water Year - Month - Day
+aggregate_wys           Aggregate by Water Year - Season
+aggregate_y             Aggregate by Year
+aggregate_yj            Aggregate by Year-Month
+aggregate_ym            Aggregate by Year-Month
+aggregate_ymd           Aggregate by Year-Month-Day
+aggregate_ys            Aggregate by Year-Season
+discover_nhd            Discover NHD Features
+discover_nwis           Discover USGS NWIS Stream Gages
+find_outlets            Identify NHD outlets from flowlines
+gage_lu                 COMID to NWIS ID lookup Dataset containing
+                        COMID-NWIS lookup
+readNWMdata             NWM Reanalysis Extraction
+split_time              Split Y-M-D-H into time components

@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Aggregate NWM data usning column and function input</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nwmHistoric_agg {nwmHistoric}"><tr><td>nwmHistoric_agg {nwmHistoric}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Aggregate NWM data usning column and function input</h2>
+
+<h3>Description</h3>
+
+<p>Aggregate NWM data usning column and function input
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nwmHistoric_agg(rawData, cols, fun, na.rm)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>rawData</code></td>
+<td>
+<p>raw data returned from readNWMdata</p>
+</td></tr>
+<tr valign="top"><td><code>cols</code></td>
+<td>
+<p>a vector of colum names to group by</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>a function of list of functions to apply to group data</p>
+</td></tr>
+<tr valign="top"><td><code>na.rm</code></td>
+<td>
+<p>logical. Should NA values be removed before appling fun</p>
+</td></tr>
+<tr valign="top"><td><code>season</code></td>
+<td>
+<p>logical. Should season be added</p>
+</td></tr>
+<tr valign="top"><td><code>waterYear</code></td>
+<td>
+<p>logical. Should water year be added?</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>an aggregated data.frame
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>nwmHistoric</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

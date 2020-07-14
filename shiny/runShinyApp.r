@@ -35,29 +35,12 @@ user.forecast.file <- "" 							# Empty "" or filepath to flows.fst
 user.forecast.members <- as.list("##USERFORECASTMEMBERS") 			# unused - DEV
 user.output.choice <- "impacts" 							# GIS_O  basedata  impacts
 user.output.grid <- "Square" 								# "Square", "Hexagon"
-user.output.hardclip <- as.logical("False") 					# If TRUE, Hard clip data to aoi shape, defaults to bb
+user.output.hardclip <- as.logical("True") 					# If TRUE, Hard clip data to aoi shape, defaults to bb
 user.output.archive <- as.logical("False") 						# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
 
 # Input cleanup
 user.address.source <- stringr::str_replace_all(user.address.source,"_"," ")
 user.road.source <- stringr::str_replace_all(user.road.source,"_"," ")
-
-# -- Dev Comment/uncomment with ctrl-shift-c
-# user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
-# # user.aoi.string <- "03216"
-# user.aoi.source <- "zctas"
-# user.address.source <- "OpenAddresses"
-# user.address.file <- ""
-# user.road.source <- "TIGER Lines 2018"
-# user.road.file <- ""
-# user.forecast.source <- "NWM_SR_C"
-# user.forecast.timesteps <- as.numeric("8")
-# user.forecast.file <- ""
-# user.forecast.members <- as.list(1)
-# user.output.choice <- "impacts"
-# user.output.grid <- "Square"
-# user.output.hardclip <- TRUE
-# user.output.archive <- FALSE
 
 print(paste("-- Welcome to FOSSFlood - Running FOSSFlood in", basedir)) # This should look something like C:/Users/.../FOSSFlood-master
 print("-- Pre-Preloading constants --")
@@ -78,6 +61,7 @@ print("-- Pre-Preloading constants --")
 # install.packages("devtools")
 # install.packages("geosphere")
 # install.packages("sf")
+# install.packages("randomcoloR")
 # install.packages("leaflet")
 # install.packages("leafpop")
 ## install.packages("plotly")
@@ -88,7 +72,6 @@ print("-- Pre-Preloading constants --")
 # install.packages("shinycssloaders") 
 # install.packages("shinyWidgets")
 # install.packages("dataRetrieval")
-
 # install.packages("webshot")
 # install.packages("magick")
 # install.packages("animation")
@@ -106,6 +89,7 @@ print("-- Pre-Preloading constants --")
 # install.packages("fst")
 # install.packages("dygraphs")
 # install.packages("xts")
+# install.packages("gridExtra")
 
 suppressMessages(library(installr))
 suppressMessages(library(devtools))
@@ -129,6 +113,7 @@ suppressMessages(library(devtools))
 # devtools::install_github("hunzikp/velox")  # installs rtools?
 # devtools::install_github("ITSLeeds/geofabrik")
 ## devtools::install_github("mikejohnson51/nomadsNC",auth_token='\')      --- REMOVE ME BEFORE PUSH ----
+# devtools::install_github("mikejohnson51/nwmHistoric") 
 
 # install.packages("patchwork")
 # install.packages("hrbrthemes")
@@ -161,7 +146,10 @@ suppressMessages(library(dygraphs))
 suppressMessages(library(xts))
 suppressMessages(library(timeSeries))
 suppressMessages(library(TSstudio))
+suppressMessages(library(grid))
+suppressMessages(library(gridExtra))
 
+suppressMessages(library(randomcoloR))
 suppressMessages(library(leaflet))
 suppressMessages(library(leafpop))
 suppressMessages(library(leaflet.opacity))
@@ -176,9 +164,11 @@ suppressMessages(library(shinybusy))
 suppressMessages(library(AOI))
 suppressMessages(library(HydroData))
 suppressMessages(library(FloodMapping))
+suppressMessages(library(nwmHistoric))
 suppressMessages(library(nomadsNC))
 suppressMessages(library(velox))
 suppressMessages(library(geofabrik))
+
 
 # suppressMessages(library(patchwork))
 # suppressMessages(library(hrbrthemes))
@@ -438,22 +428,22 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   # ---------------------------------------------------------------------------------
   
   # TIGER ----------------------------------------------------------------------------
-  # Error correcting: not set for areas that cross state boundaries
   print("-- Downloading TIGER roads --")
   CountiesFIPS <- quiet(tigris::counties(cb=TRUE))
   CountiesFIPS_Proj <- sf::st_transform(sf::st_as_sf(CountiesFIPS), sf::st_crs(4326))
   aoiCounties <- suppressMessages(CountiesFIPS_Proj[xx$aoi.bb, ])
   # Error checking: Download roads for AOI that interset more than one state or county
-  if(length(unique(aoiCounties$COUNTYFP)) > 1) {
-    tigerroads_tmp <- quiet(tigris::roads(unique(aoiCounties$STATEFP),unique(aoiCounties$COUNTYFP)[1], year = 2018, refresh = TRUE)[NULL,])
-    for(i in unique(aoiCounties$COUNTYFP)) {
-      tigerroads <- quiet(tigris::roads(unique(aoiCounties$STATEFP),i, year = 2018, refresh = TRUE))
-      tigerroads_tmp <- rbind(tigerroads_tmp, tigerroads)
+  if( nrow(aoiCounties) > 1) {
+    tigerroads_tmp <- quiet(tigris::roads(aoiCounties[1,]$STATEFP,aoiCounties[1,]$COUNTYFP, year = 2018, refresh = TRUE))
+    for (i in 1:nrow(aoiCounties)-1) {
+      j = i+1
+      tigerroads_tmp1 <- quiet(tigris::roads(aoiCounties[j,]$STATEFP,aoiCounties[j,]$COUNTYFP, year = 2018, refresh = TRUE))
+      tigerroads_tmp <- rbind(tigerroads_tmp, tigerroads_tmp1)
     }
     tigerroads <- tigerroads_tmp
-  } else
+  } else {
     tigerroads <- quiet(tigris::roads(unique(aoiCounties$STATEFP),unique(aoiCounties$COUNTYFP), year = 2018, refresh = TRUE))
-  
+  }
   tigerroads_Proj <- sf::st_transform(sf::st_as_sf(tigerroads), sf::st_crs(4326))
   tigerroads_Proj_Sub <- suppressMessages(tigerroads_Proj[xx$aoi.bb, ])
   var.out.bool <- names(tigerroads_Proj_Sub) %in% c("FULLNAME", "RTTYP")
@@ -463,78 +453,88 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   sf::write_sf(tigerout, paste0(basedir,"/AOI/",user.aoi.filepath,"/roads_tiger.shp"), delete_layer = TRUE, quiet = TRUE)
   # ---------------------------------------------------------------------------------
   
-  # OSM Downloads ---------------------------------------------------------------------------------
-  # Error correcting: not set for areas that cross state boundaries
-  print("-- Downloading OSM Dataset --")
-  quiet(httr::GET(paste0("http://download.geofabrik.de/north-america/us/",tolower(gsub(" ", "-", cdlTools::fips(aoiCounties$STATEFP[1], to = "Name"))),"-latest.osm.pbf"), 
-                  write_disk(paste0(basedir,"/AOI/",user.aoi.filepath,"/tmp/",tolower(gsub(" ", "-", cdlTools::fips(aoiCounties$STATEFP[1], to = "Name"))),"-latest.osm.pbf"), 
-                             overwrite=TRUE)))
-  
-  # OSM Roads ---------------------------------------------------------------------------------
-  print("-- Building OSM Roads --")
-  OSMlines <- geofabrik::read_pbf(paste0(basedir,"/AOI/",user.aoi.filepath,"/tmp/",
-                                         tolower(gsub(" ", "-", cdlTools::fips(aoiCounties$STATEFP[1], to = "Name"))),
-                                         "-latest.osm.pbf"),
-                                  layer = "lines")
-  OSMlines_Proj <- sf::st_transform(sf::st_as_sf(OSMlines), sf::st_crs(4326))
-  OSMlines_Proj_Sub <- suppressMessages(OSMlines_Proj[xx$aoi.bb, ])
-  var.out.bool <- names(OSMlines_Proj_Sub) %in% c("name", "highway")
-  OSMlinesout <- OSMlines_Proj_Sub[,var.out.bool] %>%
-    dplyr::rename('name' = name) %>%
-    dplyr::rename('type' = highway) %>%
-    mutate(type=recode(type, 
-                       'track'=as.character(NA),
-                       'residential'="M",
-                       'service'="O",
-                       'path'=as.character(NA),
-                       'unclassified'=as.character(NA),
-                       'footway'=as.character(NA),
-                       'primary'="M",
-                       'secondary'="C",
-                       'tertiary'="O")) %>%
-    drop_na(type) %>%
-    sf::st_as_sf()
-  sf::write_sf(OSMlinesout, paste0(basedir,"/AOI/",user.aoi.filepath,"/roads_osm.shp"), delete_layer = TRUE, quiet = TRUE)
-  # ---------------------------------------------------------------------------------
-  
-  # OSM addresses ---------------------------------------------------------------------------------
-  print("-- Building OSM Addresses --")
-  OSMpoints <- geofabrik::read_pbf(paste0(basedir,"/AOI/",user.aoi.filepath,"/tmp/",
-                                          tolower(gsub(" ", "-", cdlTools::fips(aoiCounties$STATEFP[1], to = "Name"))),
-                                          "-latest.osm.pbf"),
-                                   layer = "points")
-  OSMpoints_Proj <- sf::st_transform(sf::st_as_sf(OSMpoints), sf::st_crs(4326))
-  OSMpoints_Proj_Sub <- suppressMessages(OSMpoints_Proj[xx$aoi.bb, ])
-  # layer_options = "ENCODING=UTF-8", delete_layer = TRUE, quiet = TRUE)
-  var.out.bool <- names(OSMpoints_Proj_Sub) %in% c("name", "address")
-  OSMpointsout <- OSMpoints_Proj_Sub[,var.out.bool]
-  OSMpointsout$address <- ifelse(is.na(OSMpointsout$address), OSMpointsout$name, OSMpointsout$address)
-  OSMpointsout$address <- ifelse(is.na(OSMpointsout$address), "NA No CAMA Data Avail", OSMpointsout$address)
-  OSMpointsout$dataset="OpenStreetMaps"
-  OSMpointsout <- OSMpointsout[ , !(names(OSMpointsout) %in% c("name"))]
-  sf::write_sf(OSMpointsout, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_osm.shp"), delete_layer = TRUE, quiet = TRUE)
-  # ---------------------------------------------------------------------------------
-  
-  # Open Addresses ---------------------------------------------------------------------------------
-  # Error correcting: not set for areas that cross state boundaries
-  print("-- Downloading OpenAddresses --")
-  validOA <- openadds::oa_list() %>% dplyr::filter(str_detect(processed, paste0("/us/",tolower(cdlTools::fips(aoiCounties$STATEFP[1], to = "Abbreviation")))))
-  urls = validOA$processed 
-  out = list()
-  for( i in 1:length(validOA$processed)) {
-    out[[i]] <- tryCatch({
-      openadds::oa_get(validOA$processed[[i]])},
-      error   = function(e){NULL})
-    message(i)
+  for(t in 1:length(unique(aoiCounties$STATEFP))){
+    print(paste0("-- Downloading OSM Dataset for ",cdlTools::fips( unique(aoiCounties$STATEFP)[t], to = "Abbreviation")," --"))
+    quiet(httr::GET(paste0("http://download.geofabrik.de/north-america/us/",tolower(gsub(" ", "-", cdlTools::fips( unique(aoiCounties$STATEFP)[t], to = "Name"))),"-latest.osm.pbf"), 
+                    write_disk(paste0(basedir,"/AOI/",user.aoi.filepath,"/tmp/",tolower(gsub(" ", "-", cdlTools::fips(unique(aoiCounties$STATEFP)[t], to = "Name"))),"-latest.osm.pbf"), 
+                               overwrite=TRUE)))
+    
+    print(paste0("-- Building OSM Roads for ",cdlTools::fips(unique(aoiCounties$STATEFP)[t], to = "Abbreviation")," --"))
+    OSMlines <- geofabrik::read_pbf(paste0(basedir,"/AOI/",user.aoi.filepath,"/tmp/",
+                                           tolower(gsub(" ", "-", cdlTools::fips(unique(aoiCounties$STATEFP)[t], to = "Name"))),
+                                           "-latest.osm.pbf"),
+                                    layer = "lines")
+    OSMlines_Proj <- sf::st_transform(sf::st_as_sf(OSMlines), sf::st_crs(4326))
+    OSMlines_Proj_Sub <- suppressMessages(OSMlines_Proj[xx$aoi.bb, ])
+    var.out.bool <- names(OSMlines_Proj_Sub) %in% c("name", "highway")
+    OSMlinesout <- OSMlines_Proj_Sub[,var.out.bool] %>%
+      dplyr::rename('name' = name) %>%
+      dplyr::rename('type' = highway) %>%
+      mutate(type=recode(type, 
+                         'track'=as.character(NA),
+                         'residential'="M",
+                         'service'="O",
+                         'path'=as.character(NA),
+                         'unclassified'=as.character(NA),
+                         'footway'=as.character(NA),
+                         'primary'="M",
+                         'secondary'="C",
+                         'tertiary'="O")) %>%
+      drop_na(type) %>%
+      sf::st_as_sf()
+    # ---------------------------------------------------------------------------------
+    
+    # OSM addresses ---------------------------------------------------------------------------------
+    print(paste0("-- Building OSM Addresses for ",cdlTools::fips(unique(aoiCounties$STATEFP)[t], to = "Abbreviation")," --"))
+    OSMpoints <- geofabrik::read_pbf(paste0(basedir,"/AOI/",user.aoi.filepath,"/tmp/",
+                                            tolower(gsub(" ", "-", cdlTools::fips(unique(aoiCounties$STATEFP)[t], to = "Name"))),
+                                            "-latest.osm.pbf"),
+                                     layer = "points")
+    OSMpoints_Proj <- sf::st_transform(sf::st_as_sf(OSMpoints), sf::st_crs(4326))
+    OSMpoints_Proj_Sub <- suppressMessages(OSMpoints_Proj[xx$aoi.bb, ])
+    # layer_options = "ENCODING=UTF-8", delete_layer = TRUE, quiet = TRUE)
+    var.out.bool <- names(OSMpoints_Proj_Sub) %in% c("name", "address")
+    OSMpointsout <- OSMpoints_Proj_Sub[,var.out.bool]
+    OSMpointsout$address <- ifelse(is.na(OSMpointsout$address), OSMpointsout$name, OSMpointsout$address)
+    OSMpointsout$address <- ifelse(is.na(OSMpointsout$address), "NA No CAMA Data Avail", OSMpointsout$address)
+    OSMpointsout$dataset="OpenStreetMaps"
+    OSMpointsout <- OSMpointsout[ , !(names(OSMpointsout) %in% c("name"))]
+    
+    # Open Addresses ---------------------------------------------------------------------------------
+    quiet(gc())
+    print(paste0("-- Downloading OpenAddresses for ",cdlTools::fips(unique(aoiCounties$STATEFP)[t], to = "Abbreviation")," --"))
+    validOA <- openadds::oa_list() %>% dplyr::filter(str_detect(processed, paste0("/us/",tolower(cdlTools::fips(unique(aoiCounties$STATEFP)[t], to = "Abbreviation")))))
+    urls = validOA$processed 
+    out = list()
+    for( l in 1:length(validOA$processed)) {
+      out[[i]] <- tryCatch({
+        openadds::oa_get(validOA$processed[[l]])},
+        error   = function(e){NULL})
+      message(l)
+    }
+    out1 <- out[-which(sapply(out, is.null))]
+    c = parse(text = paste0("mergedStateData <- openadds::oa_combine(",str_c("out1[[", c(1:(length(out1))), "]]", sep = "",  collapse = ", "),")"))
+    mergedStateData <- eval(c)
+    sp::coordinates(mergedStateData) <- ~lon+lat
+    sfoadata <- sf::st_as_sf(mergedStateData) %>% sf::st_set_crs(4326)
+    # aoiPoints <- suppressWarnings(suppressMessages(sfoadata[!duplicated(sfoadata),][xx$aoi.bb, ]))
+    aoiPoints <- sfoadata[xx$aoi.bb, ]
+    
+    if(t==1) {
+      OSMlinesout_hold <- OSMlinesout
+      OSMpointsout_hold <- OSMpointsout
+      aoiPoints_hold <- aoiPoints
+    }
+    if(t>=2) {
+      OSMlinesout_hold <- rbind(OSMlinesout_hold, OSMlinesout)
+      OSMpointsout_hold <- rbind(OSMpointsout_hold, OSMpointsout)
+      aoiPoints_hold <- rbind(aoiPoints_hold, aoiPoints)
+    }
   }
-  # out <- out[-which(sapply(out, is.null))]
-  c = parse(text = paste0("mergedStateData <- openadds::oa_combine(",str_c("out[[", c(1:(length(out))), "]]", sep = "",  collapse = ", "),")"))
-  mergedStateData <- eval(c)
-  sp::coordinates(mergedStateData) <- ~lon+lat
-  sfoadata <- sf::st_as_sf(mergedStateData) %>% sf::st_set_crs(4326)
-  aoiPoints <- suppressWarnings(suppressMessages(sfoadata[!duplicated(sfoadata),][xx$aoi.bb, ]))
-  sf::write_sf(aoiPoints, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_oa.shp"), delete_layer = TRUE, quiet = TRUE)
-  # ---------------------------------------------------------------------------------
+  
+  sf::write_sf(OSMlinesout_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/roads_osm.shp"), delete_layer = TRUE, quiet = TRUE)
+  sf::write_sf(OSMpointsout_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_osm.shp"), delete_layer = TRUE, quiet = TRUE)
+  sf::write_sf(aoiPoints_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_oa.shp"), delete_layer = TRUE, quiet = TRUE)
   
   # -- Make ancillary products ---------------------------------------------------------------------------------
   print("-- Generating Index Fishnets --")
@@ -639,6 +639,18 @@ tryCatch(xx$address.point <- sf::read_sf(xx$address.path),
            user.address.source <<- "OpenAddresses"
          }
 )
+if(length(xx$address.point)==0){
+  if(user.address.source == "OpenAddresses") {
+    user.address.source <<- "OpenStreetMap Addresses"
+    xx$address.path <<- xx$osmadd.path
+    xx$address.point <<- quiet(sf::read_sf(xx$address.path))
+  } else {
+    user.address.source <<- "OpenAddresses"
+    xx$address.path <<- xx$oaadd.path
+    xx$address.point <<- quiet(sf::read_sf(xx$address.path))
+  }
+  print(paste0("-- !ALERT! Address database is empty, swapping to ",user.address.source," --"))
+}
 
 #/////////////////////////////////////
 # Roads
@@ -697,7 +709,8 @@ xx$nwm.discharge.dateTimeZoneLocal <- as.POSIXct(xx$nwm.discharge.dateTime,tz=Sy
 xx$nwm.discharge.dateTimeZoneZ <- xx$nwm.discharge.dateTimeZoneLocal 
 attr(xx$nwm.discharge.dateTimeZoneZ, "tzone") <- "UTC"
 xx$nwm.discharge.dateTimeZoneLocalHR <- format(xx$nwm.discharge.dateTimeZoneLocal, '%m/%d/%Y %I:%M %p')
-xx$nwm.discharge.dateTimeZoneZHR <- sapply(xx$nwm.discharge.dateTimeZoneZ, as.character) 
+# xx$nwm.discharge.dateTimeZoneZHR <- sapply(xx$nwm.discharge.dateTimeZoneZ, as.character) 
+xx$nwm.discharge.dateTimeZoneZHR <- format(xx$nwm.discharge.dateTimeZoneZ, "%Y-%m-%d %H:%M:%S %Z")
 
 if(!SkipNWISFlows) {
   firstdate <- lubridate::date(xx$nwm.discharge.dateTimeZoneZ[1])
@@ -705,6 +718,14 @@ if(!SkipNWISFlows) {
   xx$nwis.discharge <- readNWISuv(xx$gage.point$site_no, "00060", as.Date(firstdate)-2, as.Date(lastdate)+1, tz="UTC")
   xx$nwis.stage <- readNWISuv(xx$gage.point$site_no, "00065", as.Date(firstdate)-2, as.Date(lastdate)+1, tz="UTC")
 }
+
+# test <- nwmHistoric::readNWMdata(
+#   comid = xx$flow.line$comid,
+#   startDate = "2018-10-02",
+#   endDate = "2018-10-02",
+#   tz = "UTC",
+#   version = 2
+# )
 
 #/////////////////////////////////////
 # Map inpacts                                 
@@ -758,8 +779,9 @@ xx$address.velox = v$extract_points(sf::st_transform(xx$address.point, raster::c
 colnames(xx$address.velox) <- names(xx$flood.grid)
 xx$address.point <- do.call(cbind, list(xx$address.point, xx$address.velox))
 
-xx$address.point[names(xx$flood.grid)[1]] <- NA_real_              # testing
-xx$address.point[names(xx$flood.grid)[4]] <- NA_real_              # testing
+xx$flow.point <- suppressWarnings(suppressMessages(sf::st_intersection(xx$mapindex.poly, sf::st_cast(xx$flow.line,"POINT")))) %>% 
+  rename('Index Label' = IndexLabel)
+# xx$address.point[names(xx$flood.grid)[1]] <- NA_real_     # testing
 
 processskipflag <- FALSE
 if(all(xx$address.point$ffreq==0,na.rm = TRUE) | user.output.choice=="basedata") {
@@ -802,6 +824,18 @@ if(all(xx$address.point$ffreq==0,na.rm = TRUE) | user.output.choice=="basedata")
     imager::cimg2magick(rotate = T) %>%
     magick::image_flop()
   
+  xx$address.mapbook = suppressWarnings(suppressMessages(sf::st_intersection(xx$mapindex.poly, xx$address.point)))
+  xx$road.point.mapbook = suppressWarnings(suppressMessages(sf::st_intersection(xx$mapindex.poly, xx$road.point)))
+  
+  # Human readable field names
+  xx$mapindex.poly <- xx$mapindex.poly %>% 
+    rename('Index Label' = IndexLabel)
+  xx$mapindex.point <- xx$mapindex.point %>% 
+    rename('Index Label' = IndexLabel)
+  xx$address.mapbook <- xx$address.mapbook %>% 
+    rename('Index Label' = IndexLabel)
+  xx$road.point.mapbook <- xx$road.point.mapbook %>% 
+    rename('Index Label' = IndexLabel)
   # Set process skip flag
   processskipflag <- TRUE
 }
@@ -960,17 +994,9 @@ if(!processskipflag) {
     imager::autocrop("white") %>%
     imager::cimg2magick(rotate = T) %>%
     magick::image_flop() 
-  # vis params
-  xx$flood.grid.val <- as.numeric(c(1:10))
-  xx$flood.grid.pal <- colorNumeric(c("#deebf7", "#9ecae1", "#3182bd"), xx$flood.grid.val, na.color = "transparent")
-  xx$flood.grid.ffreqval <- as.numeric(c(1:length(xx$nwm.timestep)))
-  xx$flood.grid.ffreqpal <- colorNumeric(c("#deebf7", "#9ecae1", "#3182bd"), xx$flood.grid.ffreqval, na.color = "transparent")
-  xx$mapindex.poly.WHHval <- as.numeric(c(0:max(xx$mapindex.poly$'Wet House Hours', na.rm = TRUE)))
-  xx$mapindex.poly.WHHpal <- colorBin("Reds", xx$mapindex.poly$'Wet House Hours', 4, pretty = TRUE)
-  xx$mapindex.poly.IHCval <- as.numeric(c(0:max(xx$mapindex.poly$'Uniquely Impacted Addresses', na.rm = TRUE)))
-  xx$mapindex.poly.IHCpal <- colorBin("Reds", xx$mapindex.poly$'Uniquely Impacted Addresses', 4, pretty = TRUE)
-  xx$mapindex.poly.MDval <- as.numeric(c(0:max(xx$mapindex.poly$'Maximum Impact Depth', na.rm = TRUE)))
-  xx$mapindex.poly.MDpal <- colorBin("Reds", xx$mapindex.poly$'Maximum Impact Depth', 4, pretty = TRUE)
+  
+  magick::image_write(TitleBlock, path = paste0(basedir,"/AOI/",user.aoi.filepath,"/output/titleblock.png"), format = "png")
+  
 } # End of impact processing
 
 # Index view lock
@@ -983,6 +1009,22 @@ xx$aoi.bb.view <- suppressMessages(suppressWarnings(sf::st_buffer(
   mitreLimit = 1
 )))
 
+# vis params
+xx$hand.grid.val <- as.numeric(c(0:raster::maxValue(xx$hand.grid)))
+xx$hand.grid.pal <- colorBin("Blues", xx$hand.grid.val, 10,na.color = "transparent")
+xx$catch.grid.val <- raster::unique(xx$catch.grid)
+xx$catch.grid.pal <- colorFactor(palette = randomcoloR::distinctColorPalette(length(raster::unique(xx$catch.grid))),
+                                 domain = xx$catch.grid.val)
+xx$flood.grid.val <- as.numeric(c(0:10))
+xx$flood.grid.pal <- colorNumeric(c("#deebf7", "#9ecae1", "#3182bd"), xx$flood.grid.val, na.color = "transparent")
+xx$flood.grid.ffreqval <- as.numeric(c(1:length(xx$nwm.timestep)))
+xx$flood.grid.ffreqpal <- colorNumeric(c("#deebf7", "#9ecae1", "#3182bd"), xx$flood.grid.ffreqval, na.color = "transparent")
+xx$mapindex.poly.WHHval <- as.numeric(c(0:max(xx$mapindex.poly$'Wet House Hours', na.rm = TRUE)))
+xx$mapindex.poly.WHHpal <- colorBin("Reds", xx$mapindex.poly$'Wet House Hours', 4, pretty = TRUE)
+xx$mapindex.poly.IHCval <- as.numeric(c(0:max(xx$mapindex.poly$'Uniquely Impacted Addresses', na.rm = TRUE)))
+xx$mapindex.poly.IHCpal <- colorBin("Reds", xx$mapindex.poly$'Uniquely Impacted Addresses', 4, pretty = TRUE)
+xx$mapindex.poly.MDval <- as.numeric(c(0:max(xx$mapindex.poly$'Maximum Impact Depth', na.rm = TRUE)))
+xx$mapindex.poly.MDpal <- colorBin("Reds", xx$mapindex.poly$'Maximum Impact Depth', 4, pretty = TRUE)
 xx$vis_roadpal <- colorFactor(palette = c('yellow', 'red', 'black', 'gray', 'black', 'red'), 
                               domain = c("C","I","M","O","S","U"))
 xx$vis_roadpalFull <- colorFactor(palette = c('yellow', 'red', 'black', 'gray', 'black', 'red'), 
@@ -1063,64 +1105,80 @@ the decisions made based on its outputs."
 
 basedataUI <- dashboardPage(
   skin = "blue",
-  dashboardHeader(title="FOSSFlood V 1.1",tags$li(class="dropdown",actionButton("home","Home"),actionButton("print", "Print"))),
+  # dashboardHeader(title="FOSSFlood V 1.2",tags$li(class="dropdown",actionButton("print", "Print"))),
+  dashboardHeader(title="FOSSFlood V 1.2"),
   dashboardSidebar(
-    sidebarMenu(id = "sidebar",
+    sidebarMenu(id="sidebar",
                 h3("Map controls"),
-                pickerInput(inputId='userbasemap',label='Select a base map:',choices=basemapchoices,selected=basemapchoices[2]$`Minimal maps`[2]),
-                shinyWidgets::switchInput(inputId="indexColor",label="Grid color",onLabel="Black",offLabel="White",value=TRUE)
+                pickerInput(inputId='userbasemap',label='Select a base map:',choices=basemapchoices,selected=basemapchoices[3]$`Just lables`[1]),
+                shinyWidgets::switchInput(inputId="gridColor",label="Grid color",onLabel="Black",offLabel="White",value=TRUE),
+                shinyWidgets::switchInput(inputId="aoiColor",label="AOI shading",onLabel="Black",offLabel="White",value=TRUE),
+                menuItem("basedata", tabName = "basedata", icon = icon("info-circle")),
+                menuItem("mapbook", tabName = "mapbook", icon = icon("arrows-h")),
+                add_busy_spinner(spin="orbit", color = "red",position='bottom-left', margins = c(40, 25))
     )
   ),
   dashboardBody(
-    tags$head(tags$script('
-                          // Define function to set height of "map" and "map_container"
-                          setHeight = function() {
-                          var window_height = $(window).height();
-                          var header_height = $(".main-header").height();
-                          
-                          var boxHeight = window_height - header_height - 80;
-                          
-                          $("#map").height(boxHeight);
-                          $("#summary_map").height(boxHeight - 20);
-                          };
-                          
-                          // Set input$box_height when the connection is established
-                          $(document).on("shiny:connected", function(event) {
-                          setHeight();
-                          });
-                          
-                          // Refresh the box height on every window resize event    
-                          $(window).on("resize", function(){
-                          setHeight();
-                          });
-                          '),
-              tags$style(
-                type="text/css",
-                "#titleblock img {max-width: 100%; width: 100%; height: auto;}"
-              )),
-    fluidRow(
-      column(width = 8,
-             box(width = NULL, solidHeader = FALSE, status = "warning",leafletOutput("basemap")),
-             tabBox(title = tagList(shiny::icon("gear"), "Summary Tables"), width = NULL,
-                    tabPanel(title = tagList(shiny::icon("th"), "Map index"),
-                             DT::dataTableOutput("mapindextable")),
-                    tabPanel(title = tagList(shiny::icon("home"), "Addresses"),
-                             DT::dataTableOutput("addressesmapbook")),
-                    tabPanel(title = tagList(shiny::icon("road"), "Roads"),
-                             DT::dataTableOutput("roadsmapbook")),
-                    tabPanel(title = tagList(shiny::icon("water"), "Streams"),
-                             DT::dataTableOutput("streamsmapbook"))
-             )
-             
+    useShinyalert(),
+    useShinyjs(),
+    tabItems(
+      tabItem(tabName="basedata",value="basedata",
+              tags$head(
+                tags$style(type = "text/css", "#basemap {height: calc(60vh - 80px) !important;}"),
+                tags$style(type = "text/css", "#mapbookmap {height: calc(60vh - 20px) !important;}"),
+                tags$style(type="text/css", "#titleblock img {max-width: 100%; width: 100%; height: auto;}")
+              ),
+              fluidRow(
+                column(width = 8,
+                       box(width = NULL, solidHeader = FALSE, status = "warning",leafletOutput("basemap")),
+                       tabBox(title = tagList(shiny::icon("gear"), "Summary Tables"), width = NULL,
+                              tabPanel(title = tagList(shiny::icon("home"), "Addresses"),
+                                       DT::dataTableOutput("addressDataset")),
+                              tabPanel(title = tagList(shiny::icon("road"), "Roads"),
+                                       DT::dataTableOutput("roadsDataset")),
+                              tabPanel(title = tagList(shiny::icon("water"), "Streams"),
+                                       DT::dataTableOutput("streamsDataset"))
+                       )
+                ),
+                column(width = 4,
+                       box(width = NULL,height = 287,imageOutput("titleblock")),
+                       box(title = "Map controls", width = NULL, status = "primary","Map controls"),
+                       box(title = "Warnings", width = NULL, status = "primary",HTML(DISCLAIMERString))
+                )
+              )
       ),
-      column(width = 4,
-             box(width = NULL, status = "primary",imageOutput("titleblock")),
-             box(title = "Map controls", width = NULL, status = "primary","Map controls"),
-             box(title = "Warnings/Credits", width = NULL, status = "primary",DISCLAIMERString)
+      tabItem(tabName = "mapbook",value="mapbook",
+              tags$head(
+                tags$style(type="text/css", "#swipermaintitleblock img {max-width: 100%; width: 100%; height: auto;}"),
+                tags$style(type="text/css", "#titleblock1 img {max-width: 100%; width: 100%; height: auto;}")
+              ),
+              fluidRow(
+                column(width = 8,
+                       box(title = "map book map", width = NULL, status = "primary",leafletOutput("mapbookmap")),
+                       box(title = "features", width = NULL, status = "primary",tabBox(title = tagList(shiny::icon("gear"), "Summary Tables"), width = NULL,
+                                                                                       tabPanel(title = tagList(shiny::icon("home"), "Addresses"),
+                                                                                                DT::dataTableOutput("filteredaddressesmapbook")),
+                                                                                       tabPanel(title = tagList(shiny::icon("road"), "Roads"),
+                                                                                                DT::dataTableOutput("filteredroadsmapbook")),
+                                                                                       tabPanel(title = tagList(shiny::icon("water"), "Streams"),
+                                                                                                DT::dataTableOutput("filteredstreamsmapbook")))
+                       )
+                ),
+                column(width = 4,
+                       imageOutput("titleblock1"),
+                       box(title = "Map index", width = NULL, status = "primary",
+                           leafletOutput("indexmap"),
+                           fluidRow(width = NULL,align="center",
+                                    actionBttn(inputId="backbutton", label = "Back-Previous", style = "pill", color = "danger"),
+                                    actionBttn(inputId="forwardbutton", label = "Forward-Next", style = "pill", color = "danger"),
+                                    textOutput("activeIndexLabel"))
+                       ),
+                       box(title = "Warnings", width = NULL, status = "primary",HTML(DISCLAIMERString))
+                )
+              )
       )
-      
     )
-    )
+  )
 )
 basedataSERVER <- function(input, output, session) {
   # TitleBlocks ========================================
@@ -1133,129 +1191,321 @@ basedataSERVER <- function(input, output, session) {
       deleteFile = TRUE
     )
   })
-  
-  # InforBoxes ========================================
-  output$selected_var <- renderText({
-    paste0("t_",gsub(":",".",gsub("-",".",gsub(" ",".",as.character(as.POSIXlt(input$SwiperTimestep, origin="1970-01-01"))))))
+  output$titleblock1 <- renderImage({
+    tmpfile <- TitleBlock %>%
+      magick::image_write(tempfile(fileext='jpg'), format = 'jpg')
+    list(
+      src = tmpfile,
+      filetype = "image/jpg",
+      deleteFile = TRUE
+    )
+  })
+  output$activeIndexLabel <- renderText({
+    paste0("Viewing:",values$currentIndexLabel)
   })
   
+  # InforBoxes ========================================
+  values <- reactiveValues()
+  values$count <- 1
+  values$currentIndexLabel <- "None"
+  values$currentIndexAdds <- NULL
+  values$currentIndexRoads <- NULL
+  values$currentIndexStreams <- NULL
+  
   # Maps ========================================
-  summary_map_reactive <- reactive({
+  basemap_reactive <- reactive({
     gridcolor <- "Black"
+    aoiColor <- "Black"
+    sumvisfill <- T
+    
+    leaflet() %>%
+      addProviderTiles("CartoDB.DarkMatterOnlyLabels", group = "Base Map") %>%
+      addMapPane("bg", zIndex = 410) %>%
+      # addMapPane("flood", zIndex = 412) %>%
+      addMapPane("hand", zIndex = 411) %>%
+      addMapPane("catch", zIndex = 412) %>%
+      addMapPane("flow", zIndex = 414) %>%
+      addMapPane("gage", zIndex = 416) %>%
+      addMapPane("roadimpact", zIndex = 418) %>%
+      addMapPane("road", zIndex = 420) %>%
+      addMapPane("add", zIndex = 422) %>%
+      addMapPane("index", zIndex = 424) %>%
+      addMapPane("indexlabels", zIndex = 426) %>%
+      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
+      addPolylines(data=xx$flow.line,weight = ~streamorde/2,color = "Blue",options=pathOptions(pane="flow"),group="Flowlines") %>%
+      addRasterImage(x=xx$hand.grid,colors=xx$hand.grid.pal,layerId="hand",group="hand",project=FALSE,maxBytes=20*1024*1024) %>%
+      addRasterImage(x=xx$catch.grid,colors=xx$catch.grid.pal,maxBytes=20*1024*1024,layerId="catch",group="catch") %>%
+      addRasterImage(x=xx$flood.grid$ffreq,colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+      addPolylines(data=xx$road.poly[[length(xx$nwm.timestep)+1]], color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts") %>%
+      addPolylines(data=xx$road.line,color= ~xx$vis_roadpalFull(type_full),weight = 0.8,options=pathOptions(pane="road"),group="Roads") %>%
+      addAwesomeMarkers(data=xx$address.point,
+                        icon=xx$address.point.standard, 
+                        options=pathOptions(pane="add"),
+                        clusterOptions=markerClusterOptions(),
+                        group="Addresses") %>%
+      addPolygons(data=xx$mapindex.poly, fill=F,color=gridcolor,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      addLabelOnlyMarkers(data=xx$mapindex.point, label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = T,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+      addLayersControl(
+        overlayGroups = c("Flowlines","Roads","hand","catch","Flooding","Road Impacts","Addresses","Borders","Index","Index Labels"),
+        options = layersControlOptions(collapsed = FALSE)
+      ) %>% 
+      addLegend("bottomright",title = "Road Class", pal = xx$vis_roadpalFull, values = xx$road.line$type_full, group = "Roads") %>%
+      addLegend("bottomright", pal = colorFactor(palette = "Blue",domain = "Stream Lines"), values = "Stream Lines", group = "Flow") %>%
+      addLegend("bottomleft", title = "Flood Frequency",pal = xx$flood.grid.ffreqpal, values = xx$flood.grid.ffreqval, group = "Flooding") %>%
+      hideGroup("Addresses") %>%
+      hideGroup("Road Impacts") %>%
+      hideGroup("catch") %>%
+      hideGroup("hand") %>%
+      hideGroup("Index Labels")
+  })
+  indexmap_reactive <- reactive({
+    gridcolor <- "Black"
+    aoiColor <- "Black"
     sumvisfill <- T
     
     leaflet() %>%
       addProviderTiles("Stamen.TonerBackground", group = "Base Map") %>%
-      addPolygons(data=xx$aoi.shp, color=gridcolor, weight=1,group="Borders") %>%
-      addPolylines(data=xx$flow.line,weight=1,group="Flowlines") %>%
-      addPolylines(data=xx$road.line,color= ~xx$vis_roadpal(type),group="Roads") %>%
-      addRasterImage(x=xx$flood.grid$ffreq,colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
-      addPolylines(data=xx$road.poly[[length(xx$nwm.timestep)+1]], color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,group="Road Impacts") %>%
-      addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1,group="Index") %>%
-      addLabelOnlyMarkers(data=subset(xx$mapindex.point, `Wet House Hours`>0), label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T), group="Index Lables") %>%
-      addAwesomeMarkers(data=subset(xx$address.point, ffreq>0),
-                        icon=xx$address.point.standard, 
+      addMapPane("bg", zIndex = 410) %>%
+      # addMapPane("flood", zIndex = 412) %>%
+      addMapPane("flow", zIndex = 414) %>%
+      addMapPane("gage", zIndex = 416) %>%
+      addMapPane("roadimpact", zIndex = 418) %>%
+      addMapPane("road", zIndex = 420) %>%
+      addMapPane("add", zIndex = 422) %>%
+      addMapPane("index", zIndex = 424) %>%
+      addMapPane("indexlabels", zIndex = 426) %>%
+      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders")# %>%
+    # addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
+    # addPolygons(data=xx$mapindex.poly, fill=F,color=gridcolor,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+    # addLabelOnlyMarkers(data=xx$mapindex.point, label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = T,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+    # addLayersControl(
+    #   overlayGroups = c("Flowlines","Roads","Borders","Index","Index Labels"),
+    #   options = layersControlOptions(collapsed = FALSE)
+    # ) %>%
+    # hideGroup("Index Labels")
+  })
+  mapbookmap_reactive <- reactive({
+    gridcolor <- "Black"
+    aoiColor <- "Black"
+    sumvisfill <- T
+    
+    leaflet() %>%
+      addProviderTiles("CartoDB.DarkMatterOnlyLabels", group = "Base Map") %>%
+      addMapPane("bg", zIndex = 410) %>%
+      # addMapPane("flood", zIndex = 412) %>%
+      addMapPane("hand", zIndex = 411) %>%
+      addMapPane("catch", zIndex = 412) %>%
+      addMapPane("flow", zIndex = 414) %>%
+      addMapPane("gage", zIndex = 416) %>%
+      addMapPane("roadimpact", zIndex = 418) %>%
+      addMapPane("road", zIndex = 420) %>%
+      addMapPane("add", zIndex = 422) %>%
+      addMapPane("index", zIndex = 424) %>%
+      addMapPane("indexlabels", zIndex = 426) %>%
+      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
+      # addRasterImage(x=xx$flood.grid[[1]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+      addPolylines(data=xx$flow.line,weight = ~streamorde/2,color = "Blue",options=pathOptions(pane="flow"),group="Flowlines") %>%
+      addPolylines(data=xx$road.line,color= ~xx$vis_roadpalFull(type_full),weight = 0.8,options=pathOptions(pane="road"),group="Roads") %>%
+      addAwesomeMarkers(data=xx$address.point,
+                        icon=xx$address.point.standard,
+                        options=pathOptions(pane="add"),
                         clusterOptions=markerClusterOptions(),
                         group="Addresses") %>%
+      addPolygons(data=xx$mapindex.poly, fill=F,color=gridcolor,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      addLabelOnlyMarkers(data=xx$mapindex.point, label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = T,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
       addLayersControl(
-        overlayGroups = c("Flowlines","Roads","Flooding","Road Impacts","Addresses","Borders","Index","Index Lables"),
+        overlayGroups = c("Flowlines","Roads","Flooding","Addresses","Borders","Index","Index Labels"),
         options = layersControlOptions(collapsed = FALSE)
-      ) %>% 
-      hideGroup("Roads") %>% 
-      hideGroup("Addresses")  
+      ) %>%
+      addLegend("bottomright",title = "Road Class", pal = xx$vis_roadpalFull, values = xx$road.line$type_full, group = "Roads") %>%
+      addLegend("bottomright", pal = colorFactor(palette = "Blue",domain = "Stream Lines"), values = "Stream Lines", group = "Flow")
   })
-  output$summary_map <- renderLeaflet({
-    summary_map_reactive()
+  
+  output$basemap <- renderLeaflet({
+    basemap_reactive()
   })
-  observe({
-    gridcolor <- ifelse(input$indexColor==TRUE, "Black", "White")
-    
-    if(input$summaryviewlayer=="Individual Points") {
-      leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
-        clearGroup("Borders") %>%
-        clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
-        addPolygons(data=xx$aoi.shp, color=gridcolor, weight=1,group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,weight = 1.3,group="Index") %>% 
-        showGroup("Addresses")
-    } else if(input$summaryviewlayer=="Wet House Hours") {
-      leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
-        clearGroup("Borders") %>%
-        clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
-        addPolygons(data=xx$aoi.shp, color=gridcolor, weight=1,group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1.3,group="Index") %>% 
-        hideGroup("Addresses")
-    } else if(input$summaryviewlayer=="Count of Impacted Addresses") {
-      leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
-        clearGroup("Borders") %>%
-        clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
-        addPolygons(data=xx$aoi.shp, color=gridcolor, weight=1,group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.IHCpal(`Uniquely Impacted Addresses`),fillOpacity=1,weight = 1.3,group="Index") %>% 
-        hideGroup("Addresses")
-    } else if(input$summaryviewlayer=="Maximum Impact Depth") {
-      leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
-        clearGroup("Borders") %>%
-        clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
-        addPolygons(data=xx$aoi.shp, color=gridcolor, weight=1,group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,group="Index") %>% 
-        hideGroup("Addresses")
+  output$indexmap <- renderLeaflet({
+    indexmap_reactive()
+  })
+  output$mapbookmap <- renderLeaflet({
+    mapbookmap_reactive()
+  })
+  
+  observeEvent(input$basemap_zoom, {
+    if(as.numeric(input$basemap_zoom) > 11) {
+      leafletProxy("basemap") %>%
+        showGroup("Index Labels")
+    } else {
+      leafletProxy("basemap") %>%
+        hideGroup("Index Labels")
     }
+  })
+  observeEvent(input$indexmap_zoom, {
+    if(as.numeric(input$indexmap_zoom) > 12) {
+      leafletProxy("indexmap") %>%
+        showGroup("Index Labels")
+    } else {
+      leafletProxy("indexmap") %>%
+        hideGroup("Index Labels")
+    }
+  })
+  observeEvent(input$mapbookmap_zoom, {
+    if(as.numeric(input$mapbookmap_zoom) > 12) {
+      leafletProxy("mapbookmap") %>%
+        showGroup("Index Labels")
+    } else {
+      leafletProxy("mapbookmap") %>%
+        hideGroup("Index Labels")
+    }
+  })
+  
+  observeEvent((input$gridColor | input$aoiColor), {
+    shiny::req(input$timeslider)
+    shiny::req(input$uislidertime)
+    ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
+    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
+    ifelse(input$uislidertime=="Zulu",timestepseries <- xx$nwm.discharge.dateTimeZoneZHR,timestepseries <- xx$nwm.discharge.dateTimeZoneLocalHR)
+    
+    leafletProxy("basemap") %>%
+      clearGroup("Borders") %>%
+      clearGroup("Index") %>%
+      addPolygons(data=xx$aoi.shp, color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
+      addPolygons(data=xx$mapindex.poly, fill=F,color=gridcolor,weight = 1,options=pathOptions(pane="index"),group="Index")
+    
+    leafletProxy("mapbookmap") %>%
+      clearGroup("Borders") %>%
+      clearGroup("Index") %>%
+      addPolygons(data=xx$mapindex.poly, fill=F,color=gridcolor,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders")
+    
+  })
+  observeEvent(input$userbasemap, {
+    
+    leafletProxy("basemap") %>%
+      clearGroup("Base Map") %>%
+      addProviderTiles(input$userbasemap, group = "Base Map")
+    
+    leafletProxy("mapbookmap") %>%
+      clearGroup("Base Map") %>%
+      addProviderTiles(input$userbasemap, group = "Base Map")
+    
+  })
+  observeEvent(input$backbutton, {
+    shiny::req(input$gridColor)
+    shiny::req(input$aoiColor)
+    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
+    ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
+    
+    if(values$count != 1) {
+      values$count <- values$count - 1
+    } else {
+      values$count <- length(xx$mapindex.poly)
+    }
+    
+    values$currentIndexLabel <- xx$mapindex.point[values$count,]$`Index Label`
+    values$currentIndexAdds <- subset(xx$address.mapbook, xx$address.mapbook$`Index Label`==values$currentIndexLabel) %>% select(address,`Index Label`,dataset)
+    values$currentIndexRoads <- subset(xx$road.point.mapbook, xx$road.point.mapbook$`Index Label`==values$currentIndexLabel) %>% select(`Index Label`,name)
+    values$currentIndexStreams <- subset(xx$flow.point, xx$flow.point$`Index Label`==values$currentIndexLabel) %>% select(`Index Label`,comid,gnis_name,streamorde)
+    
+    mybbox <- AOI::bbox_coords(sf::st_buffer(
+      x=xx$mapindex.poly[values$count,],
+      dist=0.0002,
+      nQuadSegs = 1,
+      endCapStyle = "SQUARE",
+      joinStyle = "ROUND",
+      mitreLimit = 1,
+      singleSide = FALSE
+    ))
+    
+    leafletProxy("indexmap") %>%
+      clearGroup("Index") %>%
+      addPolygons(data=xx$mapindex.poly, fill=F,color=gridcolor,fillOpacity=1,weight = 2,options=pathOptions(pane="index"),group="Index") %>%
+      addPolygons(data=xx$mapindex.poly[values$count,], fill=F,color="Red",weight = 3,options=pathOptions(pane="index"),group="Index")
+    
+    leafletProxy("mapbookmap") %>%
+      flyToBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax)
+    
+  })
+  observeEvent(input$forwardbutton, {
+    shiny::req(input$gridColor)
+    shiny::req(input$aoiColor)
+    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
+    ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
+    
+    if(values$count != nrow(xx$mapindex.poly)) {
+      values$count <- values$count + 1
+    } else {
+      values$count <- 1
+    }
+    
+    values$currentIndexLabel <- xx$mapindex.point[values$count,]$`Index Label`
+    values$currentIndexAdds <- subset(xx$address.mapbook, xx$address.mapbook$`Index Label`==values$currentIndexLabel) %>% select(address,`Index Label`,dataset)
+    values$currentIndexRoads <- subset(xx$road.point.mapbook, xx$road.point.mapbook$`Index Label`==values$currentIndexLabel) %>% select(`Index Label`,name)
+    values$currentIndexStreams <- subset(xx$flow.point, xx$flow.point$`Index Label`==values$currentIndexLabel) %>% select(`Index Label`,comid,gnis_name,streamorde)
+    
+    mybbox <- AOI::bbox_coords(sf::st_buffer(
+      x=xx$mapindex.poly[values$count,],
+      dist=0.0002,
+      nQuadSegs = 1,
+      endCapStyle = "SQUARE",
+      joinStyle = "ROUND",
+      mitreLimit = 1,
+      singleSide = FALSE
+    ))
+    
+    leafletProxy("indexmap") %>%
+      clearGroup("Index") %>%
+      addPolygons(data=xx$mapindex.poly, fill=F,color=gridcolor,fillOpacity=1,weight = 2,options=pathOptions(pane="index"),group="Index") %>%
+      addPolygons(data=xx$mapindex.poly[values$count,], fill=F,color="Red",weight = 3,options=pathOptions(pane="index"),group="Index")
+    
+    leafletProxy("mapbookmap") %>%
+      flyToBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax)
     
   })
   
-  # Tables ========================================
-  output$summarychart <- renderPlot({
-    timeSeries::plot(xx$chart.summary, plot.type="s", col="blue", lwd=2, ylab="Number", main="Summary") 
+  observeEvent({input$indexmap_click}, {
+    coords <- input$indexmap_click
+    # clicked <- sf::st_as_sf(sp::SpatialPoints(matrix(c(coords$lng, coords$lat),nrow = 1)),crs = 4326)
+    clicked <- sf::st_sfc(sf::st_point(c(coords$lng, coords$lat)), crs = 4326)
+    # clicked <- sp::SpatialPoints(matrix(c(coords$lng, coords$lat),nrow = 1))
+    # sp::proj4string(clicked) <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+    compare <- sf::st_intersects(
+      # rgeos::gBuffer(clicked, width = 0.00005), 
+      clicked,
+      xx$mapindex.poly)[[1]]
+    # isolate(values$count <- as.numeric(match(compare$`Index Label`,xx$mapindex.poly$`Index Label`) - 1 ))
+    isolate(values$count <- as.numeric(compare - 1 ))
+    # shinyalert(title = paste0("vale:",coords$lng, coords$lat), type = "success")
+    click("forwardbutton")
   })
   
   # Tables ========================================
-  output$mapindextable<-DT::renderDataTable({
-    DT::datatable(as.data.frame(xx$mapindex.point[which(xx$mapindex.point$`Wet House Hours`>0),]) %>% select(`Index Label`,`Wet House Hours`,`Uniquely Impacted Addresses`,`Maximum Impact Depth`), 
+  output$addressDataset <- DT::renderDataTable({
+    DT::datatable(as.data.frame(xx$address.mapbook) %>% select(address,`Index Label`,dataset),
                   editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
   })
-  observe({
-    if (length(input$mapindextable_rows_selected)) {
-      leafletProxy("summary_map") %>%
-        flyTo(xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][1],
-              xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][2],17)
-    }
-  })
-  output$addressimpacts<-DT::renderDataTable({
-    DT::datatable(as.data.frame(xx$address.mapbook[which(xx$address.mapbook$ffreq>0),]) %>% select(address,`Index Label`,dataset), 
+  output$roadsDataset <- DT::renderDataTable({
+    DT::datatable(as.data.frame(xx$road.point.mapbook) %>% select(`Index Label`,name),
                   editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
   })
-  observe({
-    if (length(input$addressimpacts_rows_selected)) {
-      leafletProxy("summary_map") %>%
-        flyTo(xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][1],
-              xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][2],17)
-    }
-  })
-  # There are better ways to do this...
-  output$roadimpacts<-DT::renderDataTable({
-    DT::datatable(as.data.frame(xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),]) %>% select(`Index Label`,name), 
+  output$streamsDataset <- DT::renderDataTable({
+    DT::datatable(as.data.frame(xx$flow.line) %>% select(comid,gnis_name,streamorde),
                   editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
   })
-  observe({
-    if (length(input$roadimpacts_rows_selected)) {
-      leafletProxy("summary_map") %>%
-        flyTo(xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][1],
-              xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][2],17)
-    }
+  output$filteredaddressesmapbook <- DT::renderDataTable({
+    DT::datatable(as.data.frame(values$currentIndexAdds),
+                  editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
+  })
+  output$filteredroadsmapbook <- DT::renderDataTable({
+    DT::datatable(as.data.frame(values$currentIndexRoads),
+                  editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
+  })
+  output$filteredstreamsmapbook <- DT::renderDataTable({
+    DT::datatable(as.data.frame(values$currentIndexStreams),
+                  editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
   })
   
   # Events ========================================
-  observeEvent(input$home, {
-    updateTabItems(session, "sidebar", "home")
-  })
-  # Print the map to the working directory
   observeEvent(input$print, {
     # Take a screenshot of the map
     mapshot(user_created_map(), file=paste0(getwd(), '/exported_map.png'))
@@ -1265,14 +1515,118 @@ basedataSERVER <- function(input, output, session) {
   session$onSessionEnded(stopApp)
 }
 
+
+
+
+
+
 ##///////////////////////////////////////////////////////////////////////////////////////////
 ##///////////////////////////////////////////////////////////////////////////////////////////
 ##///////////////////////////////////////////////////////////////////////////////////////////
+dyCSScoolPrint <- function(dygraph){
+  dygraph$x$css <- '
+  .dygraph-axis-label {font-size: 25px;}
+  .dygraph-title {
+  font-size: 25px;
+  }
+  .dygraph-legend {
+  width: auto !important;
+  min-width: 150px;
+  color: white;
+  background-color: #BABABA !important;
+  padding-left:5px;
+  border-color:#BABABA;
+  border-style:solid;
+  border-width:thin;
+  transition:0s 4s;
+  z-index: 80 !important;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, .3);
+  border-radius: 3px;
+  }
+  .dygraph-legend:hover{
+  transform: translate(-110%);
+  transition: 0s;
+  }
+  .dygraph-legend > span {
+  color: black;
+  padding-left:5px;
+  padding-right:2px;
+  margin-left:-5px;
+  background-color: white !important;
+  display: block;
+  }
+  .dygraph-legend > span:first-child {
+  margin-top:2px;
+  }
+  .dygraph-legend > span > span{
+  display: inline;
+  }
+  .highlight {
+  border-left: 2px solid #BABABA;
+  padding-left:3px !important;
+  }
+  '
+  dygraph
+}
+dyCSScoolWeb <- function(dygraph){
+  dygraph$x$css <- '
+  .dygraph-title {
+  font-size: 35px;
+  padding-bottom:7px !important;
+  }
+  .dygraph-legend {
+  width: auto !important;
+  min-width: 150px;
+  color: white;
+  background-color: #BABABA !important;
+  padding-left:5px;
+  border-color:#BABABA;
+  border-style:solid;
+  border-width:thin;
+  transition:0s 4s;
+  z-index: 80 !important;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, .3);
+  border-radius: 3px;
+  }
+  .dygraph-legend:hover{
+  transform: translate(-110%);
+  transition: 0s;
+  }
+  .dygraph-legend > span {
+  color: black;
+  padding-left:5px;
+  padding-right:2px;
+  margin-left:-5px;
+  background-color: white !important;
+  display: block;
+  }
+  .dygraph-legend > span:first-child {
+  margin-top:2px;
+  }
+  .dygraph-legend > span > span{
+  display: inline;
+  }
+  .highlight {
+  border-left: 2px solid #BABABA;
+  padding-left:3px !important;
+  }
+  '
+  dygraph
+}
+dyCSScoolMin <- function(dygraph){
+  dygraph$x$css <- '
+  .dygraph-title {
+  font-size: 20px;
+  }
+  '
+  dygraph
+}
 impactUI <- dashboardPage(
   skin = "blue",
-  dashboardHeader(title="FOSSFlood V 1.1",tags$li(class="dropdown",actionButton("relaunch","Relaunch UI"),actionButton("save","Save raster data"),actionButton("print", "Print"))),
+  dashboardHeader(title="FOSSFlood V 1.2",tags$li(class="dropdown",actionButton("save","Save raster data"),actionButton("print", "Print"))),
+  # dashboardHeader(title="FOSSFlood V 1.1",tags$li(class="dropdown",actionButton("relaunch","Relaunch UI"),actionButton("save","Save raster data"),actionButton("print", "Print"))),
   dashboardSidebar(
-    sidebarMenu(id = "sidebar",
+    sidebarMenu(id="sidebar",
                 h3("Map controls"),
                 pickerInput(inputId='userbasemap',label='Select a base map:',choices=basemapchoices,selected=basemapchoices[3]$`Just lables`[1]),
                 shinyWidgets::switchInput(inputId="gridColor",label="Grid color",onLabel="Black",offLabel="White",value=TRUE),
@@ -1288,7 +1642,7 @@ impactUI <- dashboardPage(
     useShinyalert(),
     useShinyjs(),
     tabItems(
-      tabItem(tabName = "Summary",
+      tabItem(tabName = "Summary",value="Summary",
               tags$head(
                 tags$style(type = "text/css", "#summary_map {height: calc(60vh - 80px) !important;}"),
                 tags$style(type="text/css", "#summarytitleblock img {max-width: 100%; width: 100%; height: auto;}")
@@ -1315,8 +1669,9 @@ impactUI <- dashboardPage(
                        box(width = NULL, solidHeader = FALSE,status = "warning",leafletOutput("summary_map")))
               )
       ),
-      tabItem(tabName = "Swiper",
+      tabItem(tabName = "Swiper",value="Swiper",
               tags$head(
+                tags$style(type = "text/css", "#summary_map {height: calc(60vh - 80px) !important;}"),
                 tags$style(type="text/css", "#swipermaintitleblock img {max-width: 100%; width: 100%; height: auto;}")
               ),
               fluidRow(
@@ -1383,7 +1738,6 @@ impactSERVER <- function(input, output, session) {
   values$currentIndexAdds <- NULL
   values$currentIndexRoads <- NULL
   
-  
   # Maps ========================================
   summary_map_reactive <- reactive({
     gridcolor <- "Black"
@@ -1413,7 +1767,7 @@ impactSERVER <- function(input, output, session) {
                         clusterOptions=markerClusterOptions(),
                         group="Addresses") %>%
       addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
-      addLabelOnlyMarkers(data=subset(xx$mapindex.point, `Wet House Hours`>0), label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+      addLabelOnlyMarkers(data=subset(xx$mapindex.point, `Wet House Hours`>0), label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = T,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
       addLayersControl(
         overlayGroups = c("Flowlines","Roads","Flooding","Road Impacts","Addresses","Borders","Index","Index Labels"),
         options = layersControlOptions(collapsed = FALSE)
@@ -1445,23 +1799,23 @@ impactSERVER <- function(input, output, session) {
       addRasterImage(x=xx$flood.grid[[1]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
       addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
       # addMarkers(gages)
-      addPolylines(data=xx$road.poly[[1]], color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts") %>%
+      # addPolylines(data=xx$road.poly[[1]], color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts") %>%
       addPolylines(data=xx$road.line,color= ~xx$vis_roadpal(type),options=pathOptions(pane="road"),group="Roads") %>%
-      addAwesomeMarkers(data=subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),
-                        icon=xx$address.point.standard, 
-                        options=pathOptions(pane="add"),
-                        clusterOptions=markerClusterOptions(),
-                        group="Addresses") %>%
-      addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),], fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
-      addLabelOnlyMarkers(data=subset(xx$mapindex.point,`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),]$`Index Label`),label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+      # addAwesomeMarkers(data=subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),
+      #                   icon=xx$address.point.standard,
+      #                   options=pathOptions(pane="add"),
+      #                   clusterOptions=markerClusterOptions(),
+      #                   group="Addresses") %>%
+      # addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),], fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      # addLabelOnlyMarkers(data=subset(xx$mapindex.point,(`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),]$`Index Label`)), label = subset(xx$mapindex.point,(`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),]$`Index Label`))$`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") #%>%
+      # addLabelOnlyMarkers(data=subset(xx$mapindex.point,(`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),]$`Index Label`)), labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") #%>%
+      addLegend("bottomright",title = "Road Class", pal = xx$vis_roadpalFull, values = xx$road.line$type_full, group = "Roads") %>%
+      addLegend("bottomright", pal = colorFactor(palette = "Blue",domain = "Stream Lines"), values = "Stream Lines", group = "Flow") %>%
+      # addLegend("bottomleft", title = "Flood Depth",pal = xx$flood.grid.pal, values = xx$flood.grid.val, group = "Flooding") %>%
       addLayersControl(
         overlayGroups = c("Flowlines","Roads","Flooding","Road Impacts","Addresses","Borders","Index","Index Labels"),
         options = layersControlOptions(collapsed = FALSE)
-      ) %>% 
-      addLegend("bottomright", pal = xx$vis_roadpal, values = xx$road.line$type, group = "Roads") %>%
-      addLegend("bottomright", pal = xx$vis_roadpal, values = xx$road.line$type, group = "flow") %>%
-      hideGroup("Roads") %>%
-      hideGroup("Addresses") 
+      )
   })
   index_map_reactive <- reactive({
     # May need to test for empty first timestep?    "Current index","Count of Impacted Addresses","Maximum Impact Depth","Individual Points"
@@ -1483,15 +1837,14 @@ impactSERVER <- function(input, output, session) {
       addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
       addRasterImage(x=xx$flood.grid$ffreq,colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
       addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
-      addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),], fill=F,color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
-      addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),][1,],fill=T,fillColor="red",color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
-      addLabelOnlyMarkers(data=subset(xx$mapindex.point,`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),]$`Index Label`),label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+      # addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),], fill=F,color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      # addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),][1,],fill=T,fillColor="red",color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      # addLabelOnlyMarkers(data=subset(xx$mapindex.point,`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[1]))>0),]$`Index Label`),label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
       addLayersControl(
-        overlayGroups = c("Flowlines","Roads","Flooding","Road Impacts","Addresses","Borders","Index","Index Labels"),
+        overlayGroups = c("Flowlines","Roads","Flooding","Borders","Index"),
         options = layersControlOptions(collapsed = FALSE)
       )
   })
-  
   # Map objects ========================================
   output$summary_map <- renderLeaflet({
     summary_map_reactive()
@@ -1504,12 +1857,98 @@ impactSERVER <- function(input, output, session) {
   })
   
   # Maps for mapshot ========================================
-  mapshot_summary_map <- reactive({
+  mapshot_summary_map <- function() {
+    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
+    ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
+    mybbox <- suppressWarnings(suppressMessages(AOI::bbox_coords(sf::st_buffer(x=xx$aoi.shp,dist=0.00005,nQuadSegs=1,endCapStyle="SQUARE",joinStyle="ROUND",mitreLimit=1,singleSide=FALSE))))
+    
+    m = leaflet(height=1000, width=1000) %>%
+      addProviderTiles(input$userbasemap, group = "Base Map") %>%
+      addMapPane("bg", zIndex = 410) %>%
+      # addMapPane("flood", zIndex = 412) %>%
+      addMapPane("flow", zIndex = 414) %>%
+      addMapPane("gage", zIndex = 416) %>%
+      addMapPane("roadimpact", zIndex = 418) %>%
+      addMapPane("road", zIndex = 420) %>%
+      addMapPane("add", zIndex = 422) %>%
+      addMapPane("index", zIndex = 424) %>%
+      addMapPane("indexlabels", zIndex = 426) %>%
+      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
+      addPolylines(data=xx$flow.line,weight = ~streamorde/2,color = "Blue",options=pathOptions(pane="flow"),group="Flowlines") %>%
+      addRasterImage(x=xx$flood.grid$ffreq,colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+      addPolylines(data=xx$road.line,color= ~xx$vis_roadpalFull(type_full),weight = 0.8,options=pathOptions(pane="road"),group="Roads") %>%
+      addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+      addLabelOnlyMarkers(data=subset(xx$mapindex.point, `Wet House Hours`>0), label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = T,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+      addLegend("bottomright",title = "Road Class", pal = xx$vis_roadpalFull, values = xx$road.line$type_full, group = "Roads") %>%
+      addLegend("bottomright", pal = colorFactor(palette = "Blue",domain = "Stream Lines"), values = "Stream Lines", group = "Flow") %>%
+      addLegend("bottomleft", title = "Flood Frequency",pal = xx$flood.grid.ffreqpal, values = xx$flood.grid.ffreqval, group = "Flooding") %>%
+      addLegend("bottomleft", title = "Wet House Hours", pal = xx$mapindex.poly.WHHpal, values = subset(xx$mapindex.poly, `Wet House Hours`>0)$`Wet House Hours`, group = "Index",layerId = "Index_legend") %>%
+      fitBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax)
+    
+    return(m)
+  }
+  mapshot_index_map <- function(timestep,index,bboxobj){
     ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
     ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
     
-    if(input$summaryviewlayer=="Individual Points") {
-      m = leaflet() %>%
+    if(is.null(index)) {
+      m = leaflet(height=1000, width=1000) %>%
+        addProviderTiles("Stamen.TonerBackground", group = "Base Map") %>%
+        addMapPane("bg", zIndex = 410) %>%
+        # addMapPane("flood", zIndex = 412) %>%
+        addMapPane("flow", zIndex = 414) %>%
+        addMapPane("gage", zIndex = 416) %>%
+        addMapPane("roadimpact", zIndex = 418) %>%
+        addMapPane("road", zIndex = 420) %>%
+        addMapPane("add", zIndex = 422) %>%
+        addMapPane("index", zIndex = 424) %>%
+        addMapPane("indexlabels", zIndex = 426) %>%
+        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
+        addRasterImage(x=xx$flood.grid[[timestep]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+        addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
+        fitBounds(bboxobj$xmax,bboxobj$ymin,bboxobj$xmin,bboxobj$ymax)
+      
+    } else {
+      
+      m = leaflet(height=1000, width=1000) %>%
+        addProviderTiles("Stamen.TonerBackground", group = "Base Map") %>%
+        addMapPane("bg", zIndex = 410) %>%
+        # addMapPane("flood", zIndex = 412) %>%
+        addMapPane("flow", zIndex = 414) %>%
+        addMapPane("gage", zIndex = 416) %>%
+        addMapPane("roadimpact", zIndex = 418) %>%
+        addMapPane("road", zIndex = 420) %>%
+        addMapPane("add", zIndex = 422) %>%
+        addMapPane("index", zIndex = 424) %>%
+        addMapPane("indexlabels", zIndex = 426) %>%
+        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
+        addRasterImage(x=xx$flood.grid[[timestep]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+        addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
+        addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),], fill=F,color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+        addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),][xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),]$`Index Label`==index,],
+                    fill=T,fillColor="red",color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+        addLabelOnlyMarkers(data=subset(xx$mapindex.point,(`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),]$`Index Label`)),
+                            label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+        fitBounds(bboxobj$xmax,bboxobj$ymin,bboxobj$xmin,bboxobj$ymax)
+    }
+    
+    return(m)
+  }
+  mapshot_swiper_map <- function(timestep,index){
+    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
+    ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
+    
+    if(is.null(index)) {
+      mybbox <- AOI::bbox_coords(sf::st_buffer(
+        x=xx$aoi.shp,
+        dist=0.0002,
+        nQuadSegs = 1,
+        endCapStyle = "SQUARE",
+        joinStyle = "ROUND",
+        mitreLimit = 1,
+        singleSide = FALSE
+      ))
+      m = leaflet(height=1000, width=1000) %>%
         addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addMapPane("bg", zIndex = 410) %>%
         # addMapPane("flood", zIndex = 412) %>%
@@ -1521,63 +1960,57 @@ impactSERVER <- function(input, output, session) {
         addMapPane("index", zIndex = 424) %>%
         addMapPane("indexlabels", zIndex = 426) %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
-        addRasterImage(x=xx$flood.grid$ffreq,colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+        addRasterImage(x=xx$flood.grid[[timestep]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
         addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
-        # addMarkers(gages)
-        addPolylines(data=xx$road.poly[[length(xx$nwm.timestep)+1]], color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts") %>%
         addPolylines(data=xx$road.line,color= ~xx$vis_roadpal(type),options=pathOptions(pane="road"),group="Roads") %>%
-        addAwesomeMarkers(data=subset(xx$address.point, ffreq>0),
+        addLegend("bottomright",title = "Road Class", pal = xx$vis_roadpalFull, values = xx$road.line$type_full, group = "Roads") %>%
+        addLegend("bottomright", pal = colorFactor(palette = "Blue",domain = "Stream Lines"), values = "Stream Lines", group = "Flow") %>%
+        addLegend("bottomleft", title = "Flood Depth",pal = xx$flood.grid.pal, values = xx$flood.grid.val, group = "Flooding") %>%
+        fitBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax)
+      
+    } else {
+      mybbox <- AOI::bbox_coords(sf::st_buffer(
+        x=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),][xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),]$`Index Label`==index,],
+        dist=0.0002,
+        nQuadSegs = 1,
+        endCapStyle = "SQUARE",
+        joinStyle = "ROUND",
+        mitreLimit = 1,
+        singleSide = FALSE
+      ))
+      m = leaflet(height=1000, width=1000) %>%
+        addProviderTiles(input$userbasemap, group = "Base Map") %>%
+        addMapPane("bg", zIndex = 410) %>%
+        # addMapPane("flood", zIndex = 412) %>%
+        addMapPane("flow", zIndex = 414) %>%
+        addMapPane("gage", zIndex = 416) %>%
+        addMapPane("roadimpact", zIndex = 418) %>%
+        addMapPane("road", zIndex = 420) %>%
+        addMapPane("add", zIndex = 422) %>%
+        addMapPane("index", zIndex = 424) %>%
+        addMapPane("indexlabels", zIndex = 426) %>%
+        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=1,options=pathOptions(pane="bg"),group="Borders") %>%
+        addRasterImage(x=xx$flood.grid[[timestep]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+        addPolylines(data=xx$flow.line,weight=1,options=pathOptions(pane="flow"),group="Flowlines") %>%
+        addPolylines(data=xx$road.line,color= ~xx$vis_roadpal(type),options=pathOptions(pane="road"),group="Roads") %>%
+        addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),], fill=F,color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+        # addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),][xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),]$`Index Label`==index,],
+        # fill=T,fillColor="red",color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+        addAwesomeMarkers(data=subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),
                           icon=xx$address.point.standard, 
                           options=pathOptions(pane="add"),
-                          clusterOptions=markerClusterOptions(),
+                          # clusterOptions=markerClusterOptions(),
                           group="Addresses") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>%
-        addLabelOnlyMarkers(data=subset(xx$mapindex.point, `Wet House Hours`>0), label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
-        addLegend("bottomright", pal = xx$vis_roadpal, values = xx$road.line$type, group = "Roads") %>%
-        addLegend("bottomright", pal = xx$vis_roadpal, values = xx$road.line$type, group = "flow") 
-    } else if(input$summaryviewlayer=="Wet House Hours") {
-      leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
-        clearGroup("Borders") %>%
-        clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
-        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
-        hideGroup("Addresses")
-    } else if(input$summaryviewlayer=="Count of Impacted Addresses") {
-      leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
-        clearGroup("Borders") %>%
-        clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
-        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.IHCpal(`Uniquely Impacted Addresses`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
-        hideGroup("Addresses")
-    } else if(input$summaryviewlayer=="Maximum Impact Depth") {
-      leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
-        clearGroup("Borders") %>%
-        clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
-        addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
-        hideGroup("Addresses")
+        addLabelOnlyMarkers(data=subset(xx$mapindex.point,(`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[timestep]))>0),]$`Index Label`)),
+                            label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index Labels") %>%
+        addLegend("bottomright",title = "Road Class", pal = xx$vis_roadpalFull, values = xx$road.line$type_full, group = "Roads") %>%
+        addLegend("bottomright", pal = colorFactor(palette = "Blue",domain = "Stream Lines"), values = "Stream Lines", group = "Flow") %>%
+        addLegend("bottomleft", title = "Flood Depth",pal = xx$flood.grid.pal, values = xx$flood.grid.val, group = "Flooding") %>%
+        fitBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax)
     }
-    m
-  })
-  mapshot_index_map <- reactive({
-    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
-    ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
-    m = summary_map_reactive()
-    m
-  })
-  mapshot_swiper_map <- reactive({
-    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
-    ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
-    m = summary_map_reactive()
-    m
-  })
-  
+    
+    return(m)
+  }
   
   # Tables ========================================
   output$summarychart <- renderDygraph({
@@ -1586,10 +2019,11 @@ impactSERVER <- function(input, output, session) {
                       xlab = "Date/Time in UTC") %>%
       dyOptions(useDataTimezone = TRUE) %>%
       dyAxis("y", label = "Count of Impacted Addresses", independentTicks = TRUE) %>%
-      dyAxis("y2", label = "Inundated Area (Sq. miles)", independentTicks = TRUE) %>%
+      dyAxis("y2", label = "Inundated Area (Sq. miles)", independentTicks = FALSE) %>%
       dySeries("Square miles of Inundated Land", axis = 'y2') %>%
       dyHighlight(highlightSeriesOpts = list(strokeWidth = 3)) %>%
-      dyLegend(width = 600)
+      # dyLegend(width = 650) %>%
+      dyCSScoolWeb()
   })
   swiperchartdata <- reactive({
     req(input$uislidertime)
@@ -1614,24 +2048,30 @@ impactSERVER <- function(input, output, session) {
       dyShading(from = lubridate::force_tz(xx$nwm.discharge.dateTimeZoneZ[match(input$timeslider, timestepseries)]-180,tzone = "UTC"), 
                 to = lubridate::force_tz(xx$nwm.discharge.dateTimeZoneZ[match(input$timeslider, timestepseries)]+180,tzone = "UTC"), axis = "x", color = "#FFEAEA") %>%
       dyShading(from = Sys.time()-180, to = Sys.time()+180, axis = "x", color = "#CCEBD6") %>%
-      dyLegend(width = 600)
+      # dyLegend(width = 600)
+      dyCSScoolWeb()
   })
   
   # webshot for charts
-  summararychart_image <- function() {
+  summararychart_image <- function(workingdir,filename) {
+    setwd(workingdir)
     chart <- dygraphs::dygraph(data = xx$chart.summary,
                                main = paste0("Forecast impacts for ", user.aoi.string),
                                xlab = "Date/Time in UTC") %>%
       dyOptions(useDataTimezone = TRUE) %>%
       dyAxis("y", label = "Count of Impacted Addresses", independentTicks = TRUE) %>%
-      dyAxis("y2", label = "Inundated Area (Sq. miles)", independentTicks = FALSE) %>%
+      dyAxis("y2", label = "Inundated Area (Sq. miles)", independentTicks = FALSE, labelWidth = 120) %>%
       dySeries("Square miles of Inundated Land", axis = 'y2') %>%
       dyHighlight(highlightSeriesOpts = list(strokeWidth = 3)) %>%
-      dyLegend(width = 600)
+      dyLegend(width = 650) %>%
+      dyCSScoolMin()
     htmlwidgets::saveWidget(chart, "temp.html", selfcontained = FALSE)
-    width<- 1080
-    height <- 610
-    webshot::webshot("temp.html", file = "Rplot.png",cliprect = c(10,30,width+50,height+50) ,vwidth = width, vheight = height )
+    width<- 1100
+    height <- 400
+    webshot::webshot("temp.html", file = filename,cliprect = c(10,30,width+50,height+50) ,vwidth = width, vheight = height)
+    unlink(paste0(workingdir,"/temp_files"), recursive=TRUE)
+    unlink(paste0(workingdir,"/temp.html"))
+    setwd(basedir)
   }
   swiperchart_image <- function(printTimestep) {
     ifelse(input$uislidertime=="Zulu", timeseriesOrder <- as.POSIXct(xx$nwm.discharge.dateTimeZoneZ, tz = "GMT"),timeseriesOrder <- as.POSIXct(xx$nwm.discharge.dateTimeZoneLocal, tz = Sys.timezone()))
@@ -1652,13 +2092,15 @@ impactSERVER <- function(input, output, session) {
       dyShading(from = lubridate::force_tz(xx$nwm.discharge.dateTimeZoneZ[printTimestep]-180,tzone = "UTC"), 
                 to = lubridate::force_tz(xx$nwm.discharge.dateTimeZoneZ[printTimestep]+180,tzone = "UTC"), axis = "x", color = "#FFEAEA") %>%
       dyShading(from = Sys.time()-180, to = Sys.time()+180, axis = "x", color = "#CCEBD6") %>%
-      dyLegend(width = 600)
+      dyLegend(width = 650) %>%
+      dyCSScoolMin()
     htmlwidgets::saveWidget(chart, "temp.html", selfcontained = FALSE)
-    width<- 1080
-    height <- 610
-    webshot::webshot("temp.html", file = "Rplot.png",cliprect = c(10,30,width+50,height+50) ,vwidth = width, vheight = height )
+    width<- 1100
+    height <- 400
+    webshot::webshot("temp.html", file = filename,cliprect = c(10,30,width+50,height+50) ,vwidth = width, vheight = height )
   }
-  swiperchart_print_image <- function(printTimestep) {
+  swiperchart_print_image <- function(printTimestep,workingdir,filename) {
+    setwd(workingdir)
     ifelse(input$uislidertime=="Zulu", timeseriesOrder <- as.POSIXct(xx$nwm.discharge.dateTimeZoneZ, tz = "GMT"),timeseriesOrder <- as.POSIXct(xx$nwm.discharge.dateTimeZoneLocal, tz = Sys.timezone()))
     xx$chartXTS.addts <- xts::xts(x=xx$floodsum.addimpact[1:user.forecast.timesteps], order.by= timeseriesOrder)
     xx$chartXTS.areats <- xts::xts(x=xx$floodsum.area[1:user.forecast.timesteps], order.by= timeseriesOrder)
@@ -1676,11 +2118,15 @@ impactSERVER <- function(input, output, session) {
       dyHighlight(highlightSeriesOpts = list(strokeWidth = 3)) %>%
       dyShading(from = lubridate::force_tz(xx$nwm.discharge.dateTimeZoneZ[printTimestep]-180,tzone = "UTC"), 
                 to = lubridate::force_tz(xx$nwm.discharge.dateTimeZoneZ[printTimestep]+180,tzone = "UTC"), axis = "x", color = "#FFEAEA") %>%
-      dyLegend(width = 600)
+      dyLegend(width = 650) %>%
+      dyCSScoolMin()
     htmlwidgets::saveWidget(chart, "temp.html", selfcontained = FALSE)
-    width<- 1080
-    height <- 610
-    webshot::webshot("temp.html", file = "Rplot.png",cliprect = c(10,30,width+50,height+50) ,vwidth = width, vheight = height )
+    width<- 1100
+    height <- 400
+    webshot::webshot("temp.html", file = filename,cliprect = c(10,30,width+50,height+50) ,vwidth = width, vheight = height )
+    unlink(paste0(workingdir,"/temp_files"), recursive=TRUE)
+    unlink(paste0(workingdir,"/temp.html"))
+    setwd(basedir)
   }
   
   # Tables ========================================
@@ -1696,7 +2142,6 @@ impactSERVER <- function(input, output, session) {
     DT::datatable(as.data.frame(xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),]) %>% select(`Index Label`,name), 
                   editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
   })
-  
   output$filteraddressimpacts <- DT::renderDataTable({
     DT::datatable(as.data.frame(values$currentIndexAdds), 
                   editable = FALSE, class = 'compact hover stripe order-column row-border stripe', options = list(scrollX = TRUE), selection = "single")
@@ -1708,48 +2153,42 @@ impactSERVER <- function(input, output, session) {
   
   # Events ========================================
   observeEvent(input$summaryviewlayer, {
+    shiny::req(input$gridColor)
+    shiny::req(input$aoiColor)
     ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
     ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
     
     if(input$summaryviewlayer=="Individual Points") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
         removeControl("Index_legend") %>%
-        addProviderTiles(input$userbasemap,group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp, color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         showGroup("Addresses")
     } else if(input$summaryviewlayer=="Wet House Hours") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
         removeControl("Index_legend") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         addLegend("bottomleft", title = "Wet House Hours", pal = xx$mapindex.poly.WHHpal, values = subset(xx$mapindex.poly, `Wet House Hours`>0)$`Wet House Hours`, group = "Index",layerId = "Index_legend") %>%
         hideGroup("Addresses")
     } else if(input$summaryviewlayer=="Count of Impacted Addresses") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
         removeControl("Index_legend") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.IHCpal(`Uniquely Impacted Addresses`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         addLegend("bottomleft", title = "Count of Impacted Addresses", pal = xx$mapindex.poly.IHCpal, values = subset(xx$mapindex.poly, `Uniquely Impacted Addresses`>0)$`Uniquely Impacted Addresses`, group = "Index",layerId = "Index_legend") %>%
         hideGroup("Addresses")
     } else if(input$summaryviewlayer=="Maximum Impact Depth") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
         removeControl("Index_legend") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         addLegend("bottomleft", title = "Maximum Impact Depth", pal = xx$mapindex.poly.MDpal, values = subset(xx$mapindex.poly, `Maximum Impact Depth`>0)$`Maximum Impact Depth`, group = "Index",layerId = "Index_legend") %>%
@@ -1757,121 +2196,94 @@ impactSERVER <- function(input, output, session) {
     }
   })
   observeEvent(input$Indexviewlayer, {
+    shiny::req(input$gridColor)
+    shiny::req(input$aoiColor)
     ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
     ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
     
     if(input$Indexviewlayer=="Individual Points") {
       leafletProxy("index_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap,group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp, color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         showGroup("Addresses")
     } else if(input$Indexviewlayer=="Current index") {
       leafletProxy("index_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~"Red",fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         hideGroup("Indexviewlayer")
     } else if(input$summaryviewlayer=="Count of Impacted Addresses") {
       leafletProxy("index_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.IHCpal(`Uniquely Impacted Addresses`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         hideGroup("Addresses")
     } else if(input$Indexviewlayer=="Maximum Impact Depth") {
       leafletProxy("index_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
         addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
         hideGroup("Addresses")
     }
   })
   
-  observeEvent(input$mapindextable_rows_selected, {
-    leafletProxy("summary_map") %>%
-      flyTo(xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][1],
-            xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][2],17)
-  })
-  observeEvent(input$addressimpacts_rows_selected, {
-    leafletProxy("summary_map") %>%
-      flyTo(xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][1],
-            xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][2],17)
-  })
-  observeEvent(input$roadimpacts_rows_selected, {
-    leafletProxy("summary_map") %>%
-      flyTo(xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][1],
-            xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][2],17)
-  })
-  
-  observeEvent(input$gridColor | input$aoiColor, {
+  observeEvent((input$gridColor | input$aoiColor), {
     shiny::req(input$summaryviewlayer)
-    shiny::req(input$index_symbology)
-    shiny::req(input$userbasemap)
     shiny::req(input$timeslider)
     shiny::req(input$uislidertime)
-    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
     ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
+    ifelse(input$gridColor==TRUE,gridcolor <- "Black",gridcolor <- "White")
     ifelse(input$uislidertime=="Zulu",timestepseries <- xx$nwm.discharge.dateTimeZoneZHR,timestepseries <- xx$nwm.discharge.dateTimeZoneLocalHR)
     
     if(input$summaryviewlayer=="Individual Points") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap,group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp, color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=F,color=gridcolor,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>%
         showGroup("Addresses")
     } else if(input$summaryviewlayer=="Wet House Hours") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>%
         hideGroup("Addresses")
     } else if(input$summaryviewlayer=="Count of Impacted Addresses") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.IHCpal(`Uniquely Impacted Addresses`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.IHCpal(`Uniquely Impacted Addresses`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>%
         hideGroup("Addresses")
     } else if(input$summaryviewlayer=="Maximum Impact Depth") {
       leafletProxy("summary_map") %>%
-        clearGroup("Base Map") %>%
         clearGroup("Borders") %>%
         clearGroup("Index") %>%
-        addProviderTiles(input$userbasemap, group = "Base Map") %>%
         addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
+        addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>%
         hideGroup("Addresses")
     }
+    leafletProxy("swiper_map") %>%
+      clearGroup("Borders") %>%
+      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
+      hideGroup("Addresses")
+  })
+  observeEvent(input$userbasemap, {
+    
+    leafletProxy("summary_map") %>%
+      clearGroup("Base Map") %>%
+      addProviderTiles(input$userbasemap, group = "Base Map")
     
     leafletProxy("swiper_map") %>%
       clearGroup("Base Map") %>%
-      clearGroup("Borders") %>%
-      clearGroup("Index") %>%
-      addProviderTiles(input$userbasemap, group = "Base Map") %>%
-      addPolygons(data=xx$aoi.shp,color=gridcolor,fillColor=aoiColor,weight=2,options=pathOptions(pane="bg"),group="Borders") %>%
-      addPolygons(data=subset(xx$mapindex.poly, `Wet House Hours`>0), fill=T,color=gridcolor,fillColor=~xx$mapindex.poly.MDpal(`Maximum Impact Depth`),fillOpacity=1,weight = 1.3,options=pathOptions(pane="index"),group="Index") %>% 
-      hideGroup("Addresses")    
+      addProviderTiles(input$userbasemap, group = "Base Map")
     
   })
   observeEvent(input$backbutton, {
@@ -1921,7 +2333,7 @@ impactSERVER <- function(input, output, session) {
     ifelse(input$aoiColor==TRUE,aoiColor <- "Black",aoiColor <- "White")
     ifelse(input$uislidertime=="Zulu",timestepseries <- xx$nwm.discharge.dateTimeZoneZHR,timestepseries <- xx$nwm.discharge.dateTimeZoneLocalHR)
     
-    if( nrow(subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0))>0) {
+    if( nrow(subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0))>0 ) {
       if(values$count != nrow(xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0),])) {
         values$count <- values$count + 1
       } else {
@@ -1963,7 +2375,6 @@ impactSERVER <- function(input, output, session) {
   })
   observeEvent(input$timeslider, {
     shiny::req(input$uislidertime)
-    shiny::req(input$timeslider)
     values$count <- 1
     values$currentIndexLabel <- "None"
     values$currentIndexAdds <- NULL
@@ -1979,8 +2390,9 @@ impactSERVER <- function(input, output, session) {
         clearGroup("Addresses") %>% 
         clearGroup("Index") %>%
         clearGroup("Index Labels") %>%
-        addRasterImage(x=xx$flood.grid[[match(input$timeslider, timestepseries)]],colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
-        addPolylines(data=xx$road.poly[[match(input$timeslider, timestepseries)]],color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts")
+        addRasterImage(x=xx$flood.grid[[match(input$timeslider, timestepseries)]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+        addLegend("bottomleft", title = "Flood Depth",pal = xx$flood.grid.pal, values = xx$flood.grid.val, group = "Flooding") 
+      # addPolylines(data=xx$road.poly[[match(input$timeslider, timestepseries)]],color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts")
       
       leafletProxy("index_map") %>%
         clearGroup("Flooding") %>%
@@ -1995,18 +2407,18 @@ impactSERVER <- function(input, output, session) {
         clearGroup("Addresses") %>% 
         clearGroup("Index") %>%
         clearGroup("Index Labels") %>%
-        addRasterImage(x=xx$flood.grid[[match(input$timeslider, timestepseries)]],colors=xx$flood.grid.ffreqpal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
+        addRasterImage(x=xx$flood.grid[[match(input$timeslider, timestepseries)]],colors=xx$flood.grid.pal,layerId="Flooding",group="Flooding",project=FALSE,maxBytes=20*1024*1024) %>%
         addPolylines(data=xx$road.poly[[match(input$timeslider, timestepseries)]],color="red",fill = T,fillColor = "red", fillOpacity = 0.75, weight = 1.2,options=pathOptions(pane="roadimpact"),group="Road Impacts") %>%
         addAwesomeMarkers(data=subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0),
                           icon=xx$address.point.standard, 
                           options=pathOptions(pane="add"),
-                          clusterOptions=markerClusterOptions(),
+                          # clusterOptions=markerClusterOptions(),
                           group="Addresses") %>%
         addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0),], 
-                    fill=T,
+                    fill=F,
                     color=gridcolor,
                     fillColor=~xx$mapindex.poly.WHHpal(`Wet House Hours`),
-                    fillOpacity=1,
+                    # fillOpacity=1,
                     weight = 1,
                     options=pathOptions(pane="index"),
                     group="Index") %>%
@@ -2020,16 +2432,42 @@ impactSERVER <- function(input, output, session) {
         clearGroup("Road Impacts") %>%
         clearGroup("Addresses") %>% 
         clearGroup("Index") %>%
-        clearGroup("Index Labels")
+        clearGroup("Index Labels") %>%
+        addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0),], fill=F,color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+        addPolygons(data=xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0),][1,],fill=T,fillColor="red",color=gridcolor,fillOpacity=1,weight = 1,options=pathOptions(pane="index"),group="Index") %>%
+        addLabelOnlyMarkers(data=subset(xx$mapindex.point,(`Index Label` %in% xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[match(input$timeslider, timestepseries)]))>0),]$`Index Label`)),label = ~`Index Label`, labelOptions = labelOptions(noHide = T, sticky = F,textOnly = T),options=pathOptions(pane="indexlabels"),group="Index")
       
       values$count <- 0
       input$forwardbutton
     }
-  })  
-  
-  observeEvent(input$relaunch, {
-    session$reload()
   })
+  observeEvent(input$sidebar, {
+    if(input$sidebar == "Swiper"){
+      shiny::req(input$uislidertime)
+      ifelse(input$uislidertime=="Zulu",timestepseries <- xx$nwm.discharge.dateTimeZoneZHR,timestepseries <- xx$nwm.discharge.dateTimeZoneLocalHR)
+      updateSliderTextInput(session = session,inputId="timeslider", selected = timestepseries[2])
+      updateSliderTextInput(session = session,inputId="timeslider", selected = timestepseries[1])
+    }
+  })
+  
+  observeEvent(input$mapindextable_rows_selected, {
+    leafletProxy("summary_map") %>%
+      flyTo(xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][1],
+            xx$mapindex.point[which(xx$mapindex.point$`Uniquely Impacted Addresses`>0),][input$mapindextable_rows_selected,]$geometry[[1]][2],17)
+  })
+  observeEvent(input$addressimpacts_rows_selected, {
+    leafletProxy("summary_map") %>%
+      flyTo(xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][1],
+            xx$address.mapbook[which(xx$address.mapbook$ffreq>0),][input$addressimpacts_rows_selected,]$geometry[[1]][2],17)
+  })
+  observeEvent(input$roadimpacts_rows_selected, {
+    leafletProxy("summary_map") %>%
+      flyTo(xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][1],
+            xx$road.point.mapbook[which(xx$road.point.mapbook$ffreq>0),][input$roadimpacts_rows_selected,]$geometry[[1]][2],17)
+  })
+  # observeEvent(input$relaunch, {
+  #   session$reload()
+  # })
   observeEvent(input$save, {
     exportnames <- as.character(xx$nwm.discharge.dateTimeZoneZ) %>% stringr::str_sub(6, 13) %>% paste0("Z.tif")
     exportnames[user.forecast.timesteps+1] <- "ffreq.tif"
@@ -2039,75 +2477,165 @@ impactSERVER <- function(input, output, session) {
     shinyalert(title = paste0("-- Flood innundation rasters written to: ",basedir,"/AOI/",user.aoi.filepath,"/output --"), type = "success")
   })
   observeEvent(input$print, {
-    swiperchart_image(3)  # creates temp_files folder and temp.html
-    cleanFiles()
-    mapshot_summary_map()
-    # for (i in 1:user.forecast.timesteps)
-    # 
-    # # Take a screenshot of the map
-    # mapshot(user_created_map(), file=paste0(getwd(), '/exported_map.png'))
-    # 
-    # # Generate summery table images
-    # ggsave(
-    #   "SummeryTable.png",
-    #   plot = ggplot() + 
-    #     annotation_custom(tableGrob(as.matrix(as.data.frame(table(subset(as.data.frame(dataInstance$Data),select=input$variabledisplay),dnn=input$variabledisplay))), vp = viewport(width=10))) + 
-    #     theme_void(),
-    #   width=10,
-    #   dpi = 300
-    # )
-    # 
-    # # Generate table images
-    # maxrow = 30
-    # npages = ceiling(nrow(dataInstance$Data)/maxrow)
-    # for (i in 1:npages) {
-    #   idx = seq(1+((i-1)*maxrow), i*maxrow)
-    #   if(i*maxrow >= length(dataInstance$Data)){
-    #     idx = seq(1+((i-1)*maxrow), length(dataInstance$Data))
-    #   }
-    #   imageName = paste0("rawTable",i,".png")
-    #   ggsave(
-    #     imageName,
-    #     plot = ggplot() + 
-    #       annotation_custom(tableGrob(as.matrix(as.data.frame(dataInstance$Data[idx, ])), vp = viewport(width=10))) + 
-    #       theme_void(),
-    #     width=10,
-    #     dpi = 300
-    #   )
-    # }
-    # 
-    # # Modify FirstPage with dates
-    # MapPage <- image_read(paste0(basedir,"/data/ClusteR_MapPageBase.png"))
-    # MapPageChage <- image_annotate(MapPage, paste("Generated on:", Sys.Date(), " ",format(Sys.time(), "%H:%M:%S")), font = 'Helvetica', location = "+30+1100", size = 77)
-    # 
-    # # and map image
-    # mappaste <- image_read(paste0(getwd(),"/exported_map.png"))
-    # FirstPage <- image_composite(MapPageChage, mappaste, offset = "+30+1200")
-    # 
-    # # and summery table (probably do this on export...)
-    # sumtablarge <- load.image(paste0(getwd(),"/SummeryTable.png"))
-    # imager::save.image(autocrop(sumtablarge,"white"),paste0(getwd(),"/SummeryTableSamll.png"))
-    # sumtabSmall <- image_read(paste0(getwd(),"/SummeryTableSamll.png"))
-    # HeadPage <- image_composite(FirstPage, sumtabSmall, offset = "+1000+1200")
-    # image_write(HeadPage, path = "HeadPage.png", format = "png")
-    # 
-    # # remove extra images
-    # file.remove('exported_map.png')
-    # file.remove('SummeryTable.png')
-    # file.remove('SummeryTableSamll.png')
-    # file.remove('cropsum.png')
-    # 
-    # # Flatten images into pdf
-    # all_images = list.files(getwd(), full.names = TRUE, pattern = '.png')
-    # all_images_1 <- purrr::reduce(
-    #   purrr::map(all_images,image_read),
-    #   c
-    # )
-    # image_write(all_images_1 , format = "pdf", "check.pdf")
-    # file.remove(all_images)
+    outputdir <- paste0(basedir,"/AOI/",user.aoi.filepath,"/output")
+    
+    # Title Page 
+    TitlePageTitleBlock <- magick::image_read(paste0(basedir,"/data/misc/EmptyFrontPageBlock.png"))
+    if(user.aoi.source=="string") {
+      TitlePageTitleBlock <- magick::image_annotate(TitlePageTitleBlock, user.aoi.string, font = 'Georgia', location = "+158+328", size = 20)
+    } else {
+      TitlePageTitleBlock <- magick::image_annotate(TitlePageTitleBlock, paste(user.aoi.source,user.aoi.string), font = 'Georgia', location = "+158+328", size = 20)
+    }
+    if(user.output.choice=="basedata") {
+      TitlePageTitleBlock <- magick::image_annotate(TitlePageTitleBlock, "Base data map books", font = 'Georgia', location = "+215+357", size = 20)
+    } else {
+      TitlePageTitleBlock <- magick::image_annotate(TitlePageTitleBlock, "Flood impact mapping", font = 'Georgia', location = "+215+357", size = 20)
+    }
+    TitlePageTitleBlock <- magick::image_annotate(TitlePageTitleBlock, format(file.mtime(xx$aoi.path),format='%m/%d/%Y'), font = 'Georgia', location = "+418+383", size = 20) %>% 
+      magick::image_annotate(user.address.source, font = 'Georgia', location = "+301+410", size = 20) %>%
+      magick::image_annotate(user.road.source, font = 'Georgia', location = "+627+410", size = 20) %>%
+      magick::image_trim()
+    mybbox <- suppressWarnings(suppressMessages(AOI::bbox_coords(sf::st_buffer(x=xx$aoi.shp,dist=0.0001,nQuadSegs=1,endCapStyle="SQUARE",joinStyle="ROUND",mitreLimit=1,singleSide=FALSE))))
+    # mybigbbox <- suppressWarnings(suppressMessages(AOI::bbox_coords(sf::st_buffer(x=xx$aoi.shp,dist=0.004,nQuadSegs=1,endCapStyle="SQUARE",joinStyle="ROUND",mitreLimit=1,singleSide=FALSE))))
+    boundrydatapoly <- suppressWarnings(suppressMessages(featurefile[sf::st_buffer(xx$aoi.shp,dist=0.002,nQuadSegs=1,endCapStyle="SQUARE",joinStyle="ROUND",mitreLimit=1,singleSide=FALSE),]))
+    boundrydatapoint <- suppressWarnings(suppressMessages(boundrydatapoly %>% st_centroid()))
+    quiet(ifelse(user.aoi.source=="zctas",insetlablefield<-boundrydatapoint$ZCTA5CE10,boundrydatapoint<-featurefile$HUC8))
+    mapshot(leaflet(height=500, width=500) %>%
+              addProviderTiles("Esri.WorldStreetMap") %>%
+              addPolygons(data=boundrydatapoly,color="black",fillColor="black",fillOpacity=0.08,weight=1,labelOptions=labelOptions(noHide=T,direction="bottom")) %>%
+              addPolygons(data=xx$aoi.shp,color="red",fill=FALSE,weight=5) %>%
+              # addLegend("bottomleft", title = "Processed Area", pal = colorFactor(palette = "red",domain = "AOI"), values = "AOI") %>%
+              addLabelOnlyMarkers(data=boundrydatapoint, label =insetlablefield, labelOptions = labelOptions(noHide=T,sticky=T,textOnly=TRUE,direction="bottom")) %>%
+              fitBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax)
+            ,file=paste0(outputdir, '/FrontPageInset.png'))   
+    mapshot(leaflet(height=1000, width=1000) %>%
+              addProviderTiles("Esri.WorldImagery") %>%
+              addPolygons(data=xx$aoi.shp,color="red",fill=FALSE,weight=3) %>%
+              addPolylines(data=xx$flow.line,weight = ~streamorde/2,group="Flowlines") %>%
+              # fitBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax) %>%
+              addLegend("bottomright", pal = colorFactor(palette = "Blue",domain = "Stream Lines"), values = "Stream Lines") %>%
+              addLegend("bottomright", title = "Processed Area",pal = colorFactor(palette = "Red",domain = "AOI"), values = "AOI") %>%
+              # addScaleBar(position = "bottomleft", options = scaleBarOptions(maxWidth = 500,imperial = TRUE)) %>%
+              fitBounds(mybbox$xmax,mybbox$ymin,mybbox$xmin,mybbox$ymax)
+            ,file=paste0(outputdir, '/FrontPageMap.png'))   
+    blankpage <- magick::image_read(paste0(basedir,'/data/misc/Empty8x11.png'))
+    AOIMapInset <- magick::image_read(paste0(outputdir, '/FrontPageInset.png')) %>%
+      magick::image_trim() %>%
+      magick::image_scale("750x")
+    frontpagemap <- magick::image_read(paste0(outputdir, '/FrontPageMap.png'))
+    AOIMapImage <- magick::image_composite(blankpage, magick::image_scale(frontpagemap,"2250x"), offset = "+150+900")
+    AOIMapImage <- magick::image_composite(AOIMapImage, AOIMapInset, offset = "+1650+150")
+    AOIMapImage <- magick::image_composite(AOIMapImage, magick::image_scale(TitlePageTitleBlock,"1500x"), offset = "+150+150")
+    unlink(paste0(outputdir,'/FrontPageInset.png'))
+    unlink(paste0(outputdir,'/FrontPageMap.png'))
+    magick::image_write(AOIMapImage, path = paste0(outputdir,'/00_TitlePage.png'), format = "png")
+    
+    # Summary page
+    mapshot(mapshot_summary_map(), file=paste0(outputdir, '/summary_map.png'))   
+    summarymap <- magick::image_read(paste0(outputdir,'/summary_map.png'))
+    summararychart_image(outputdir,'summary_graph_table.png')  
+    # summarygraph <- magick::image_read(paste0(outputdir,'/summary_graph_table.png'))
+    summarygraph <- magick::image_read(paste0(outputdir,'/summary_graph_table.png')) %>%
+      magick::image_trim()
+    ggsave(
+      filename=paste0(outputdir, '/summary_map_table.png'),
+      plot = ggplot() +
+        annotation_custom(tableGrob(as.matrix(as.data.frame(xx$mapindex.point[which(xx$mapindex.point$`Wet House Hours`>0),]) %>% select(`Index Label`,`Wet House Hours`,`Uniquely Impacted Addresses`,`Maximum Impact Depth`)), vp = viewport(width=10))) +
+        theme_void(),width=10,units="in",dpi = 300)
+    summarytable <- magick::image_read(paste0(outputdir,'/summary_map_table.png')) %>%
+      magick::image_trim()
+    magick::image_write(AOIMapImage, path = paste0(outputdir,'/00_TitlePage.png'), format = "png")
+    titleblockimage <- magick::image_read(paste0(outputdir,'/titleblock.png'))
+    page1 <- magick::image_composite(blankpage, magick::image_scale(titleblockimage,"975x"), offset = "+150+150")
+    page1 <- magick::image_composite(page1,
+                                     magick::image_scale(summarymap, "2250x") %>% image_border("black", "4x4"), 
+                                     offset = "+150+900")
+    page1 <- magick::image_composite(page1,
+                                     magick::image_scale(summarygraph, "967x") %>% image_border("black", "4x4"), 
+                                     offset = "+150+533")
+    page1 <- magick::image_composite(page1,
+                                     magick::image_scale(summarytable, "1000x") %>% image_border("black", "4x4"), 
+                                     offset = "+1400+150")
+    
+    unlink(paste0(outputdir,'/summary_graph_table.png'))
+    unlink(paste0(outputdir,'/summary_map.png'))
+    unlink(paste0(outputdir,'/summary_map_table.png'))
+    magick::image_write(page1, path = paste0(outputdir,'/01_summarypage.png'), format = "png")
+    
+    for(i in 1:length(xx$nwm.discharge.dateTimeZoneLocalHR)) {
+      workingpage <- magick::image_composite(blankpage, magick::image_scale(titleblockimage,"975x"), offset = "+150+150")
+      swiperchart_print_image(i,outputdir,paste0("swiper_",i,"_graph.png"))
+      swiperchart <- magick::image_read(paste0(outputdir,"/swiper_",i,"_graph.png")) %>%
+        magick::image_trim()
+      workingpage <- magick::image_composite(workingpage, magick::image_scale(swiperchart, "967x") %>% image_border("black", "4x4"), offset = "+150+533")
+      
+      if(nrow(subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[i]))>0))>0) {
+        
+        for(j in 1:length(xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[i]))>0),])) {
+          mapshot(mapshot_index_map(i,xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[i]))>0),][j,]$'Index Label',mybbox), file=paste0(outputdir, '/swiper_index_',i,'_',j,'_.png'))
+          pindexmap <- magick::image_read(paste0(outputdir,'/swiper_index_',i,'_',j,'_.png')) %>%
+            magick::image_scale("750x")
+          
+          mapshot(mapshot_swiper_map(i,xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[i]))>0),][j,]$'Index Label'), file=paste0(outputdir, '/swiper_',i,'_',j,'_.png'))
+          pswipermap <- magick::image_read(paste0(outputdir,'/swiper_',i,'_',j,'_.png')) %>%
+            magick::image_trim() %>%
+            magick::image_scale("x731")
+          
+          tg = gridExtra::tableGrob(as.matrix(
+            as.data.frame(
+              subset(xx$address.mapbook, eval(parse(text = names(xx$flood.grid)[i]))>0 & xx$address.mapbook$`Index Label`==xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[i]))>0),][j,]$'Index Label')  ) %>%
+              select(address)))
+          h = grid::convertHeight(sum(tg$heights), "in", TRUE)
+          w = grid::convertWidth(sum(tg$widths), "in", TRUE)
+          ggplot2::ggsave(paste0(outputdir, '/swiper_impact_',i,'_',j,'_.png'), tg, width=w, height=h)
+          swipertable <- magick::image_read(paste0(outputdir,'/swiper_impact_',i,'_',j,'_.png')) %>%
+            magick::image_trim()
+          
+          workingpage_new <- magick::image_composite(workingpage, magick::image_scale(pswipermap, "2250x") %>% image_border("black", "4x4"), offset = "+150+900")
+          workingpage_new <- magick::image_composite(workingpage_new, pindexmap %>% image_border("black", "4x4"),offset = "+1125+150")
+          workingpage_new <- magick::image_composite(workingpage_new,magick::image_scale(swipertable, "270x") %>% image_border("black", "4x4"), offset = "+2114+248")
+          workingpage_new <- magick::image_annotate(workingpage_new, paste0("Impacts for: ",xx$nwm.discharge.dateTimeZoneZHR[i]), font = 'Georgia', location = "+1891+150", size = 30)
+          workingpage_new <- magick::image_annotate(workingpage_new, paste0("Index: ",xx$mapindex.poly[subset(xx$address.point, eval(parse(text = names(xx$flood.grid)[i]))>0),][j,]$'Index Label'), font = 'Georgia', location = "+2180+182", size = 30)
+          workingpage_new <- magick::image_annotate(workingpage_new, paste0("Impacted Addresses:"), font = 'Georgia', location = "+2094+214", size = 30)
+          magick::image_write(workingpage_new, path = paste0(outputdir,'/02_impactpage_',i,'_',j,'_.png'), format = "png")
+          
+          unlink(paste0(outputdir,'/swiper_impact_',i,'_',j,'_.png'))
+          unlink(paste0(outputdir,'/swiper_index_',i,'_',j,'_.png'))
+          unlink(paste0(outputdir,'/swiper_',i,'_',j,'_.png'))
+        }
+        
+      } else {
+        # no impact in timestep
+        mapshot(mapshot_index_map(i,NULL,mybbox), file=paste0(outputdir, '/swiper_',i,'_0.png'))
+        pswipermap <- magick::image_read(paste0(outputdir,'/swiper_',i,'_0.png'))
+        
+        mapshot(mapshot_swiper_map(i,NULL), file=paste0(outputdir, '/swiper_index_',i,'_0.png'))
+        pindexmap <- magick::image_read(paste0(outputdir,'/swiper_index_',i,'_0.png')) %>%
+          magick::image_trim() %>%
+          magick::image_scale("x731")
+        
+        workingpage_new <- magick::image_composite(workingpage,
+                                                   magick::image_scale(pswipermap, "2250x") %>% image_border("black", "4x4"), 
+                                                   offset = "+150+900")
+        workingpage_new <- magick::image_composite(workingpage_new, pindexmap %>% image_border("black", "4x4"), offset = "+1125+150")
+        workingpage_new <- magick::image_annotate(workingpage_new, paste0("Impacts for: ",xx$nwm.discharge.dateTimeZoneZHR[i]), font = 'Georgia', location = "+1891+150", size = 30)
+        workingpage_new <- magick::image_annotate(workingpage_new, paste0("Index: NONE"), font = 'Georgia', location = "+2180+182", size = 30)
+        magick::image_write(workingpage_new, path = paste0(outputdir,'/02_impactpage_',i,'_.png'), format = "png")
+        
+        unlink(paste0(outputdir,'/swiper_',i,'_0.png'))
+        unlink(paste0(outputdir,'/swiper_index_',i,'_0.png'))
+      }
+      unlink(paste0(outputdir,"/swiper_",i,"_graph.png"))
+    }
+    
+    all_images = list.files(outputdir, full.names = TRUE, pattern = '.png')
+    all_images <- all_images[-length(all_images)]
+    all_images_1 <- purrr::reduce(purrr::map(all_images,image_read),c)
+    image_write(all_images_1 , format = "pdf", paste0(outputdir,"/FOSSFlood_Impact_Output_",user.forecast.gen[1],"_",user.forecast.gen[2],"Z.pdf"))
+    file.remove(all_images)
     
     # Alert to finish :)
-    shinyalert(title = "Print complete, see /shiny!", type = "success")
+    shinyalert(title = paste0("See ",user.aoi.filepath,"/output"), type = "success")
   })
   
   cleanFiles <- function() {
@@ -2115,12 +2643,11 @@ impactSERVER <- function(input, output, session) {
     unlink(paste0(basedir,"/temp.html"))
   }
   
-  session$allowReconnect(TRUE)
+  # session$allowReconnect(TRUE)
+  session$onSessionEnded(function() {
+    shiny::stopApp()
+  })
 }
-
-
-
-
 
 
 
@@ -2159,4 +2686,3 @@ shinyApp(
   options = list(launch.browser=launch.browser)
 )
 #grep("^ChromiumPortable",readLines(textConnection(system('tasklist',intern=TRUE))),value=TRUE)
-print("also hit")

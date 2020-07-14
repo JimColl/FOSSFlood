@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Meta Object Creation with Error Checks</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for error.checks {nwmHistoric}"><tr><td>error.checks {nwmHistoric}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Meta Object Creation with Error Checks</h2>
+
+<h3>Description</h3>
+
+<p>this function ensures that the all input objects are correct.
+User input is cohersed to the desired TZ, model versions are checked, and the NCML file path returned
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+error.checks(startDate, endDate, tz, version)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>startDate</code></td>
+<td>
+<p>a user defined startDate (&quot;YYYY-MM-DD&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>endDate</code></td>
+<td>
+<p>a user defined end Date (&quot;YYYY-MM-DD&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>tz</code></td>
+<td>
+<p>a user defined timezone</p>
+</td></tr>
+<tr valign="top"><td><code>version</code></td>
+<td>
+<p>a user defined model version</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list containing the model version, NCML path, and time requests
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>nwmHistoric</em> version 0.0.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>
