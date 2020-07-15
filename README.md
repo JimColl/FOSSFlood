@@ -1,5 +1,8 @@
 # **FOSSFlood: Free Open Source Software for mapping flood impacts anywhere**
 
+![fossflood banner](https://github.com/JimColl/FOSSFlood/blob/master/data/misc/FOSSSplash.PNG)
+![fossflood gif](https://github.com/JimColl/FOSSFlood/blob/master/data/misc/FOSSFlood_Init.gif)
+
 <table border="0">
  <tr>
     <td>![fossflood banner](https://github.com/JimColl/FOSSFlood/blob/master/data/misc/FOSSSplash.PNG)</td>
