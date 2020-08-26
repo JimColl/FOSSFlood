@@ -1,0 +1,8 @@
+[1] "-- Killing FOSSFlood --"
+[1] 15656 14592
+Rscript --slave --no-restore --no-save --no-init-file  -e Sys.sleep(0);require(tools);pskill(15656); 
+                                                                                                   0 
+Rscript --slave --no-restore --no-save --no-init-file  -e Sys.sleep(0);require(tools);pskill(14592); 
+                                                                                                   0 
+Loading required package: tools
+Loading required package: tools
