@@ -36,7 +36,7 @@ End Sub
 <script type="text/vbscript" id="OOLOAD">
 ' <!--
 sub OOLOAD()
-	window.resizeTo 1705,1685
+	window.resizeTo 1425,1345
 	userAOI.Value = "66044, 66046, 66047, 66045, 66049"
 	UserOutputType.Value = "impacts"
 end sub
@@ -46,8 +46,16 @@ end sub
 ' <!--
 sub Shutdown()
 	iTimerID = window.setInterval("LOGRefresh()",1000)
-	dim sCurPathC
-	sCurPathC = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set WshShell = CreateObject("WScript.Shell")
+	strHtmlLocnVal = document.location.href
+	strThisHTA = Replace(Right(strHtmlLocnVal, Len(strHtmlLocnVal) - 8), "/", "\")
+	strThisHTA = UnEscape(strThisHTA)
+	Set objThisFile = objFSO.GetFile(strThisHTA)
+	objParentDir = objThisFile.ParentFolder
+	WshShell.CurrentDirectory = objFSO.GetFolder(objParentDir)
+	Dim sCurPathC
+	sCurPathC = WshShell.CurrentDirectory
 	dim RKillPath
 	RKillPath = sCurPathC & "\shiny\killr.r"
 	Rexe           = "R-Portable\App\R-Portable\bin\Rscript.exe"
@@ -85,8 +93,16 @@ Sub ExecuteFOSSFlood()
 	iTimerID = window.setInterval("LOGRefresh()",10000)
 	Const ForReading = 1
 	Const ForWriting = 2
-	dim sCurPath
-	sCurPath = CreateObject("Scripting.FileSystemObject").GetAbsolutePathName(".")
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set WshShell = CreateObject("WScript.Shell")
+	strHtmlLocnVal = document.location.href
+	strThisHTA = Replace(Right(strHtmlLocnVal, Len(strHtmlLocnVal) - 8), "/", "\")
+	strThisHTA = UnEscape(strThisHTA)
+	Set objThisFile = objFSO.GetFile(strThisHTA)
+	objParentDir = objThisFile.ParentFolder
+	WshShell.CurrentDirectory = objFSO.GetFolder(objParentDir)
+	Dim sCurPath
+	sCurPath = WshShell.CurrentDirectory
 	dim basePathFilename
 	basePathFilename = sCurPath & "\data\misc\runShinyApp.txt"
 	dim shinyPath
@@ -172,24 +188,22 @@ End Sub
 ' -->
 </script>
 <body onload="OOLOAD()" onbeforeunload="Shutdown()">
-	<table class="tg" style="undefined;table-layout: fixed; width: 1650px">
+	<table class="tg" style="undefined;table-layout: fixed; width: 1355px">
 	<colgroup>
 	<col style="width: 450px">
-	<col style="width: 1200">
+	<col style="width: 900">
 	</colgroup>
-		<tr>
-			<th class="tg-6l0l" colspan="2"> <img src="data/misc/FOSSFloodLogo.jpg"> </th>
-		</tr>
 		<tr>
 			<td class="tg-s9ax">Welcome to FOSSFlood -- V 1.2</td>
 			<td class="tg-o7wt" align="center" valign="top" rowspan="3">
-			<div style="width:1200;height:900px;line-height:3em;overflow:scroll;padding:2px;">
+			<img src="data/misc/FOSSFloodLogo.jpg" style="width: 98%;max-height: 100%" />
+			<div style="width:900;height:638px;line-height:3em;overflow:scroll;padding:1px;">
 			<b>--- Impact Dashboard ---</b><br>
-			<img src="data/misc/Impacts.PNG"><br><br>
+			<img src="data/misc/Impacts.PNG" style="width: 98%;max-height: 100%" /><br><br>
 			<b>--- Base Data Viewer ---</b><br>
-			<img src="data/misc/Basedata.PNG"><br><br>
+			<img src="data/misc/Basedata.PNG" style="width: 98%;max-height: 100%" /><br><br>
 			<b>--- GIS Rasters Only ---</b><br>
-			<img src="data/misc/GIS_O.PNG"><br><br>
+			<img src="data/misc/GIS_O.PNG" style="width: 98%;max-height: 100%" /><br><br>
 			</div>
 			</td>
 		</tr>

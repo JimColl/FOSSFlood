@@ -1,8 +1,43 @@
-[1] "-- Killing FOSSFlood --"
-[1] 15656 14592
-Rscript --slave --no-restore --no-save --no-init-file  -e Sys.sleep(0);require(tools);pskill(15656); 
-                                                                                                   0 
-Rscript --slave --no-restore --no-save --no-init-file  -e Sys.sleep(0);require(tools);pskill(14592); 
-                                                                                                   0 
-Loading required package: tools
-Loading required package: tools
+[1] "-- Welcome to FOSSFlood - Running FOSSFlood in C:/Users/Cornholio/Desktop/FOSSFlood-master"
+[1] "-- Pre-Preloading constants --"
+[1] "-- Welcome to FOSSFlood - Running FOSSFlood for 66044, 66046, 66047, 66045, 66049"
+Beginning download of HUC6-102901 files...
+	102901catchmask.tif already exists ...
+	hydroprop-fulltable-102901.nohand0.csv already exists ...
+	102901hand.tif already exists ...
+Beginning download of HUC6-102701 files...
+	102701catchmask.tif already exists ...
+	hydroprop-fulltable-102701.nohand0.csv already exists ...
+	102701hand.tif already exists ...
+Files Already Processed...
+[1] "-- Welcome to FOSSFlood - Loading in data"
+[1] "-- Downloading flows --"
+Downloading nwm.t19z.short_range.channel_rt.f001.conus.nc
+Downloading nwm.t19z.short_range.channel_rt.f002.conus.nc
+Downloading nwm.t19z.short_range.channel_rt.f003.conus.nc
+Downloading nwm.t19z.short_range.channel_rt.f004.conus.nc
+Downloading nwm.t19z.short_range.channel_rt.f005.conus.nc
+Downloading nwm.t19z.short_range.channel_rt.f006.conus.nc
+New names:
+* NA -> ...1
+* NA -> ...2
+* NA -> ...3
+* NA -> ...4
+* NA -> ...5
+* ...
+[1] "-- Mapping Inundation Depths --"
+[1] "-- Cropping to AOI --"
+[1] "-- Generating impacts --"
+[1] "-- Summerizing results --"
+`summarise()` ungrouping output (override with `.groups` argument)
+[1] "-- Generating cartography objects --"
+[1] "-- FOSSFlood execution complete in 2.78 minutes - Starting Shiny server --"
+
+Listening on http://127.0.0.1:6635
+Warning in colors(.) :
+  Some values were outside the color scale and will be treated as NA
+although coordinates are longitude/latitude, st_intersects assumes that they are planar
+although coordinates are longitude/latitude, st_intersects assumes that they are planar
+although coordinates are longitude/latitude, st_intersects assumes that they are planar
+although coordinates are longitude/latitude, st_intersects assumes that they are planar
+although coordinates are longitude/latitude, st_intersects assumes that they are planar

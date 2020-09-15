@@ -30,11 +30,11 @@ user.address.file <- "" 							# Empty "" or filepath to addresses
 user.road.source <- "TIGER_Lines_2018"  							# "TIGER_Lines_2018", "OpenStreetMaps", "User_Provided_Roads"
 user.road.file <- "" 									# Empty or filepath to addresses
 user.forecast.source <- "NWM_SR_C" 						# "NWM_SR_C", USER_DIS, USER_STAGE
-user.forecast.timesteps <- as.numeric("4") 	# number
+user.forecast.timesteps <- as.numeric("6") 	# number
 user.forecast.file <- "" 							# Empty "" or filepath to flows.fst
 user.forecast.members <- as.list("##USERFORECASTMEMBERS") 			# unused - DEV
 user.output.choice <- "impacts" 							# GIS_O  basedata  impacts
-user.output.grid <- "Hexagon" 								# "Square", "Hexagon"
+user.output.grid <- "Square" 								# "Square", "Hexagon"
 user.output.hardclip <- as.logical("True") 					# If TRUE, Hard clip data to aoi shape, defaults to bb
 user.output.archive <- as.logical("False") 						# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
 
