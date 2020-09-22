@@ -23,7 +23,7 @@ basedir <- getwd()   # This should look something like C:/Users/.../FOSSFlood-ma
 # * and run the entire body of the code :)
 
 # -- USER Inputs -------------------------------------------------------------------------
-user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
+user.aoi.string <- "65201, 65202, 65203, 65211"
 user.aoi.source <- "zctas" 										# "zctas", "huc8", "string"
 user.address.source <- "OpenAddresses" 						# "OpenStreetMap_Addresses", "OpenAddresses", "User_Provided_Addresses"
 user.address.file <- "" 							# Empty "" or filepath to addresses
@@ -37,7 +37,6 @@ user.output.choice <- "impacts" 							# GIS_O  basedata  impacts
 user.output.grid <- "Square" 								# "Square", "Hexagon"
 user.output.hardclip <- as.logical("True") 					# If TRUE, Hard clip data to aoi shape, defaults to bb
 user.output.archive <- as.logical("False") 						# Save flows in output folder of the requested AOI using timestamp as file name.  Can be pointed back to later to regenerate outputs
-
 
 # Input cleanup
 user.address.source <- stringr::str_replace_all(user.address.source,"_"," ")
@@ -383,7 +382,7 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   
   # NHD Flowlines ----------------------------------------------------------------------------
   print("-- Downloading NHD Flowlines --")
-  URL <- paste0("https://cida.usgs.gov/nwc/geoserver/nhdplus/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=nhdplus:nhdflowline_network&srsName=EPSG:4326&bbox=",
+  URL <- paste0("https://labs.waterdata.usgs.gov/geoserver/wmadata/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=wmadata:nhdflowline_network&srsName=EPSG:4326&bbox=",
                 south,",",west,",",north,",",east,
                 "&outputFormat=SHAPE-ZIP")
   quiet(httr::GET(URL, write_disk(paste0(basedir, "/AOI/",user.aoi.filepath,"/tmp/Flowlines.zip"), overwrite=TRUE)))
@@ -515,6 +514,7 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
     }
     c = parse(text = paste0("mergedStateData <- openadds::oa_combine(",str_c("out[[", c(1:(length(out))), "]]", sep = "",  collapse = ", "),")"))
     mergedStateData <- eval(c)
+    mergedStateData <- na.omit(mergedStateData)
     sp::coordinates(mergedStateData) <- ~lon+lat
     sfoadata <- sf::st_as_sf(mergedStateData) %>% sf::st_set_crs(4326)
     aoiPoints <- suppressWarnings(suppressMessages(sfoadata[!duplicated(sfoadata),][xx$aoi.bb, ]))
