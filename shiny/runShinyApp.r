@@ -23,7 +23,7 @@ basedir <- getwd()   # This should look something like C:/Users/.../FOSSFlood-ma
 # * and run the entire body of the code :)
 
 # -- USER Inputs -------------------------------------------------------------------------
-user.aoi.string <- "65201, 65202, 65203, 65211"
+user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
 user.aoi.source <- "zctas" 										# "zctas", "huc8", "string"
 user.address.source <- "OpenAddresses" 						# "OpenStreetMap_Addresses", "OpenAddresses", "User_Provided_Addresses"
 user.address.file <- "" 							# Empty "" or filepath to addresses
