@@ -37,8 +37,8 @@ Sub LOGRefresh()
 	sCurPath = WshShell.CurrentDirectory
 	dim logPath
 	logPath = sCurPath & "\ShinyApp.log"
-	set oFSO=CreateObject("Scripting.FileSystemObject")
-	set oFile=oFSO.OpenTextFile(logPath,1)
+	set oFSO = CreateObject("Scripting.FileSystemObject")
+	set oFile = oFSO.OpenTextFile(logPath,1)
 	text = oFile.ReadAll
 	MyDataInfo.InnerText=text
 	MyDataInfo.doScroll("pageDown")
@@ -48,7 +48,7 @@ End Sub
 <script type="text/vbscript" id="OOLOAD">
 ' <!--
 sub OOLOAD()
-	window.resizeTo 1425,1345
+	window.resizeTo 1425,1305
 	userAOI.Value = "66044, 66046, 66047, 66045, 66049"
 	UserOutputType.Value = "impacts"
 end sub
@@ -69,7 +69,7 @@ sub Shutdown()
 	Dim sCurPathC
 	sCurPathC = WshShell.CurrentDirectory
 	dim RKillPath
-	RKillPath = sCurPathC & "\shiny\killr.r"
+	RKillPath = chr(34) & sCurPathC & "\shiny\killr.r" & chr(34)
 	Rexe           = "R-Portable\App\R-Portable\bin\Rscript.exe"
 	Ropts          = "--no-save --no-environ --no-init-file --no-restore --no-Rconsole"
 	RScriptFile    = RKillPath
@@ -195,7 +195,7 @@ Sub ExecuteFOSSFlood()
 		errResult = objFile.Rename(strNewName)
 	Next
 	dim shinyRAPPPath
-	shinyRAPPPath = sCurPath & "\shiny\runShinyApp.r"
+	shinyRAPPPath = chr(34) & sCurPath & "\shiny\runShinyApp.r" & chr(34)
 	Rexe           = "R-Portable\App\R-Portable\bin\Rscript.exe"
 	Ropts          = "--no-save --no-environ --no-init-file --no-restore --no-Rconsole"
 	RScriptFile    = shinyRAPPPath
@@ -304,12 +304,12 @@ End Sub
 			</fieldset>
 			<br>
 			<input type="button" value="Run FOSSFlood" name="run_button"  onClick="ExecuteFOSSFlood"><br>
-			<br><br><br>
+			<br><br>
 			Log:</td>
 		</tr>
 		<tr>
 			<td class="tg-zims" colspan="2">
-			<div id = "MyDataInfo" style="width:1650px;height:250px;line-height:1em;overflow:scroll;padding:1px;">
+			<div id = "MyDataInfo" style="width:1650px;height:225px;line-height:1em;overflow:scroll;padding:1px;">
 			</div>
 			</td>
 		</tr>
