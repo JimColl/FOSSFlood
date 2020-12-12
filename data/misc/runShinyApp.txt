@@ -451,8 +451,8 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
     dplyr::rename('name' = FULLNAME) %>%
     dplyr::rename('type' = RTTYP)
   sf::write_sf(tigerout, paste0(basedir,"/AOI/",user.aoi.filepath,"/roads_tiger.shp"), delete_layer = TRUE, quiet = TRUE)
+  quiet(gc())
   # ---------------------------------------------------------------------------------
-  
   for(t in 1:length(unique(aoiCounties$STATEFP))){
     print(paste0("-- Downloading OSM Dataset for ",cdlTools::fips( unique(aoiCounties$STATEFP)[t], to = "Abbreviation")," --"))
     quiet(httr::GET(paste0("http://download.geofabrik.de/north-america/us/",tolower(gsub(" ", "-", cdlTools::fips( unique(aoiCounties$STATEFP)[t], to = "Name"))),"-latest.osm.pbf"), 
@@ -535,6 +535,7 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   sf::write_sf(OSMlinesout_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/roads_osm.shp"), delete_layer = TRUE, quiet = TRUE)
   sf::write_sf(OSMpointsout_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_osm.shp"), delete_layer = TRUE, quiet = TRUE)
   sf::write_sf(aoiPoints_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_oa.shp"), delete_layer = TRUE, quiet = TRUE)
+  quiet(gc())
   
   # -- Make ancillary products ---------------------------------------------------------------------------------
   print("-- Generating Index Fishnets --")
@@ -585,6 +586,7 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   )) {
     paste("-- No errors generating base data - Map on! --")
   }
+  quiet(gc())
 }
 
 print("-- Welcome to FOSSFlood - Loading in data")
