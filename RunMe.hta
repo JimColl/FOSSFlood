@@ -2,24 +2,40 @@
 <html lang="en">
 <meta charset="utf-8">
 <head>
-	<title>FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.2</title>
+	<title>FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.21</title>
 	<HTA:APPLICATION
-		APPLICATIONNAME="FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.2"
+		APPLICATIONNAME="FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.21"
 		id="FOSSFlood"
-		version="1.2"
+		version="1.21"
 		scroll="yes"
 		singleinstance="yes"
 	/>
 	<style type="text/css">
-		.tg  {border-collapse:collapse;border-spacing:0;margin:0px auto;}
-		.tg td{font-family:"Palatino Linotype";font-size:14px;padding:10px 5px;border-style:solid;border-width:5px;overflow:hidden;word-break:normal;border-color:black;}
-		.tg th{font-family:"Palatino Linotype";font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:5px;overflow:hidden;word-break:normal;border-color:black;}
-		.tg .tg-ea57{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:#000000}
-		.tg .tg-k1lp{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:#000000;text-align:center}
-		.tg .tg-6l0l{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:#ffffff}
-		.tg .tg-s9ax{font-weight:bold;font-size:22px;font-family:"Comic Sans MS", cursive, sans-serif !important;;border-color:#000000;text-align:center}
-		.tg .tg-o7wt{font-size:18px;font-family:"Palatino Linotype" !important;;border-color:inherit}
-		.tg .tg-zims{white-space: pre-line;font-family:"Palatino Linotype";font-size:16px;padding:2px 2px, cursive, sans-serif !important;;border-color:#000000;vertical-align:top}
+	.tg  {border: 1px solid black;border-spacing:1;margin:0px auto;}
+	.tg td{border-color:black;
+		   border-style:solid;
+		   border-width:1px;
+		   font-family:"Palatino Linotype";
+		   font-size:11px;
+		   overflow:hidden;
+		   padding:1px 1px;
+		   word-break:normal;}
+	.tg th{border-color:black;
+		   border-style:solid;
+		   border-width:1px;
+		   font-family:"Palatino Linotype";
+		   font-size:11px;
+		   font-weight:normal;
+		   overflow:hidden;
+		   padding:1px 1px;
+		   word-break:normal;}
+	.tg .tg-fr75{border-color:inherit;
+				 font-family:"Palatino Linotype";
+				 text-align:center;
+				 vertical-align:top}
+	.tg .tg-0pky{border-color:inherit;
+				 vertical-align:top}
+	.tg .tg-zv4m{border-color:#ffffff;vertical-align:top}
 	</style>
 </head>
 <script type="text/vbscript" id="LOGRefresh">
@@ -48,7 +64,7 @@ End Sub
 <script type="text/vbscript" id="OOLOAD">
 ' <!--
 sub OOLOAD()
-	window.resizeTo 1425,1305
+	window.resizeTo 1255,705
 	userAOI.Value = "66044, 66046, 66047, 66045, 66049"
 	UserOutputType.Value = "impacts"
 end sub
@@ -208,37 +224,21 @@ End Sub
 ' -->
 </script>
 <body onload="OOLOAD()" onbeforeunload="Shutdown()">
-	<table class="tg" style="undefined;table-layout: fixed; width: 1355px">
+	<table class="tg" style="undefined;table-layout: fixed; width: 1185px">
 	<colgroup>
-	<col style="width: 450px">
-	<col style="width: 900">
+	<col style="width: 400px">
+	<col style="width: 785px">
 	</colgroup>
-		<tr>
-			<td class="tg-s9ax">Welcome to FOSSFlood -- V 1.2</td>
-			<td class="tg-o7wt" align="center" valign="top" rowspan="3">
-			<img src="data/misc/FOSSFloodLogo.jpg" style="width: 98%;max-height: 100%" />
-			<div style="width:900;height:638px;line-height:3em;overflow:scroll;padding:1px;">
-			<b>--- Impact Dashboard ---</b><br>
-			<img src="data/misc/Impacts.PNG" style="width: 98%;max-height: 100%" /><br><br>
-			<b>--- Base Data Viewer ---</b><br>
-			<img src="data/misc/Basedata.PNG" style="width: 98%;max-height: 100%" /><br><br>
-			<b>--- GIS Rasters Only ---</b><br>
-			<img src="data/misc/GIS_O.PNG" style="width: 98%;max-height: 100%" /><br><br>
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td class="tg-k1lp">See the <a href="https://arcg.is/1HGCnL">ESRI Story Maps tutorial</a> for instructions</td>
-		</tr>
-		<tr>
-			<td class="tg-ea57">
+	<tbody>
+	  <tr>
+		<td class="tg-0pky" rowspan="3">
+		See the <a href="https://arcg.is/1HGCnL">ESRI Story Maps tutorial</a> for help<BR>
 			<fieldset>
 				<legend>User inputs</legend>
 				Enter an area of interest:<input type="text" name="userAOI" size="30"><br>
 				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="zctas" checked="true">Zip code string (Format as:#####, #####, ...)<BR>
 				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="huc8">HUC8 string (Format as:########, ########, ...)<BR>
 				<input type="radio" name="aoi_radiobutton" ID="aoi_radiobutton" value="string">A geotaggable string<br>
-				<br>
 				<fieldset>
 					<legend>Addresses source:</legend>
 						<input type="radio" name="add_radiobutton" ID="add_radiobutton" value="OpenAddresses" checked="true">OpenAddresses<BR>
@@ -275,7 +275,7 @@ End Sub
 						<option value="17">17</option>
 						<option value="18">18</option>
 					</select>
-					<BR><BR>
+					<BR>
 					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USER_STAGE">User provided stage (ft)<BR>
 					<input type="radio" name="forecast_radiobutton" ID="forecast_radiobutton" value="USER_DIS">User provided discharge (cfs)<BR>
 					File:<input type="file" id="USERFLOWFILE" name="USERFLOWFILE"><BR>
@@ -303,16 +303,28 @@ End Sub
 				<input type="checkbox" id="clipflag" name="clipflag" checked>
 			</fieldset>
 			<br>
-			<input type="button" value="Run FOSSFlood" name="run_button"  onClick="ExecuteFOSSFlood"><br>
-			<br><br>
-			Log:</td>
-		</tr>
-		<tr>
-			<td class="tg-zims" colspan="2">
-			<div id = "MyDataInfo" style="width:1650px;height:225px;line-height:1em;overflow:scroll;padding:1px;">
-			</div>
-			</td>
-		</tr>
+			<input type="button" value="Run FOSSFlood" name="run_button"  onClick="ExecuteFOSSFlood">
+		</td>
+		<td class="tg-0pky" align="center" valign="top">
+		<div style="width:785;height:385px;line-height:3em;overflow:scroll;padding:3px;">
+		<b>--- Impact Dashboard ---</b><br>
+		<img src="data/misc/Impacts.PNG" style="width: 96%;max-height: 100%" /><br><br>
+		<b>--- Base Data Viewer ---</b><br>
+		<img src="data/misc/Basedata.PNG" style="width: 96%;max-height: 100%" /><br><br>
+		<b>--- GIS Rasters Only ---</b><br>
+		<img src="data/misc/GIS_O.PNG" style="width: 96%;max-height: 100%" /><br><br>
+		</div>
+		</td>
+	  </tr>
+	  <tr>
+		<td class="tg-zv4m">Log:</td>
+	  </tr>
+	  <tr>
+		<td class="tg-0pky">
+		<div id = "MyDataInfo" style="width:785px;height:200px;line-height:1em;overflow:scroll;padding:1px;"></div>
+		</td>
+	  </tr>
+	</tbody>
 	</table>
 </body>
 </html>

@@ -169,11 +169,10 @@ suppressMessages(library(nomadsNC))
 suppressMessages(library(velox))
 suppressMessages(library(geofabrik))
 
-
 # suppressMessages(library(patchwork))
 # suppressMessages(library(hrbrthemes))
 options(tigris_use_cache = FALSE)
-
+apptitle = "FOSSFlood V 1.21"
 
 #/////////////////////////////////////
 # Helper Functions                                     
@@ -398,33 +397,33 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   # ---------------------------------------------------------------------------------
   
   # gages ----------------------------------------------------------------------------
-  print("-- Downloading NWIS stations --")
-  skipNWISflag <- FALSE
-  URL <- paste0("https://waterdata.usgs.gov/nwis/inventory?nw_longitude_va=",
-                west,"&nw_latitude_va=",north,"&se_longitude_va=",east,"&se_latitude_va=",south,
-                "&coordinate_format=decimal_degrees&group_key=NONE&format=sitefile_output&sitefile_output_format=rdb_file&column_name=agency_cd&column_name=site_no&column_name=station_nm&column_name=dec_lat_va&column_name=dec_long_va&list_of_search_criteria=lat_long_bounding_box")
-  tryCatch(quiet(httr::GET(URL, write_disk(paste0(basedir, "/AOI/",user.aoi.filepath,"/inventory"), overwrite=TRUE))),
-           error = function(e) {
-             print("-- !ALERT! No NWIS stations found in AOI. --")
-             skipNWISflag <<- TRUE
-           }
-  )
-  if(!skipNWISflag) {
-    NWISgagestxt <- read.table(paste0(basedir, "/AOI/",user.aoi.filepath,"/inventory"), sep="\t", header=TRUE)[-1,]  # Remove colume data def
-    NWISgagestxt$Latitude <- as.numeric(as.character(NWISgagestxt$dec_lat_va))
-    NWISgagestxt$Longitude <- as.numeric(as.character(NWISgagestxt$dec_long_va))
-    sp::coordinates(NWISgagestxt) <- ~Longitude + Latitude
-    NWISgages <- sf::st_as_sf(subset(NWISgagestxt, select=-c(dec_long_va,dec_lat_va))) %>% sf::st_set_crs(4326)
-    NWISgages_proj = sf::st_transform(NWISgages, sf::st_crs(3857))
-    # Shoehorn in comid
-    comidsource = raster::raster(paste0(basedir,"/AOI/", user.aoi.filepath,"/catchmask_",user.aoi.filepath,".tif"))
-    comidv = velox::velox(comidsource)
-    NWISgageCOMID = comidv$extract_points(NWISgages_proj)
-    colnames(NWISgageCOMID) <- "comid"
-    NWISgages <- do.call(cbind, list(NWISgages, NWISgageCOMID))
-    suppressWarnings(sf::write_sf(NWISgages, paste0(basedir,"/AOI/",user.aoi.filepath,"/NWISgages.shp"), delete_layer = TRUE, quiet = TRUE))
-    quiet(file.remove(paste0(basedir, "/AOI/",user.aoi.filepath,"/inventory"))) 
-  }
+  #print("-- Downloading NWIS stations --")
+  #skipNWISflag <- FALSE
+  #URL <- paste0("https://waterdata.usgs.gov/nwis/inventory?nw_longitude_va=",
+  #              west,"&nw_latitude_va=",north,"&se_longitude_va=",east,"&se_latitude_va=",south,
+  #              "&coordinate_format=decimal_degrees&group_key=NONE&format=sitefile_output&sitefile_output_format=rdb_file&column_name=agency_cd&column_name=site_no&column_name=station_nm&column_name=dec_lat_va&column_name=dec_long_va&list_of_search_criteria=lat_long_bounding_box")
+  #tryCatch(quiet(httr::GET(URL, write_disk(paste0(basedir, "/AOI/",user.aoi.filepath,"/inventory"), overwrite=TRUE))),
+  #         error = function(e) {
+  #           print("-- !ALERT! No NWIS stations found in AOI. --")
+  #           skipNWISflag <<- TRUE
+  #         }
+  #)
+  #if(!skipNWISflag) {
+  #  NWISgagestxt <- read.table(paste0(basedir, "/AOI/",user.aoi.filepath,"/inventory"), sep="\t", header=TRUE)[-1,]  # Remove colume data def
+  #  NWISgagestxt$Latitude <- as.numeric(as.character(NWISgagestxt$dec_lat_va))
+  #  NWISgagestxt$Longitude <- as.numeric(as.character(NWISgagestxt$dec_long_va))
+  #  sp::coordinates(NWISgagestxt) <- ~Longitude + Latitude
+  #  NWISgages <- sf::st_as_sf(subset(NWISgagestxt, select=-c(dec_long_va,dec_lat_va))) %>% sf::st_set_crs(4326)
+  #  NWISgages_proj = sf::st_transform(NWISgages, sf::st_crs(3857))
+  #  # Shoehorn in comid
+  #  comidsource = raster::raster(paste0(basedir,"/AOI/", user.aoi.filepath,"/catchmask_",user.aoi.filepath,".tif"))
+  #  comidv = velox::velox(comidsource)
+  #  NWISgageCOMID = comidv$extract_points(NWISgages_proj)
+  #  colnames(NWISgageCOMID) <- "comid"
+  #  NWISgages <- do.call(cbind, list(NWISgages, NWISgageCOMID))
+  #  suppressWarnings(sf::write_sf(NWISgages, paste0(basedir,"/AOI/",user.aoi.filepath,"/NWISgages.shp"), delete_layer = TRUE, quiet = TRUE))
+  #  quiet(file.remove(paste0(basedir, "/AOI/",user.aoi.filepath,"/inventory"))) 
+  #}
   # ---------------------------------------------------------------------------------
   
   # TIGER ----------------------------------------------------------------------------
@@ -451,8 +450,8 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
     dplyr::rename('name' = FULLNAME) %>%
     dplyr::rename('type' = RTTYP)
   sf::write_sf(tigerout, paste0(basedir,"/AOI/",user.aoi.filepath,"/roads_tiger.shp"), delete_layer = TRUE, quiet = TRUE)
+  quiet(gc())
   # ---------------------------------------------------------------------------------
-  
   for(t in 1:length(unique(aoiCounties$STATEFP))){
     print(paste0("-- Downloading OSM Dataset for ",cdlTools::fips( unique(aoiCounties$STATEFP)[t], to = "Abbreviation")," --"))
     quiet(httr::GET(paste0("http://download.geofabrik.de/north-america/us/",tolower(gsub(" ", "-", cdlTools::fips( unique(aoiCounties$STATEFP)[t], to = "Name"))),"-latest.osm.pbf"), 
@@ -535,6 +534,7 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   sf::write_sf(OSMlinesout_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/roads_osm.shp"), delete_layer = TRUE, quiet = TRUE)
   sf::write_sf(OSMpointsout_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_osm.shp"), delete_layer = TRUE, quiet = TRUE)
   sf::write_sf(aoiPoints_hold, paste0(basedir,"/AOI/",user.aoi.filepath,"/addresses_oa.shp"), delete_layer = TRUE, quiet = TRUE)
+  quiet(gc())
   
   # -- Make ancillary products ---------------------------------------------------------------------------------
   print("-- Generating Index Fishnets --")
@@ -585,6 +585,7 @@ if (!file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   )) {
     paste("-- No errors generating base data - Map on! --")
   }
+  quiet(gc())
 }
 
 print("-- Welcome to FOSSFlood - Loading in data")
@@ -1106,7 +1107,7 @@ the decisions made based on its outputs."
 basedataUI <- dashboardPage(
   skin = "blue",
   # dashboardHeader(title="FOSSFlood V 1.2",tags$li(class="dropdown",actionButton("print", "Print"))),
-  dashboardHeader(title="FOSSFlood V 1.2"),
+  dashboardHeader(title=apptitle),
   dashboardSidebar(
     sidebarMenu(id="sidebar",
                 h3("Map controls"),
@@ -1623,8 +1624,8 @@ dyCSScoolMin <- function(dygraph){
 }
 impactUI <- dashboardPage(
   skin = "blue",
-  dashboardHeader(title="FOSSFlood V 1.2",tags$li(class="dropdown",actionButton("save","Save raster data"),actionButton("print", "Print"))),
-  # dashboardHeader(title="FOSSFlood V 1.1",tags$li(class="dropdown",actionButton("relaunch","Relaunch UI"),actionButton("save","Save raster data"),actionButton("print", "Print"))),
+  dashboardHeader(title=apptitle,tags$li(class="dropdown",actionButton("save","Save raster data"),actionButton("print", "Print"))),
+  # dashboardHeader(title=apptitle,tags$li(class="dropdown",actionButton("relaunch","Relaunch UI"),actionButton("save","Save raster data"),actionButton("print", "Print"))),
   dashboardSidebar(
     sidebarMenu(id="sidebar",
                 h3("Map controls"),
@@ -2649,8 +2650,6 @@ impactSERVER <- function(input, output, session) {
   })
 }
 
-
-
 #/////////////////////////////////////
 # Launch shiny
 #/////////////////////////////////////
@@ -2668,8 +2667,6 @@ launch.browser = function(appUrl, browser.path=browser.chromeium) {
                  <script>window.resizeTo(830,675);window.location=\'%s\';</script>
                  </body></html>" &', browser.path, appUrl), wait=FALSE)
 }
-
-
 
 # shinyWidgets::shinyWidgetsGallery()
 if(user.output.choice=="basedata") {
