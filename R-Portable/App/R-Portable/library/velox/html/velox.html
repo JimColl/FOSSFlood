@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a VeloxRaster object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for velox {velox}"><tr><td>velox {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a VeloxRaster object</h2>
+
+<h3>Description</h3>
+
+<p><code>velox</code> creates a VeloxRaster object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+velox(x, extent = NULL, res = NULL, crs = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A Raster* object, matrix, list of matrices, list of VeloxRaster objects,
+or character string pointing to a GDAL-readable file.</p>
+</td></tr>
+<tr valign="top"><td><code>extent</code></td>
+<td>
+<p>An <code>extent</code> object or a numeric vector of length 4. Required if <code>x</code> is a matrix or list
+of matrices, ignored otherwise.</p>
+</td></tr>
+<tr valign="top"><td><code>res</code></td>
+<td>
+<p>The x and y resolution of the raster as a numeric vector of length 2. Required if <code>x</code> is a matrix or list
+of matrices, ignored otherwise.</p>
+</td></tr>
+<tr valign="top"><td><code>crs</code></td>
+<td>
+<p>Optional. A character string describing a projection and datum in the PROJ.4 format.
+Ignored if <code>x</code> is a Raster* object.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Creates a VeloxRaster object. Note that VeloxRaster objects are Reference Class objects and thus mutable.
+Hence, the usual R copy on modify semantics do not apply.
+</p>
+<p>Note that if <code>x</code> is a list of VeloxRasters, the <code>extent</code> and <code>crs</code> attributes are copied
+from the first list element.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A VeloxRaster object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Create VeloxRaster from list of matrices
+mat1 &lt;- matrix(1:100, 10, 10)
+mat2 &lt;- matrix(100:1, 10, 10)
+mat.ls &lt;- list(mat1, mat2)
+vx &lt;- velox(mat.ls, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

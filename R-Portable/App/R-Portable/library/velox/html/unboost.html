@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cast a BoostGeometries object as a sfc object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for unboost {velox}"><tr><td>unboost {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cast a BoostGeometries object as a sfc object</h2>
+
+<h3>Description</h3>
+
+<p><code>unboost</code> creates a sfc object from a BoostGeometries object. Note that all sfc objects
+created by unboost are of type MULTI.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+unboost(x, ...)
+
+## S3 method for class 'BoostMultiPolygons'
+unboost(x, ...)
+
+## S3 method for class 'BoostMultiLines'
+unboost(x, ...)
+
+## S3 method for class 'BoostMultiPoints'
+unboost(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A BoostGeometries object.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Currently not used.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A sfc object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make sfc_MULTIPOINT
+sfc &lt;- sf::st_sfc(sf::st_multipoint(cbind(0,1)))
+## Cast to BoostPoints
+boostPoints &lt;- boost(sfc)
+## Unboost
+sfc2 &lt;- unboost(boostPoints)
+print(identical(sfc, sfc2))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

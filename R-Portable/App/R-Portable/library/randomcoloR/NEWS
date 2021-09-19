@@ -1,0 +1,16 @@
+randomcoloR 1.1.0
+----------------------------------------------------------------
+
+NEW FEATURES
+
+* Alternate color space for distinct colors
+
+* t-SNE preprocessing of color space for improved color separation
+
+MINOR IMPROVEMENTS
+
+* distinctColorPalette() no longer outputs a named vector, improving compatibility
+  with ggplot2 (where color names are meaningful)
+
+* Shrinks original color space for improved performance (especially with t-SNE
+  and k-medoids)

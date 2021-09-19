@@ -1,0 +1,6 @@
+AEdemand                Accident and Emergency demand in the UK
+plot.tsaggregates       Plot time series aggregates
+reconcilethief          Reconcile temporal hierarchical forecasts
+thief                   Temporal hierarchical forecasting
+tsaggregates            Non-overlapping temporal aggregation of a time
+                        series

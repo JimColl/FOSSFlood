@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Tidy Temporal Data Frames and Tools</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Tidy Temporal Data Frames and Tools
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;tsibble&rsquo; version 1.0.1</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="tsibble-package.html">tsibble-package</a></td>
+<td>tsibble: tidy temporal data frames and tools</td></tr>
+<tr><td style="width: 25%;"><a href="new-data.html">append_case</a></td>
+<td>New tsibble data and append new observations to a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="new-data.html">append_row</a></td>
+<td>New tsibble data and append new observations to a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="duplicates.html">are_duplicated</a></td>
+<td>Test duplicated observations determined by key and index variables</td></tr>
+<tr><td style="width: 25%;"><a href="as.ts.tbl_ts.html">as.ts.tbl_ts</a></td>
+<td>Coerce a tsibble to a time series</td></tr>
+<tr><td style="width: 25%;"><a href="as-tibble.html">as_tibble.tbl_ts</a></td>
+<td>Coerce to a tibble or data frame</td></tr>
+<tr><td style="width: 25%;"><a href="as-tsibble.html">as_tsibble</a></td>
+<td>Coerce to a tsibble object</td></tr>
+<tr><td style="width: 25%;"><a href="as-tsibble.html">as_tsibble.mts</a></td>
+<td>Coerce to a tsibble object</td></tr>
+<tr><td style="width: 25%;"><a href="as-tsibble.html">as_tsibble.ts</a></td>
+<td>Coerce to a tsibble object</td></tr>
+<tr><td style="width: 25%;"><a href="build_tsibble.html">build_tsibble</a></td>
+<td>Low-level constructor for a tsibble object</td></tr>
+<tr><td style="width: 25%;"><a href="count_gaps.html">count_gaps</a></td>
+<td>Count implicit gaps</td></tr>
+<tr><td style="width: 25%;"><a href="difference.html">difference</a></td>
+<td>Lagged differences</td></tr>
+<tr><td style="width: 25%;"><a href="duplicates.html">duplicates</a></td>
+<td>Test duplicated observations determined by key and index variables</td></tr>
+<tr><td style="width: 25%;"><a href="fill_gaps.html">fill_gaps</a></td>
+<td>Turn implicit missing values into explicit missing values</td></tr>
+<tr><td style="width: 25%;"><a href="filter_index.html">filter_index</a></td>
+<td>A shorthand for filtering time index for a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter.html">fiscal_year</a></td>
+<td>Represent year-quarter</td></tr>
+<tr><td style="width: 25%;"><a href="new-interval.html">gcd_interval</a></td>
+<td>Interval constructor for a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="group_by_key.html">group_by_key</a></td>
+<td>Group by key variables</td></tr>
+<tr><td style="width: 25%;"><a href="guess_frequency.html">guess_frequency</a></td>
+<td>Guess a time frequency from other index objects</td></tr>
+<tr><td style="width: 25%;"><a href="has_gaps.html">has_gaps</a></td>
+<td>Does a tsibble have implicit gaps in time?</td></tr>
+<tr><td style="width: 25%;"><a href="holiday_aus.html">holiday_aus</a></td>
+<td>Australian national and state-based public holiday</td></tr>
+<tr><td style="width: 25%;"><a href="index-rd.html">index</a></td>
+<td>Return index variable from a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="index-rd.html">index2</a></td>
+<td>Return index variable from a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="index-rd.html">index2_var</a></td>
+<td>Return index variable from a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="index-by.html">index_by</a></td>
+<td>Group by time index and collapse with 'summarise()'</td></tr>
+<tr><td style="width: 25%;"><a href="index_valid.html">index_valid</a></td>
+<td>Add custom index support for a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="index-rd.html">index_var</a></td>
+<td>Return index variable from a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="regular.html">interval</a></td>
+<td>Meta-information of a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="interval-pull.html">interval_pull</a></td>
+<td>Pull time interval from a vector</td></tr>
+<tr><td style="width: 25%;"><a href="year-week.html">is_53weeks</a></td>
+<td>Represent year-week based on the ISO 8601 standard (with flexible start day)</td></tr>
+<tr><td style="width: 25%;"><a href="duplicates.html">is_duplicated</a></td>
+<td>Test duplicated observations determined by key and index variables</td></tr>
+<tr><td style="width: 25%;"><a href="is-tsibble.html">is_grouped_ts</a></td>
+<td>If the object is a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="regular.html">is_ordered</a></td>
+<td>Meta-information of a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="regular.html">is_regular</a></td>
+<td>Meta-information of a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="new-interval.html">is_regular_interval</a></td>
+<td>Interval constructor for a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="is-tsibble.html">is_tsibble</a></td>
+<td>If the object is a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="year-month.html">is_yearmonth</a></td>
+<td>Represent year-month</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter.html">is_yearquarter</a></td>
+<td>Represent year-quarter</td></tr>
+<tr><td style="width: 25%;"><a href="year-week.html">is_yearweek</a></td>
+<td>Represent year-week based on the ISO 8601 standard (with flexible start day)</td></tr>
+<tr><td style="width: 25%;"><a href="key.html">key</a></td>
+<td>Return key variables</td></tr>
+<tr><td style="width: 25%;"><a href="key-data.html">key_data</a></td>
+<td>Key metadata</td></tr>
+<tr><td style="width: 25%;"><a href="key-data.html">key_rows</a></td>
+<td>Key metadata</td></tr>
+<tr><td style="width: 25%;"><a href="key-data.html">key_size</a></td>
+<td>Key metadata</td></tr>
+<tr><td style="width: 25%;"><a href="key.html">key_vars</a></td>
+<td>Return key variables</td></tr>
+<tr><td style="width: 25%;"><a href="measured-vars.html">measured_vars</a></td>
+<td>Return measured variables</td></tr>
+<tr><td style="width: 25%;"><a href="measured-vars.html">measures</a></td>
+<td>Return measured variables</td></tr>
+<tr><td style="width: 25%;"><a href="new-data.html">new_data</a></td>
+<td>New tsibble data and append new observations to a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="new-data.html">new_data.tbl_ts</a></td>
+<td>New tsibble data and append new observations to a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="new-interval.html">new_interval</a></td>
+<td>Interval constructor for a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="new_tsibble.html">new_tsibble</a></td>
+<td>Create a subclass of a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="key-data.html">n_keys</a></td>
+<td>Key metadata</td></tr>
+<tr><td style="width: 25%;"><a href="pedestrian.html">pedestrian</a></td>
+<td>Pedestrian counts in the city of Melbourne</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_alpha_yearmonth</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_alpha_yearquarter</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_alpha_yearweek</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_color_yearmonth</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_color_yearquarter</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_color_yearweek</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_colour_yearmonth</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_colour_yearquarter</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_colour_yearweek</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_fill_yearmonth</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_fill_yearquarter</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_fill_yearweek</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_size_yearmonth</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_size_yearquarter</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_size_yearweek</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_x_yearmonth</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_x_yearquarter</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_x_yearweek</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_y_yearmonth</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_y_yearquarter</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">scale_y_yearweek</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="scan_gaps.html">scan_gaps</a></td>
+<td>Scan a tsibble for implicit missing observations</td></tr>
+<tr><td style="width: 25%;"><a href="slide_tsibble.html">slide_tsibble</a></td>
+<td>Perform sliding windows on a tsibble by row</td></tr>
+<tr><td style="width: 25%;"><a href="stretch_tsibble.html">stretch_tsibble</a></td>
+<td>Perform stretching windows on a tsibble by row</td></tr>
+<tr><td style="width: 25%;"><a href="tile_tsibble.html">tile_tsibble</a></td>
+<td>Perform tiling windows on a tsibble by row</td></tr>
+<tr><td style="width: 25%;"><a href="time_in.html">time_in</a></td>
+<td>If time falls in the ranges using compact expressions</td></tr>
+<tr><td style="width: 25%;"><a href="tourism.html">tourism</a></td>
+<td>Australian domestic overnight trips</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble.html">tsibble</a></td>
+<td>Create a tsibble object</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-scales.html">tsibble-scales</a></td>
+<td>tsibble scales for ggplot2</td></tr>
+<tr><td style="width: 25%;"><a href="tsibble-tidyverse.html">tsibble-tidyverse</a></td>
+<td>Tidyverse methods for tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="update_tsibble.html">update_tsibble</a></td>
+<td>Update key and index for a tsibble</td></tr>
+<tr><td style="width: 25%;"><a href="year-month.html">yearmonth</a></td>
+<td>Represent year-month</td></tr>
+<tr><td style="width: 25%;"><a href="year-quarter.html">yearquarter</a></td>
+<td>Represent year-quarter</td></tr>
+<tr><td style="width: 25%;"><a href="year-week.html">yearweek</a></td>
+<td>Represent year-week based on the ISO 8601 standard (with flexible start day)</td></tr>
+</table>
+</div></body></html>

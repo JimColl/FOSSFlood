@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: im2col</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VeloxRaster_im2col {velox}"><tr><td>VeloxRaster_im2col {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>im2col</h2>
+
+<h3>Description</h3>
+
+<p>Creates a matrix of flattened image patches from a VeloxRaster band.
+Order is left-to-right, top-to-bottom.
+Note that if <code>any(c(rowframe, colframe)&gt;0)</code>, the image patches are (partially) overlapping.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>wrow</code></td>
+<td>
+<p>Patch size in the y dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>wcol</code></td>
+<td>
+<p>Patch size in the x dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>band</code></td>
+<td>
+<p>The band to be flattened.</p>
+</td></tr>
+<tr valign="top"><td><code>padval</code></td>
+<td>
+<p>A padding value.</p>
+</td></tr>
+<tr valign="top"><td><code>rowframe</code></td>
+<td>
+<p>A non-negative integer specifying the size of the frame around
+the image patches in the y dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>colframe</code></td>
+<td>
+<p>A non-negative integer specifying the size of the frame around
+the image patches in the x dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>rowstride</code></td>
+<td>
+<p>A positive integer denoting the stride between extracted patches
+in the y dimension. I.e. only every <code>rowstride</code>th patch is extracted.</p>
+</td></tr>
+<tr valign="top"><td><code>colstride</code></td>
+<td>
+<p>A positive integer denoting the stride between extracted patches
+in the x dimension. I.e. only every <code>colstride</code>th patch is extracted.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A numeric matrix with <code>(wrow+2*rowframe)*(wcol+2*colframe)</code> columns.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make VeloxRaster
+mat &lt;- matrix(1:100, 10, 10)
+vx &lt;- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Apply im2col
+patch.mat &lt;- vx$im2col(wrow=2, wcol=2, band=1, padval=0,
+                       rowframe=1, colframe=1, rowstride=2, colstride=2)
+dim(patch.mat)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

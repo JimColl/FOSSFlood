@@ -1,0 +1,35 @@
+Package: velox
+Type: Package
+Title: Fast Raster Manipulation and Extraction
+Version: 0.2.1
+Date: 2021-05-31
+Authors@R: c(
+    person("Jean-Romain", "Roussel", email = "jean-romain.roussel.1@ulaval.ca", role = c("cre"), comment = "Maintains the package from may 2021"),
+    person("Philipp", "Hunziker", email = "hunzikp@gmail.com", role = c("aut", "cph"), comment = "Created the package"))
+BugReports: https://github.com/hunzikp/velox/issues
+Description: C++ accelerated raster manipulation and extraction.
+Depends: R (>= 3.4.0)
+License: GPL (>= 2)
+Imports: methods, Rcpp (>= 0.11.6), raster, rgeos, rgdal, sp, sf (>=
+        0.5-5)
+LinkingTo: Rcpp, BH (>= 1.65.0-1)
+NeedsCompilation: yes
+SystemRequirements: C++14
+Packaged: 2021-08-31 04:11:31 UTC; jimcoll
+RoxygenNote: 7.1.1
+Suggests: testthat
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: velox
+RemoteUsername: hunzikp
+RemoteRef: HEAD
+RemoteSha: aae39aa3d539d07c85757d9184f2b59e801b095c
+GithubRepo: velox
+GithubUsername: hunzikp
+GithubRef: HEAD
+GithubSHA1: aae39aa3d539d07c85757d9184f2b59e801b095c
+Author: Jean-Romain Roussel [cre] (Maintains the package from may 2021),
+  Philipp Hunziker [aut, cph] (Created the package)
+Maintainer: Jean-Romain Roussel <jean-romain.roussel.1@ulaval.ca>
+Built: R 4.1.0; x86_64-w64-mingw32; 2021-08-31 04:11:31 UTC; windows
+Archs: i386, x64

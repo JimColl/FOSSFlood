@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract Values Given Points</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VeloxRaster_extract_points {velox}"><tr><td>VeloxRaster_extract_points {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract Values Given Points</h2>
+
+<h3>Description</h3>
+
+<p>Given a set of points, returns all raster values of the cells with which they intersect.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>sp</code></td>
+<td>
+<p>A SpatialPoints* object or a sf* POINT object.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A numeric matrix. One row per element in <code>sp</code>, one column per band in the VeloxRaster.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make VeloxRaster with two bands
+set.seed(0)
+mat1 &lt;- matrix(rnorm(100), 10, 10)
+mat2 &lt;- matrix(rnorm(100), 10, 10)
+vx &lt;- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+            crs="+proj=longlat +datum=WGS84 +no_defs")
+## Make SpatialPoints
+library(sp)
+library(rgeos)
+coord &lt;- cbind(runif(10), runif(10))
+spoint &lt;- SpatialPoints(coords=coord)
+## Extract
+vx$extract_points(sp=spoint)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Test whether two BoostObjects intersect</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bg_intersects {velox}"><tr><td>bg_intersects {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Test whether two BoostObjects intersect</h2>
+
+<h3>Description</h3>
+
+<p>Tests whether two BoostObjects intersect (element-wise).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bg_intersects(obj1, obj2)
+
+## S4 method for signature 'BoostMultiPolygons,BoostBoxGrid'
+bg_intersects(obj1, obj2)
+
+## S4 method for signature 'BoostMultiLines,BoostBoxGrid'
+bg_intersects(obj1, obj2)
+
+## S4 method for signature 'BoostMultiPolygons,BoostPointGrid'
+bg_intersects(obj1, obj2)
+
+## S4 method for signature 'BoostMultiPolygons,BoostGeometries'
+bg_intersects(obj1, obj2)
+
+## S4 method for signature 'BoostMultiLines,BoostGeometries'
+bg_intersects(obj1, obj2)
+
+## S4 method for signature 'BoostMultiPoints,BoostGeometries'
+bg_intersects(obj1, obj2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj1</code></td>
+<td>
+<p>A BoostObject.</p>
+</td></tr>
+<tr valign="top"><td><code>obj2</code></td>
+<td>
+<p>A BoostObject.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list, with list element i an integer vector with the indices j for which intersects(x[i],y[j]) is TRUE.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+pts = boost(sf::st_sfc(sf::st_point(c(.5,.5)),
+sf::st_point(c(1.5, 1.5)),
+sf::st_point(c(2.5, 2.5))))
+pol = boost(sf::st_sfc(sf::st_polygon(
+list(rbind(c(0,0), c(2,0), c(2,2), c(0,2), c(0,0))))))
+bg_intersects(pol, pts)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

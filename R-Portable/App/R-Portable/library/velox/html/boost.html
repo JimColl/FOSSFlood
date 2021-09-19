@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cast a sfc object as a BoostObject</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for boost {velox}"><tr><td>boost {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cast a sfc object as a BoostObject</h2>
+
+<h3>Description</h3>
+
+<p><code>boost</code> creates a BoostObject from a sfc or VeloxRaster object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+boost(x, ...)
+
+## S3 method for class 'sfc_MULTIPOLYGON'
+boost(x, ...)
+
+## S3 method for class 'sfc_POLYGON'
+boost(x, ...)
+
+## S3 method for class 'sfc_MULTILINESTRING'
+boost(x, ...)
+
+## S3 method for class 'sfc_LINESTRING'
+boost(x, ...)
+
+## S3 method for class 'sfc_MULTIPOINT'
+boost(x, ...)
+
+## S3 method for class 'sfc_POINT'
+boost(x, ...)
+
+## S3 method for class 'VeloxRaster'
+boost(x, box = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An sfc object.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Currently not used.</p>
+</td></tr>
+<tr valign="top"><td><code>box</code></td>
+<td>
+<p>Boolean. If <code>TRUE</code> and <code>x</code> is a <code>VeloxRaster</code> object, returns a BoxGrid instead of a PointGrid.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A BoostObject object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make sfc_POINT
+sfc &lt;- sf::st_sfc(sf::st_point(c(0,1)))
+## Cast to BoostPoints
+boostPoints &lt;- boost(sfc)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

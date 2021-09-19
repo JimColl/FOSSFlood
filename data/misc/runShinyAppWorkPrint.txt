@@ -1,0 +1,7 @@
+rStarttime <- Sys.time()
+basedir <- getwd() 
+shinylog <- paste0(basedir,"/ShinyApp.log")
+print(paste("-- Welcome to FOSSFlood - Running in", basedir)) 
+write.table(x=paste("-- Welcome to FOSSFlood - Running in", basedir), file = shinylog, append = FALSE,row.names = FALSE,col.names = FALSE)
+write.table(x=paste("-- Welcome to FOSSFlood - Running in", basedir), file = shinylog, append = TRUE,row.names = FALSE,col.names = FALSE)
+write.table(x="neat print", file = shinylog, append = TRUE,row.names = FALSE,col.names = FALSE)

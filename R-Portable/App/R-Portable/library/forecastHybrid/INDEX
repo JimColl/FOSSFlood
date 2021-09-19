@@ -1,0 +1,39 @@
+accuracy.cvts           Accuracy measures for cross-validated time
+                        series
+accuracy.hybridModel    Accuracy measures for hybridModel objects
+checkCVArguments        Validate that CV window parameters are valid
+checkModelArgs          Helper function to test all the model arguments
+                        (e.g. a.args, e.args, etc)
+checkParallelArguments
+                        Helper function to check the that the parallel
+                        arguments are valid
+cvts                    Cross validation for time series
+extractForecasts        Extract cross validated rolling forecasts
+fitted.hybridModel      Extract Model Fitted Values
+forecast.hybridModel    Hybrid forecast
+forecast.thetam         Forecast using a Theta model
+getModel                Return a forecast model function for a given
+                        model character
+getModelName            Translate character to model name
+hybridModel             Hybrid time series modeling
+is.hybridModel          Test if the object is a hybridModel object
+plot.hybridModel        Plot a hybridModel object
+plot.thetam             Plot components from Theta model
+plotFitted              Plot the fitted values of a hybridModel object
+plotModelObjects        Plot the component models of a hybridModel
+                        object
+prepareTimeseries       Helper function to validate and clean the input
+                        time series
+print.hybridModel       Print information about the hybridModel object
+removeModels            Helper function to remove models that require
+                        more data
+residuals.hybridModel   Extract Model Residuals
+summary.hybridModel     Print a summary of the hybridModel object
+thetam                  Theta method 'model'
+thiefModel              Forecast ensemble using THieF
+tsCombine               Combine multiple sequential time series
+tsPartition             Generate training and test indices for time
+                        series cross validation
+tsSubsetWithIndices     Subset time series with provided indices
+unwrapParallelModels    Helper function used to unpack the fitted model
+                        objects from a list

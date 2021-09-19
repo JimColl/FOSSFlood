@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract Values Given Polygons</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VeloxRaster_extract {velox}"><tr><td>VeloxRaster_extract {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract Values Given Polygons</h2>
+
+<h3>Description</h3>
+
+<p>Extracts the values of all cells intersecting with a spatial object (line or polygon)
+<code>sp</code> and optionally applies R function <code>fun</code>.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>sp</code></td>
+<td>
+<p>A sf* POLYGON or MULTIPOLYGON object, a sf* LINE or MULTILINE object, a SpatialPolygons* object, or a SpatialLines* object.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>An R function. See Details.</p>
+</td></tr>
+<tr valign="top"><td><code>df</code></td>
+<td>
+<p>Boolean. If TRUE, the return value will be a data frame (or list of data frames, see Details), otherwise a matrix (or list of matrices, see Details).
+If TRUE, a column <code>ID_sp</code> will be added to each data frame containing the ID of the sp object.</p>
+</td></tr>
+<tr valign="top"><td><code>small</code></td>
+<td>
+<p>Boolean. If TRUE and sp contains polygons, then raster values for small (or oddly shaped) polygons that do not intersect with any cell centroid
+are established by intersecting the small polygon with the entire (boxed) cells.</p>
+</td></tr>
+<tr valign="top"><td><code>legacy</code></td>
+<td>
+<p>Boolean. Whether to use legacy C++ code (pre velox 0.1.0-9007).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If passed, <code>fun</code> must be an R function accepting a numeric vector as its first (and only mandatory) argument, and returning a scalar.
+If <code>fun</code> is <code>NULL</code>, <code>extract</code> returns a list of matrices, each matrix containing the raster values intersecting with the respective polygon (but see argument <code>df</code>).
+If sp contains polygons, then cell-polygon intersections are calculated based on cell centroids (but see argument <code>small</code>).
+If sp contains lines, then regular cell-line intersections are calculated.
+</p>
+
+
+<h3>Value</h3>
+
+<p>If <code>fun</code> is passed: A numeric matrix or data frame (see argument <code>df</code>) with one row per element in <code>sp</code>, one column per band in the VeloxRaster.
+</p>
+<p>Otherwise: A list of numeric matrices or data frames (see argument <code>df</code>), with one list element per element in <code>sp</code>.
+Each matrix/data frame consists of one column per band in the VeloxRaster, one row per raster cell intersecting with the geometry.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make VeloxRaster with two bands
+set.seed(0)
+mat1 &lt;- matrix(rnorm(100), 10, 10)
+mat2 &lt;- matrix(rnorm(100), 10, 10)
+vx &lt;- velox(list(mat1, mat2), extent=c(0,1,0,1), res=c(0.1,0.1),
+            crs="+proj=longlat +datum=WGS84 +no_defs")
+## Make SpatialPolygons
+library(sp)
+library(rgeos)
+coord &lt;- cbind(0.5, 0.5)
+spoint &lt;- SpatialPoints(coords=coord)
+spols &lt;- gBuffer(spgeom=spoint, width=0.5)
+## Extract
+vx$extract(sp=spols, fun=mean)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

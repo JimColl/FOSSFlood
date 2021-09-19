@@ -1,0 +1,49 @@
+as.ts.tbl_ts            Coerce a tsibble to a time series
+as_tibble.tbl_ts        Coerce to a tibble or data frame
+as_tsibble              Coerce to a tsibble object
+build_tsibble           Low-level constructor for a tsibble object
+count_gaps              Count implicit gaps
+difference              Lagged differences
+fill_gaps               Turn implicit missing values into explicit
+                        missing values
+filter_index            A shorthand for filtering time index for a
+                        tsibble
+group_by_key            Group by key variables
+guess_frequency         Guess a time frequency from other index objects
+has_gaps                Does a tsibble have implicit gaps in time?
+holiday_aus             Australian national and state-based public
+                        holiday
+index                   Return index variable from a tsibble
+index_by                Group by time index and collapse with
+                        'summarise()'
+index_valid             Add custom index support for a tsibble
+interval                Meta-information of a tsibble
+interval_pull           Pull time interval from a vector
+is_duplicated           Test duplicated observations determined by key
+                        and index variables
+is_tsibble              If the object is a tsibble
+key                     Return key variables
+key_data                Key metadata
+measures                Return measured variables
+new_data                New tsibble data and append new observations to
+                        a tsibble
+new_interval            Interval constructor for a tsibble
+new_tsibble             Create a subclass of a tsibble
+pedestrian              Pedestrian counts in the city of Melbourne
+scan_gaps               Scan a tsibble for implicit missing
+                        observations
+slide_tsibble           Perform sliding windows on a tsibble by row
+stretch_tsibble         Perform stretching windows on a tsibble by row
+tile_tsibble            Perform tiling windows on a tsibble by row
+time_in                 If time falls in the ranges using compact
+                        expressions
+tourism                 Australian domestic overnight trips
+tsibble                 Create a tsibble object
+tsibble-package         tsibble: tidy temporal data frames and tools
+tsibble-scales          tsibble scales for ggplot2
+tsibble-tidyverse       Tidyverse methods for tsibble
+update_tsibble          Update key and index for a tsibble
+yearmonth               Represent year-month
+yearquarter             Represent year-quarter
+yearweek                Represent year-week based on the ISO 8601
+                        standard (with flexible start day)

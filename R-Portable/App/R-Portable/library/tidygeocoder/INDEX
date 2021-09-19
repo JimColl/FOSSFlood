@@ -1,0 +1,18 @@
+api_info_reference      Geocoder service links and information
+api_key_reference       API key environmental variables
+api_parameter_reference
+                        Geocoder service API parameter reference
+batch_limit_reference   Geocoding batch size limits
+extract_results         Extract forward geocoding results
+extract_reverse_results
+                        Extract reverse geocoding results
+geo                     Geocode addresses
+geo_census              Convenience functions for calling 'geo()'
+geocode                 Geocode addresses in a dataframe
+get_api_query           Construct a geocoder API query
+louisville              Louisville, Kentucky street addresses
+min_time_reference      Minimum time required per query
+query_api               Execute a geocoder API query
+reverse_geo             Reverse geocode coordinates
+reverse_geocode         Reverse geocode coordinates in a dataframe
+sample_addresses        Sample addresses for testing

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Rasterize Polygons or Lines</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VeloxRaster_rasterize {velox}"><tr><td>VeloxRaster_rasterize {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Rasterize Polygons or Lines</h2>
+
+<h3>Description</h3>
+
+<p>Rasterizes a collection of polygons or lines, i.e. assigns the values in the <code>field</code> column of the
+SPDF to the raster cells intersecting with the respective geometry.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>spdf</code></td>
+<td>
+<p>A sf POLYGON or MULTIPOLYGON object, a sf LINE or MULTILINE object, a SpatialPolygonsDataFrame object, or a SpatialLinesDataFrame object.</p>
+</td></tr>
+<tr valign="top"><td><code>field</code></td>
+<td>
+<p>A character string corresponding to the name of a numeric column in <code>spdf</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>band</code></td>
+<td>
+<p>A positive integer denoting the ID of the band where the rasterized values are written.</p>
+</td></tr>
+<tr valign="top"><td><code>background</code></td>
+<td>
+<p>Optional. A numeric value assigned to all background cells.</p>
+</td></tr>
+<tr valign="top"><td><code>small</code></td>
+<td>
+<p>Boolean. If TRUE and spdf contains polygons, then intersections for small (or oddly shaped) polygons that do not intersect with any cell centroid
+are established by intersecting the small polygon with the entire (boxed) cells.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Note that rasterization is performed sequentially. Hence, cells being contained by multiple polygons
+are assigned the value of the last polygon in the <code>spdf</code> object.
+If argument <code>small = TRUE</code>, then the values of small polygons are assigned last.
+</p>
+<p>If spdf contains polygons, then cell-polygon intersections are calculated based on cell centroids (but see argument <code>small</code>).
+If spdf contains lines, then regular cell-line intersections are calculated.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Void.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make VeloxRaster
+mat &lt;- matrix(0, 10, 10)
+vx &lt;- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Make SpatialPolygonsDataFrame
+library(sp)
+library(rgeos)
+coord &lt;- cbind(0.5, 0.5)
+spoint &lt;- SpatialPoints(coords=coord)
+spols &lt;- gBuffer(spgeom=spoint, width=0.25)
+spdf &lt;- SpatialPolygonsDataFrame(Sr=spols, data=data.frame(value=1), match.ID=FALSE)
+## Rasterize, set background to -1
+vx$rasterize(spdf=spdf, field="value", background=-1)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

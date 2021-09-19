@@ -1,0 +1,8 @@
+as_openadd              Coerce to openadd object
+oa_cache                Manage cached files
+oa_combine              Combine data helper
+oa_get                  Get data from Openaddresses
+oa_list                 List available data
+oa_readme               Print readme from one or more datasets
+oa_search               Search Openaddresses datasets
+openadds-package        R client for Openaddresses.io data

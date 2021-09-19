@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: col2im</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VeloxRaster_col2im {velox}"><tr><td>VeloxRaster_col2im {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>col2im</h2>
+
+<h3>Description</h3>
+
+<p>Assigns values to a VeloxRaster band from a matrix of flattened image patches.
+Patch frames, as specified by <code>rowframe</code> and <code>rowframe</code>, are not assigned.
+This function is intended to be used with <code>mat</code> matrices constructed with the <code>im2col</code> function.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>mat</code></td>
+<td>
+<p>The matrix of flattened image patches.</p>
+</td></tr>
+<tr valign="top"><td><code>wrow</code></td>
+<td>
+<p>Patch size in the y dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>wcol</code></td>
+<td>
+<p>Patch size in the x dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>band</code></td>
+<td>
+<p>The band to be assigned.</p>
+</td></tr>
+<tr valign="top"><td><code>rowframe</code></td>
+<td>
+<p>A non-negative integer specifying the size of the frame around
+the image patches in the y dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>colframe</code></td>
+<td>
+<p>A non-negative integer specifying the size of the frame around
+the image patches in the x dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>rowstride</code></td>
+<td>
+<p>A positive integer denoting the stride between extracted patches
+in the y dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>colstride</code></td>
+<td>
+<p>A positive integer denoting the stride between extracted patches
+in the x dimension.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Void.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make VeloxRaster
+mat &lt;- matrix(1:100, 10, 10)
+vx &lt;- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+## Apply im2col
+patch.mat &lt;- vx$im2col(wrow=2, wcol=2, band=1, padval=0,
+                       rowframe=1, colframe=1, rowstride=2, colstride=2)
+## Apply col2im
+vx$col2im(mat=patch.mat, wrow=2, wcol=2, band=1, rowframe=1, colframe=1, rowstride=2, colstride=2)
+isTRUE(all.equal(mat, vx$as.matrix()))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

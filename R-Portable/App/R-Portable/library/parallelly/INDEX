@@ -1,0 +1,20 @@
+as.cluster              Coerce an Object to a Cluster Object
+autoStopCluster         Automatically Stop a Cluster when Garbage
+                        Collected
+availableConnections    Number of Available and Free Connections
+availableCores          Get Number of Available Cores on The Current
+                        Machine
+availableWorkers        Get Set of Available Workers
+freePort                Find a TCP port that can be opened
+isConnectionValid       Checks if a Connection is Valid
+isForkedNode            Checks whether or not a Cluster Node Runs in a
+                        Forked Process
+isLocalhostNode         Checks whether or not a Cluster Node Runs on
+                        Localhost
+makeClusterMPI          Create a Message Passing Interface (MPI)
+                        Cluster of R Workers for Parallel Processing
+makeClusterPSOCK        Create a PSOCK Cluster of R Workers for
+                        Parallel Processing
+parallelly.options      Options Used by the 'parallelly' Package
+supportsMulticore       Check If Forked Processing ("multicore") is
+                        Supported

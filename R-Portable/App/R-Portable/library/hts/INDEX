@@ -1,0 +1,20 @@
+MinT                    Trace minimization for hierarchical or grouped
+                        time series
+accuracy.gts            In-sample or out-of-sample accuracy measures
+                        for forecast grouped and hierarchical model
+aggts                   Extract selected time series from a gts object
+allts                   Extract all time series from a gts object
+combinef                Optimally combine forecasts from a hierarchical
+                        or grouped time series
+forecast.gts            Forecast a hierarchical or grouped time series
+get_groups              Get nodes/groups from an hts/gts object
+gts                     Create a grouped time series
+hts                     Create a hierarchical time series
+hts-package             Hierarchical and grouped time series
+htseg1                  Simple examples of hierarchical time series.
+infantgts               Regional infant mortality counts across
+                        Australia from 1933 to 2003.
+plot.gts                Plot grouped or hierarchical time series
+smatrix                 Summing matrix for hierarchical or grouped time
+                        series
+window.gts              Time window of a gts object

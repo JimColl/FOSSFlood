@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A Reference Class for velox rasters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VeloxRaster-class {velox}"><tr><td>VeloxRaster-class {velox}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>A Reference Class for velox rasters</h2>
+
+<h3>Description</h3>
+
+<p>A Reference Class for velox rasters
+</p>
+
+
+<h3>Fields</h3>
+
+
+<dl>
+<dt><code>rasterbands</code></dt><dd><p>A list of matrices containing the raster data</p>
+</dd>
+<dt><code>dim</code></dt><dd><p>Raster dimensions</p>
+</dd>
+<dt><code>extent</code></dt><dd><p>Raster extent</p>
+</dd>
+<dt><code>res</code></dt><dd><p>Raster resolution</p>
+</dd>
+<dt><code>nbands</code></dt><dd><p>Number of raster bands</p>
+</dd>
+<dt><code>crs</code></dt><dd><p>Coordinate reference system (Proj4 string)</p>
+</dd>
+</dl>
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt><code>aggregate(factor, aggtype = c("sum", "mean", "min", "max", "median"))</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_aggregate.html">VeloxRaster_aggregate</a></code>.</p>
+</dd>
+<dt><code>as.matrix(band = 1)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_as.matrix.html">VeloxRaster_as.matrix</a></code>.</p>
+</dd>
+<dt><code>as.RasterBrick(assign_data_type = FALSE)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_as.RasterBrick.html">VeloxRaster_as.RasterBrick</a></code>.</p>
+</dd>
+<dt><code>as.RasterLayer(band = 1, assign_data_type = FALSE)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_as.RasterLayer.html">VeloxRaster_as.RasterLayer</a></code>.</p>
+</dd>
+<dt><code>as.RasterStack(assign_data_type = FALSE)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_as.RasterStack.html">VeloxRaster_as.RasterStack</a></code>.</p>
+</dd>
+<dt><code>col2im(
+  mat,
+  wrow,
+  wcol,
+  band,
+  rowframe = 0,
+  colframe = 0,
+  rowstride = 1,
+  colstride = 1
+)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_col2im.html">VeloxRaster_col2im</a></code>.</p>
+</dd>
+<dt><code>crop(x)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_crop.html">VeloxRaster_crop</a></code>.</p>
+</dd>
+<dt><code>drop(bands)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_drop.html">VeloxRaster_drop</a></code>.</p>
+</dd>
+<dt><code>extract(sp, fun = NULL, df = FALSE, small = FALSE, legacy = FALSE)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_extract.html">VeloxRaster_extract</a></code>.</p>
+</dd>
+<dt><code>extract_points(sp)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_extract_points.html">VeloxRaster_extract_points</a></code>.</p>
+</dd>
+<dt><code>get_data_type()</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_get_data_type.html">VeloxRaster_get_data_type</a></code>.</p>
+</dd>
+<dt><code>getCoordinates()</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_getCoordinates.html">VeloxRaster_getCoordinates</a></code>.</p>
+</dd>
+<dt><code>im2col(
+  wrow,
+  wcol,
+  band,
+  padval = 0,
+  rowframe = 0,
+  colframe = 0,
+  rowstride = 1,
+  colstride = 1
+)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_im2col.html">VeloxRaster_im2col</a></code>.</p>
+</dd>
+<dt><code>meanFocal(weights, bands = 1)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_meanFocal.html">VeloxRaster_meanFocal</a></code>.</p>
+</dd>
+<dt><code>medianFocal(wrow, wcol, bands = 1)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_medianFocal.html">VeloxRaster_medianFocal</a></code>.</p>
+</dd>
+<dt><code>rasterize(spdf, field, band = 1, background = NULL, small = FALSE)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_rasterize.html">VeloxRaster_rasterize</a></code>.</p>
+</dd>
+<dt><code>sumFocal(weights, bands = 1)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_sumFocal.html">VeloxRaster_sumFocal</a></code>.</p>
+</dd>
+<dt><code>write(path, overwrite = FALSE)</code></dt><dd><p>See <code><a href="../../velox/help/VeloxRaster_write.html">VeloxRaster_write</a></code>.</p>
+</dd>
+</dl>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Make VeloxRaster objects using the 'velox' function
+mat &lt;- matrix(1:100, 10, 10)
+vx &lt;- velox(mat, extent=c(0,1,0,1), res=c(0.1,0.1), crs="+proj=longlat +datum=WGS84 +no_defs")
+class(vx)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>velox</em> version 0.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

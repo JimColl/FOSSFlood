@@ -1,0 +1,11 @@
+gRasterize              Fast rasterize for Spatial objects
+gdalUtilities-package   Wrappers for 'GDAL' Utilities Executables
+gdal_grid               Interface to GDAL's gdal_grid utility
+gdal_rasterize          Interface to GDAL's gdal_rasterize utility
+gdal_translate          Interface to GDAL's gdal_translate utility
+gdalbuildvrt            Interface to GDAL's gdalbuildvrt utility
+gdaldem                 Interface to GDAL's gdaldem utility
+gdalinfo                Interface to GDAL's gdalinfo utility
+gdalwarp                Interface to GDAL's gdalwarp utility
+nearblack               Interface to GDAL's nearblack utility
+ogr2ogr                 Interface to GDAL's ogr2ogr utility

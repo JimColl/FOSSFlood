@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Data for U.S. Cities by Zip Code</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for zip_codes {noncensus}"><tr><td>zip_codes {noncensus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Data for U.S. Cities by Zip Code</h2>
+
+<h3>Description</h3>
+
+<p>This data set considers each zip code throughout the U.S.
+and provides additional information, including the city and
+state, latitude and longitude, and the FIPS code for the
+corresponding county.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+data(zip_codes)
+</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 43524 rows and 6 variables</p>
+
+
+<h3>Details</h3>
+
+<p>The ZIP code data was obtained from version 1.0 of the
+<code><a href="../../zipcode/help/zipcode.html">zipcode</a></code> package on CRAN. The county
+FIPS codes were obtained by querying the FIPS code from
+each zip's latitude and longitude via the FCC's Census
+Block Conversions API. For details regarding the API, see
+<a href="http://www.fcc.gov/developers/census-block-conversions-api">http://www.fcc.gov/developers/census-block-conversions-api</a>.
+</p>
+ <ul>
+<li><p> zip. U.S. ZIP (postal) code </p>
+</li>
+<li><p> city. ZIP
+code's city </p>
+</li>
+<li><p> state. ZIP code's state </p>
+</li>
+<li><p> latitude.
+ZIP code's latitude </p>
+</li>
+<li><p> longitude. ZIP code's longitude
+</p>
+</li>
+<li><p> fips. County FIPS Code </p>
+</li></ul>
+
+<p>The FIPS codes are useful for mapping ZIP codes and cities
+to counties in the <code><a href="../help/counties.html">counties</a></code> data
+set.
+</p>
+<p>Fun fact: ZIP is an acronym for &quot;Zone Improvement Plan.&quot;
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>noncensus</em> version 0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

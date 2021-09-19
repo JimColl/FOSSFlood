@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Data for U.S. Counties and County-Equivalent Entities</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for counties {noncensus}"><tr><td>counties {noncensus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Data for U.S. Counties and County-Equivalent Entities</h2>
+
+<h3>Description</h3>
+
+<p>Data containing state and county FIPS codes for U.S.
+counties and county-equivalent entities (CEE) along with
+county-level demographic data. The CEE includes non-state
+locations, such as Puerto Rico (PR) and Guam (GU).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+data(counties)
+</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 3235 rows and 6 variables</p>
+
+
+<h3>Details</h3>
+
+ <ul>
+<li><p> county_name. County Name and
+Legal/Statistical Area Description </p>
+</li>
+<li><p> state. State
+Postal Code </p>
+</li>
+<li><p> state_fips. State FIPS Code </p>
+</li>
+<li>
+<p>county_fips. County FIPS Code </p>
+</li>
+<li><p> fips_class. FIPS Class
+Code </p>
+</li>
+<li><p> CSA. Combined Statistical Area </p>
+</li>
+<li><p> CBSA.
+Core-based Statistical Area </p>
+</li>
+<li><p> population. County
+population from 2010 Census </p>
+</li></ul>
+
+<p>The U.S. Census Bureau groups counties into CSAs and CBSAs
+primarily based on county population. We provide listings
+of both in <code><a href="../help/combined_areas.html">combined_areas</a></code> and
+<code><a href="../help/corebased_areas.html">corebased_areas</a></code>.
+</p>
+<p>For a detailed description, Wikipedia has excellent
+discussions of both areas:
+<a href="http://en.wikipedia.org/wiki/Combined_Statistical_Area">http://en.wikipedia.org/wiki/Combined_Statistical_Area</a>
+and
+<a href="http://en.wikipedia.org/wiki/Core_Based_Statistical_Area">http://en.wikipedia.org/wiki/Core_Based_Statistical_Area</a>.
+Also, the following map from Wikipedia is excellent to
+visualize the areas:
+<a href="http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif">http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif</a>
+</p>
+<p>NOTE: Not all counties are members of a CSA or CBSA.
+</p>
+<p>The following details about FIPS Class Codes have been
+blatantly taken from the Census Bureau's website:
+</p>
+ <ul>
+<li><p> H1. Identifies an active county or
+statistically equivalent entity that does not qualify under
+subclass C7 or H6.  </p>
+</li>
+<li><p> H4. Identifies a legally defined
+inactive or nonfunctioning county or statistically
+equivalent entity that does not qualify under subclass H6.
+</p>
+</li>
+<li><p> H5. Identifies census areas in Alaska, a statistical
+county equivalent entity.  </p>
+</li>
+<li><p> H6. Identifies a county or
+statistically equivalent entity that is areally coextensive
+or governmentally consolidated with an incorporated place,
+part of an incorporated place, or a consolidated city.
+</p>
+</li>
+<li><p> C7: Identifies an incorporated place that is an
+independent city; that is, it also serves as a county
+equivalent because it is not part of any county, and a
+minor civil division (MCD) equivalent because it is not
+part of any MCD. </p>
+</li></ul>
+
+<p>For more details, see:
+<a href="http://www.census.gov/geo/reference/codes/cou.html">http://www.census.gov/geo/reference/codes/cou.html</a>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>noncensus</em> version 0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>
