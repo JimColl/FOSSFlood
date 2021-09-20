@@ -17,19 +17,21 @@
 # * In RStudio, point the R installation to the FOSSFlood R-Portable executable (FOSSFlood-master\R-Portable\App\R-Portable\bin\R.exe)
 # * Replace code below with desired inputs,
 # * and run the entire body of the code :)
+#
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-rStarttime <- Sys.time()
-# setwd("G:/Dropbox/root/projects/floodmapping/foss/project/V2/FOSSFlood-master")
-basedir <- getwd()   # This should look something like C:/Users/.../FOSSFlood-master
-print(paste("-- Welcome to FOSSFlood - Running in", basedir)) # This should look something like C:/Users/.../FOSSFlood-master
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # ----- User inputs --------------------------------------------------------------------------------------------
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+rStarttime <- Sys.time()
+# setwd("G:/Dropbox/root/projects/floodmapping/foss/project/V2/FOSSFlood-master")
+basedir <- getwd()   # This should look something like C:/Users/.../FOSSFlood-master
+print(paste("-- Welcome to FOSSFlood - Running in", basedir)) # This should look something like C:/Users/.../FOSSFlood-master
+
 user.aoi.string <- "66044, 66046, 66047, 66045, 66049"
 user.aoi.source <- "zctas" 										# "zctas", "huc8", "string"
 user.address.source <- "OpenAddresses" 						# "OpenStreetMap_Addresses", "OpenAddresses", "User_Provided_Addresses"
@@ -80,7 +82,7 @@ user.road.source <- stringr::str_replace_all(user.road.source,"_"," ")
 # ----- Preloads (libs) ---------------------------------------------------------------------------------------
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 print("-- Loading libraries --")
-# Last build date: 7/16/2021
+# Last build date: 9/16/2021
 # install.packages("tidyverse")
 # install.packages("installr")
 # install.packages("devtools")
@@ -120,8 +122,8 @@ print("-- Loading libraries --")
 # install.packages("DT")
 # install.packages("fastmatch")
 
-# library(installr, quietly = TRUE)
-# library(devtools, quietly = TRUE)
+# library(installr, warn.conflict = FALSE, quietly = TRUE)
+# library(devtools, warn.conflict = FALSE, quietly = TRUE)
 
 # url <- "https://cran.r-project.org/src/contrib/Archive/noncensus/noncensus_0.1.tar.gz"
 # pkgFile <- "noncensus_0.1.tar.gz"
@@ -129,77 +131,52 @@ print("-- Loading libraries --")
 # install.packages(pkgs=pkgFile, type="source", repos=NULL)
 # rm(paste0(getwd(),"/noncensus_0.1.tar.gz"))
 
-## install.packages("make")  #needed for velox
-## url <- "https://cran.r-project.org/src/contrib/Archive/velox/velox_0.2.0.tar.gz"
-## pkgFile <- "velox_0.2.0.tar.gz"
-## download.file(url = url, destfile = pkgFile)
-## install.packages(pkgs=pkgFile, type="source", repos=NULL)
-## rm(paste0(basedir,"/velox_0.2.0.tar.gz"))
-
-## devtools::install_github("mikejohnson51/AOI")  # Option 3
-## devtools::install_github("mikejohnson51/HydroData")  # Option 3
-## devtools::install_github("mikejohnson51/FloodMapping")  # Option 3
-# devtools::install_github("hunzikp/velox")  # installs rtools?
-## devtools::install_github("ITSLeeds/geofabrik")
-## devtools::install_github("mikejohnson51/nomadsNC",auth_token='\')      --- REMOVE ME BEFORE PUSH ----
-## devtools::install_github("mikejohnson51/nwmHistoric") 
+# devtools::install_github("hunzikp/velox")  
 
 # install.packages("patchwork")
 # install.packages("hrbrthemes")
 # install.packages("timeSeries")
 # install.packages("TSstudio")
 
-suppressMessages(library(tidyverse))
-suppressMessages(library(geosphere))
-suppressMessages(library(sf))
-suppressMessages(library(htmlwidgets))
-suppressMessages(library(htmltools))
-suppressMessages(library(dataRetrieval))
-suppressMessages(library(webshot))
-suppressMessages(library(magick))
-suppressMessages(library(animation))
-suppressMessages(library(imager))
-suppressMessages(library(stars))
-suppressMessages(library(mapview))
-suppressMessages(library(gdalUtilities))
-suppressMessages(library(tigris))
-# suppressMessages(library(noncensus))
-# suppressMessages(library(MazamaSpatialUtils))
-suppressMessages(library(cdlTools))
-suppressMessages(library(httr))
-suppressMessages(library(openadds))
-suppressMessages(library(plainview))
-suppressMessages(library(tidygeocoder))
-suppressMessages(library(fst))
-# suppressMessages(library(RNetCDF))
-suppressMessages(library(ncdf4))
-suppressMessages(library(dygraphs))
-suppressMessages(library(xts))
-suppressMessages(library(timeSeries))
-# suppressMessages(library(TSstudio))
-suppressMessages(library(grid))
-suppressMessages(library(gridExtra))
-suppressMessages(library(fastmatch))
-
-suppressMessages(library(randomcoloR))
-suppressMessages(library(leaflet))
-suppressMessages(library(leafpop))
+suppressMessages(library(tidyverse, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(geosphere, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(sf, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(htmlwidgets, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(htmltools, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(dataRetrieval, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(webshot, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(magick, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(animation, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(imager, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(stars, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(mapview, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(gdalUtilities, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(tigris, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(cdlTools, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(httr, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(openadds, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(plainview, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(tidygeocoder, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(fst, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(ncdf4, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(dygraphs, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(xts, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(timeSeries, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(grid, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(gridExtra, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(fastmatch, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(randomcoloR, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(leaflet, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(leafpop, warn.conflict = FALSE, quietly = TRUE))
 # suppressMessages(library(leaflet.opacity))
-suppressMessages(library(shiny))
-suppressMessages(library(shinydashboard))
-suppressMessages(library(shinyjs))
-suppressMessages(library(shinyalert))
-suppressMessages(library(shinycssloaders))
-suppressMessages(library(shinyWidgets))
-suppressMessages(library(shinybusy))
-
-# suppressMessages(library(AOI))
-# suppressMessages(library(HydroData))
-# suppressMessages(library(FloodMapping))
-# suppressMessages(library(nwmHistoric))
-# suppressMessages(library(nomadsNC))
-suppressMessages(library(velox))
-# suppressMessages(library(geofabrik))
+suppressMessages(library(shiny, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(shinydashboard, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(shinyjs, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(shinyalert, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(shinycssloaders, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(shinyWidgets, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(shinybusy, warn.conflict = FALSE, quietly = TRUE))
+suppressMessages(library(velox, warn.conflict = FALSE, quietly = TRUE))
 
 # suppressMessages(library(patchwork))
 # suppressMessages(library(hrbrthemes))
@@ -452,6 +429,7 @@ if(file.exists(paste0(basedir,"/AOI/",user.aoi.filepath,"/grid_rec.shp"))) {
   xx <- list() 
   memory.size(max = TRUE)
   
+  dir.create(paste0(basedir,"/AOI"), showWarnings = FALSE)
   dir.create(paste0(basedir,"/AOI/",user.aoi.filepath))
   dir.create(paste0(basedir,"/AOI/",user.aoi.filepath,"/output"))
   dir.create(paste0(basedir,"/AOI/", user.aoi.filepath,"/output/server"))

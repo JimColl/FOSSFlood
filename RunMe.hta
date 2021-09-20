@@ -6,7 +6,7 @@
 	<HTA:APPLICATION
 		APPLICATIONNAME="FOSSFlood: Free Open Source Software for Finding Liquid On Our Doorstep -- Version 1.21"
 		id="FOSSFlood"
-		version="1.21"
+		version="1.25"
 		scroll="yes"
 		singleinstance="yes"
 	/>
@@ -65,41 +65,8 @@ End Sub
 ' <!--
 sub OOLOAD()
 	window.resizeTo 1255,705
-	userAOI.Value = "66044, 66046, 66047, 66045, 66049"
-	UserOutputType.Value = "impacts"
-end sub
-' -->
-</script>
-<script type="text/vbscript" id="Shutdown">
-' <!--
-sub Shutdown()
-	iTimerID = window.setInterval("LOGRefresh()",1000)
-	Set objFSO = CreateObject("Scripting.FileSystemObject")
-	Set WshShell = CreateObject("WScript.Shell")
-	strHtmlLocnVal = document.location.href
-	strThisHTA = Replace(Right(strHtmlLocnVal, Len(strHtmlLocnVal) - 8), "/", "\")
-	strThisHTA = UnEscape(strThisHTA)
-	Set objThisFile = objFSO.GetFile(strThisHTA)
-	objParentDir = objThisFile.ParentFolder
-	WshShell.CurrentDirectory = objFSO.GetFolder(objParentDir)
-	Dim sCurPathC
-	sCurPathC = WshShell.CurrentDirectory
-	dim RKillPath
-	RKillPath = chr(34) & sCurPathC & "\shiny\killr.r" & chr(34)
-	Rexe           = "R-Portable\App\R-Portable\bin\R.exe"
-	Ropts          = "--no-save --no-environ --no-init-file --no-restore --no-Rconsole"
-	RScriptFile    = RKillPath
-	Outfile        = "ShinyApp.log" 
-	strCommand     = Rexe & " " & Ropts & " " & RScriptFile & " 1> " & Outfile & " 2>&1"
-	intWindowStyle = 0
-	bWaitOnReturnT  = False
-	CreateObject("Wscript.Shell").Run strCommand, intWindowStyle, bWaitOnReturnT
-end sub
-' -->
-</script>
-<script type="text/vbscript" id="Zipcodes">
-' <!--
-sub Zipcodes()
+	Const ForReading = 1
+	Const ForWriting = 2
 	Set objFSO = CreateObject("Scripting.FileSystemObject")
 	Set WshShell = CreateObject("WScript.Shell")
 	strHtmlLocnVal = document.location.href
@@ -110,16 +77,35 @@ sub Zipcodes()
 	WshShell.CurrentDirectory = objFSO.GetFolder(objParentDir)
 	Dim sCurPath
 	sCurPath = WshShell.CurrentDirectory
-	dim ZIPPath
-	ZIPPath = sCurPath & "\shiny\zipcodeMap.r"
-	Rexe           = "R-Portable\App\R-Portable\bin\Rscript.exe"
-	Ropts          = "--no-save --no-environ --no-init-file --no-restore --no-Rconsole"
-	RScriptFile    = ZIPPath
-	Outfile        = "ShinyApp.log" 
-	strCommand     = Rexe & " " & Ropts & " " & RScriptFile & " 1> " & Outfile & " 2>&1"
-	intWindowStyle = 0
-	bWaitOnReturnT  = True
-	CreateObject("Wscript.Shell").Run strCommand, intWindowStyle, bWaitOnReturnT
+	dim shinyRPathFilename
+	shinyRPathFilename = sCurPath & "\shiny\runshinyapp.R"
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	Set objTextFile = objFSO.OpenTextFile(shinyRPathFilename, ForReading)
+	For i = 1 to 34
+		objTextFile.ReadLine
+	Next
+	strLine = objTextFile.ReadLine
+	strVal = Right(strLine, Len(strLine)-20)
+	strVal1 = Left(strVal, Len(strVal)-1)
+	userAOI.Value = strVal1
+	UserOutputType.Value = "impacts"
+end sub
+' -->
+</script>
+<script type="text/vbscript" id="Shutdown">
+' <!--
+sub Shutdown()
+	iTimerID = window.setInterval("LOGRefresh()",1000)
+	Set objShell = CreateObject("WScript.Shell")
+	objShell.Run "CMD /c ""R-Portable\App\R-Portable\bin\Rscript.exe --vanilla shiny\killr.r 1> shinyapp.log 2>&1"" ", 0, False
+end sub
+' -->
+</script>
+<script type="text/vbscript" id="Zipcodes">
+' <!--
+sub Zipcodes()
+	Set objShell = CreateObject("WScript.Shell")
+	objShell.Run "CMD /c ""R-Portable\App\R-Portable\bin\Rscript.exe --vanilla shiny\zipcodeMap.r 1> shinyapp.log 2>&1"" ", 0, True
 end sub
 ' -->
 </script>
@@ -146,7 +132,7 @@ Sub ExecuteFOSSFlood()
 	dim shinyPathFilename
 	shinyPathFilename = sCurPath & "\shiny\runshinyapp.txt"
 	dim shinyRPathFilename
-	shinyRPathFilename = sCurPath & "\shiny\runshinyapp.R"
+	shinyRPathFilename = sCurPath & "\shiny\runshinyapp.r"
 	dim BGTXT
 	Set BGTXT = CreateObject("Scripting.FileSystemObject")
 	BGTXT.CopyFile basePathFilename, shinyPath
@@ -209,11 +195,10 @@ Sub ExecuteFOSSFlood()
 			& "ResultClass = CIM_DataFile")
 	For Each objFile In colFiles
 		strExtension = objFile.Extension
-		strExtension = Replace(strExtension, "txt", "R")
+		strExtension = Replace(strExtension, "txt", "r")
 		strNewName = objFile.Drive & objFile.Path & objFile.FileName & "." & strExtension
 		errResult = objFile.Rename(strNewName)
 	Next
-	dim shinyRAPPPath
 	Set objShell = CreateObject("WScript.Shell")
 	objShell.Run "CMD /c ""R-Portable\App\R-Portable\bin\Rscript.exe --vanilla shiny\runshinyapp.r 1> shinyapp.log 2>&1"" ", 0, True
 End Sub
