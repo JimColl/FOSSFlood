@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <script type="application/shiny-singletons">17ca26eed5e0ded418d2f78b1bb2c1cb703dd753,c43e97d24bbfe816ff586588b948aad02137388d</script>
+  <script type="application/html-dependencies">jquery[3.5.1];shiny-css[1.6.0];shiny-javascript[1.6.0];font-awesome[5.13.0];shinyWidgets[0.6.0];bootstrap-select[1.13.18];bootstrap-switch[3.3.4];epic-spinners[1.1.0];shinybusy[0.2.2];htmlwidgets[1.5.3];datatables-css[0.0.0];datatables-binding[0.18];crosstalk[1.1.1];dygraphs[1.1.1];moment[2.8.4];moment-timezone[0.2.5];moment-fquarter[1.0.0];dygraphs-binding[1.1.1.6];leaflet[1.3.1];leafletfix[1.0.0];proj4[2.6.2];Proj4Leaflet[1.0.1];rstudio_leaflet[1.3.1];leaflet-binding[2.0.4.1];ionrangeslider-javascript[2.3.1];strftime[0.9.2];ionrangeslider-css[2.3.1];bttn[0.2.4];bootstrap[3.4.1];AdminLTE[2.0.6];shinydashboard[0.7.1]</script>
+<script src="shared/jquery.min.js"></script>
+<link href="shared/shiny.min.css" rel="stylesheet" />
+<script src="shared/shiny.min.js"></script>
+<link href="font-awesome-5.13.0/css/all.min.css" rel="stylesheet" />
+<link href="font-awesome-5.13.0/css/v4-shims.min.css" rel="stylesheet" />
+<link href="shinyWidgets/shinyWidgets.min.css" rel="stylesheet" />
+<script src="shinyWidgets/shinyWidgets-bindings.min.js"></script>
+<link href="shinyWidgets/bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet" />
+<script src="shinyWidgets/bootstrap-select/js/bootstrap-select.min.js"></script>
+<link href="shinyWidgets/bootstrap-switch/bootstrap-switch-3.3.4/bootstrap-switch.min.css" rel="stylesheet" />
+<script src="shinyWidgets/bootstrap-switch/bootstrap-switch-3.3.4/bootstrap-switch.min.js"></script>
+<link href="shinybusy/epic-spinners/epic-spinners.css" rel="stylesheet" />
+<link href="shinybusy/css/shinybusy.css" rel="stylesheet" />
+<script src="shinybusy/js/shinybusy.js"></script>
+<script src="htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="datatables-binding-0.18/datatables.js"></script>
+<link href="crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="crosstalk-1.1.1/js/crosstalk.min.js"></script>
+<link href="dygraphs-1.1.1/dygraph.css" rel="stylesheet" />
+<script src="dygraphs-1.1.1/dygraph-combined.js"></script>
+<script src="dygraphs-1.1.1/shapes.js"></script>
+<script src="moment-2.8.4/moment.js"></script>
+<script src="moment-timezone-0.2.5/moment-timezone-with-data.js"></script>
+<script src="moment-fquarter-1.0.0/moment-fquarter.min.js"></script>
+<script src="dygraphs-binding-1.1.1.6/dygraphs.js"></script>
+<link href="leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="leaflet-1.3.1/leaflet.js"></script>
+<link href="leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="proj4-2.6.2/proj4.min.js"></script>
+<script src="Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="leaflet-binding-2.0.4.1/leaflet.js"></script>
+<script src="shared/ionrangeslider/js/ion.rangeSlider.min.js"></script>
+<script src="shared/strftime/strftime-min.js"></script>
+<link href="shared/ionrangeslider/css/ion.rangeSlider.css" rel="stylesheet" />
+<link href="shinyWidgets/bttn/bttn.min.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="shared/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="shared/bootstrap/accessibility/css/bootstrap-accessibility.min.css" rel="stylesheet" />
+<script src="shared/bootstrap/js/bootstrap.min.js"></script>
+<script src="shared/bootstrap/accessibility/js/bootstrap-accessibility.min.js"></script>
+<link href="AdminLTE-2.0.6/AdminLTE.min.css" rel="stylesheet" />
+<link href="AdminLTE-2.0.6/_all-skins.min.css" rel="stylesheet" />
+<script src="AdminLTE-2.0.6/app.min.js"></script>
+<link href="shinydashboard-0.7.1/shinydashboard.css" rel="stylesheet" />
+<script src="shinydashboard-0.7.1/shinydashboard.min.js"></script>  <title>FOSSFlood V 1.25</title>
+  <script src="resources/shared/sweetalert-1.0.1/js/sweetalert.min.js"></script>
+  <link rel="stylesheet" href="resources/shared/sweetalert-1.0.1/css/sweetalert.min.css"/>
+  <script src="resources/shared/swalservice/swalservice.min.js"></script>
+  <script src="resources/srcjs/shinyalert.js"></script>
+  <link rel="stylesheet" href="resources/css/shinyalert.css"/>
+  <style>.shinyjs-hide { display: none !important; }</style>
+  <script>Shiny.addCustomMessageHandler('shinyjs-show', function(params) { shinyjs.debugMessage('shinyjs: calling function "show" with parameters:'); shinyjs.debugMessage(params); shinyjs.show(params);});
+Shiny.addCustomMessageHandler('shinyjs-hide', function(params) { shinyjs.debugMessage('shinyjs: calling function "hide" with parameters:'); shinyjs.debugMessage(params); shinyjs.hide(params);});
+Shiny.addCustomMessageHandler('shinyjs-toggle', function(params) { shinyjs.debugMessage('shinyjs: calling function "toggle" with parameters:'); shinyjs.debugMessage(params); shinyjs.toggle(params);});
+Shiny.addCustomMessageHandler('shinyjs-enable', function(params) { shinyjs.debugMessage('shinyjs: calling function "enable" with parameters:'); shinyjs.debugMessage(params); shinyjs.enable(params);});
+Shiny.addCustomMessageHandler('shinyjs-disable', function(params) { shinyjs.debugMessage('shinyjs: calling function "disable" with parameters:'); shinyjs.debugMessage(params); shinyjs.disable(params);});
+Shiny.addCustomMessageHandler('shinyjs-toggleState', function(params) { shinyjs.debugMessage('shinyjs: calling function "toggleState" with parameters:'); shinyjs.debugMessage(params); shinyjs.toggleState(params);});
+Shiny.addCustomMessageHandler('shinyjs-addClass', function(params) { shinyjs.debugMessage('shinyjs: calling function "addClass" with parameters:'); shinyjs.debugMessage(params); shinyjs.addClass(params);});
+Shiny.addCustomMessageHandler('shinyjs-removeClass', function(params) { shinyjs.debugMessage('shinyjs: calling function "removeClass" with parameters:'); shinyjs.debugMessage(params); shinyjs.removeClass(params);});
+Shiny.addCustomMessageHandler('shinyjs-toggleClass', function(params) { shinyjs.debugMessage('shinyjs: calling function "toggleClass" with parameters:'); shinyjs.debugMessage(params); shinyjs.toggleClass(params);});
+Shiny.addCustomMessageHandler('shinyjs-html', function(params) { shinyjs.debugMessage('shinyjs: calling function "html" with parameters:'); shinyjs.debugMessage(params); shinyjs.html(params);});
+Shiny.addCustomMessageHandler('shinyjs-onevent', function(params) { shinyjs.debugMessage('shinyjs: calling function "onevent" with parameters:'); shinyjs.debugMessage(params); shinyjs.onevent(params);});
+Shiny.addCustomMessageHandler('shinyjs-alert', function(params) { shinyjs.debugMessage('shinyjs: calling function "alert" with parameters:'); shinyjs.debugMessage(params); shinyjs.alert(params);});
+Shiny.addCustomMessageHandler('shinyjs-logjs', function(params) { shinyjs.debugMessage('shinyjs: calling function "logjs" with parameters:'); shinyjs.debugMessage(params); shinyjs.logjs(params);});
+Shiny.addCustomMessageHandler('shinyjs-runjs', function(params) { shinyjs.debugMessage('shinyjs: calling function "runjs" with parameters:'); shinyjs.debugMessage(params); shinyjs.runjs(params);});
+Shiny.addCustomMessageHandler('shinyjs-reset', function(params) { shinyjs.debugMessage('shinyjs: calling function "reset" with parameters:'); shinyjs.debugMessage(params); shinyjs.reset(params);});
+Shiny.addCustomMessageHandler('shinyjs-delay', function(params) { shinyjs.debugMessage('shinyjs: calling function "delay" with parameters:'); shinyjs.debugMessage(params); shinyjs.delay(params);});
+Shiny.addCustomMessageHandler('shinyjs-click', function(params) { shinyjs.debugMessage('shinyjs: calling function "click" with parameters:'); shinyjs.debugMessage(params); shinyjs.click(params);});
+Shiny.addCustomMessageHandler('shinyjs-refresh', function(params) { shinyjs.debugMessage('shinyjs: calling function "refresh" with parameters:'); shinyjs.debugMessage(params); shinyjs.refresh(params);});</script>
+  <script src="shinyjs/shinyjs-default-funcs.js"></script>
+  <script>shinyjs.debug = false;</script>
+  <style type="text/css">#summary_map {height: calc(60vh - 80px) !important;}</style>
+  <style type="text/css">#summarytitleblock img {max-width: 100%; width: 100%; height: auto;}</style>
+  <style type="text/css">#summary_map {height: calc(60vh - 80px) !important;}</style>
+  <style type="text/css">#swipermaintitleblock img {max-width: 100%; width: 100%; height: auto;}</style>
+</head>
+<body class="skin-blue" style="min-height: 611px;">
+  <div class="wrapper">
+    <header class="main-header">
+      <span class="logo">FOSSFlood V 1.25</span>
+      <nav class="navbar navbar-static-top" role="navigation">
+        <span style="display:none;">
+          <i class="fa fa-bars" role="presentation" aria-label="bars icon"></i>
+        </span>
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <button id="save" type="button" class="btn btn-default action-button">Save raster data</button>
+              <button id="print" type="button" class="btn btn-default action-button">Print</button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <aside id="sidebarCollapsed" class="main-sidebar" data-collapsed="false">
+      <section id="sidebarItemExpanded" class="sidebar">
+        <ul class="sidebar-menu">
+          <h3>Map controls</h3>
+          <div class="form-group shiny-input-container">
+            <label class="control-label" for="userbasemap">Select a base map:</label>
+            <select id="userbasemap" class="selectpicker form-control"><optgroup label="Minimal map with lables">
+<option value="Hydda.Full">Hydda</option>
+<option value="Stamen.TonerLite">TonerLite</option>
+<option value="Stamen.Toner">Toner</option>
+</optgroup>
+<optgroup label="Minimal maps">
+<option value="Hydda.Base">Hydda</option>
+<option value="Stamen.TonerBackground">TonerBackground</option>
+</optgroup>
+<optgroup label="Just lables">
+<option value="CartoDB.DarkMatterOnlyLabels" selected>Black Labels</option>
+<option value="CartoDB.VoyagerOnlyLabels">CartoDB Labels</option>
+<option value="Stamen.TerrainLabels">Terrain Labels</option>
+</optgroup>
+<optgroup label="Streetmaps">
+<option value="OpenStreetMap.Mapnik">OpenStreetMap</option>
+<option value="Esri.WorldStreetMap">ESRI</option>
+<option value="Esri.NatGeoWorldMap">NatGeo</option>
+<option value="CartoDB.Voyager">CartoDB Voyager</option>
+</optgroup>
+<optgroup label="Natural">
+<option value="Esri.WorldImagery">ESRI Imagery</option>
+<option value="Esri.WorldTopoMap">ESRI World Topo</option>
+<option value="Esri.WorldTerrain">ESRI World Terrain</option>
+<option value="Esri.WorldShadedRelief">World Shaded Relief</option>
+</optgroup>
+<optgroup label="Fun">
+<option value="Stamen.Watercolor">Watercolor</option>
+<option value="CartoDB.DarkMatter">Night Mode</option>
+</optgroup></select>
+          </div>
+          <div class="form-group shiny-input-container">
+            <input id="gridColor" type="checkbox" class="sw-switchInput" data-input-id="gridColor" data-on-text="Black" data-off-text="White" data-label-text="Grid color" data-label-width="auto" data-handle-width="auto" data-size="" checked="checked"/>
+          </div>
+          <div class="form-group shiny-input-container">
+            <input id="aoiColor" type="checkbox" class="sw-switchInput" data-input-id="aoiColor" data-on-text="Black" data-off-text="White" data-label-text="AOI shading" data-label-width="auto" data-handle-width="auto" data-size="" checked="checked"/>
+          </div>
+          <li>
+            <a href="#shiny-tab-Summary" data-toggle="tab" data-value="Summary">
+              <i class="fa fa-info-circle" role="presentation" aria-label="info-circle icon"></i>
+              <span>summarytab</span>
+            </a>
+          </li>
+          <li>
+            <a href="#shiny-tab-Swiper" data-toggle="tab" data-value="Swiper">
+              <i class="fa fa-arrows-h" role="presentation" aria-label="arrows-h icon"></i>
+              <span>swipertab</span>
+            </a>
+          </li>
+          <div class="shinybusy shinybusy-busy" id="spin-c9609f0198dfd25d6193af6b" style="bottom:40px; left:25px; height:50px; width:50px;">
+            <div class="orbit-spinner">
+              <div class="orbit" style="border-bottom-color:red;"></div>
+              <div class="orbit" style="border-right-color:red;"></div>
+              <div class="orbit" style="border-top-color:red;"></div>
+            </div>
+          </div>
+          <script type="application/json" data-for="shinybusy">{"timeout":100,"mode":"spin","id":"spin-c9609f0198dfd25d6193af6b","type":"auto","position":"bottom-left"}</script>
+          <div id="sidebar" class="sidebarMenuSelectedTabItem" data-value="null"></div>
+        </ul>
+      </section>
+    </aside>
+    <div class="content-wrapper">
+      <section class="content">
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-Summary" value="Summary">
+            <div class="row">
+              <div class="col-sm-4">
+                <div>
+                  <div class="box" style="height: 287px">
+                    <div class="box-body">
+                      <div id="summarytitleblock" class="shiny-image-output" style="width:100%;height:400px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-">
+                  <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs" data-tabsetid="1265">
+                      <li class="active">
+                        <a href="#tab-1265-1" data-toggle="tab" data-value="&lt;i class=&quot;fa fa-th&quot; role=&quot;presentation&quot; aria-label=&quot;th icon&quot;&gt;&lt;/i&gt;&#10;Map index">
+                          <i class="fa fa-th" role="presentation" aria-label="th icon"></i>
+                          Map index
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#tab-1265-2" data-toggle="tab" data-value="&lt;i class=&quot;fa fa-home&quot; role=&quot;presentation&quot; aria-label=&quot;home icon&quot;&gt;&lt;/i&gt;&#10;Addresses impacted">
+                          <i class="fa fa-home" role="presentation" aria-label="home icon"></i>
+                          Addresses impacted
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#tab-1265-3" data-toggle="tab" data-value="&lt;i class=&quot;fa fa-road&quot; role=&quot;presentation&quot; aria-label=&quot;road icon&quot;&gt;&lt;/i&gt;&#10;Roads impacted">
+                          <i class="fa fa-road" role="presentation" aria-label="road icon"></i>
+                          Roads impacted
+                        </a>
+                      </li>
+                      <li class="header pull-right">
+                        <i class="fa fa-gear" role="presentation" aria-label="gear icon"></i>
+                        Summary Tables
+                      </li>
+                    </ul>
+                    <div class="tab-content" data-tabsetid="1265">
+                      <div class="tab-pane active" data-value="&lt;i class=&quot;fa fa-th&quot; role=&quot;presentation&quot; aria-label=&quot;th icon&quot;&gt;&lt;/i&gt;&#10;Map index" id="tab-1265-1">
+                        <div id="mapindextable" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+                      </div>
+                      <div class="tab-pane" data-value="&lt;i class=&quot;fa fa-home&quot; role=&quot;presentation&quot; aria-label=&quot;home icon&quot;&gt;&lt;/i&gt;&#10;Addresses impacted" id="tab-1265-2">
+                        <div id="addressimpacts" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+                      </div>
+                      <div class="tab-pane" data-value="&lt;i class=&quot;fa fa-road&quot; role=&quot;presentation&quot; aria-label=&quot;road icon&quot;&gt;&lt;/i&gt;&#10;Roads impacted" id="tab-1265-3">
+                        <div id="roadimpacts" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group shiny-input-container shiny-input-radiogroup shiny-input-container-inline">
+                  <label id="summaryviewlayer-label" class="control-label" for="summaryviewlayer">View impacts as:</label>
+                  <br/>
+                  <div id="summaryviewlayer" class="radioGroupButtons">
+                    <div aria-labelledby="summaryviewlayer-label" class=" btn-group-container-sw" data-toggle="buttons" role="group">
+                      <div class="btn-group btn-group-toggle" role="group">
+                        <button class="btn radiobtn btn-default active">
+                          <span class="radio-btn-icon-yes">
+                            <i class="fa fa-circle" style="color: steelblue"></i>
+                          </span>
+                          <span class="radio-btn-icon-no">
+                            <i class="fa fa-circle-o" style="color: steelblue"></i>
+                          </span>
+                          <input type="radio" autocomplete="off" name="summaryviewlayer" value="Wet House Hours" checked="checked"/>
+                          Wet House Hours
+                        </button>
+                      </div>
+                      <div class="btn-group btn-group-toggle" role="group">
+                        <button class="btn radiobtn btn-default">
+                          <span class="radio-btn-icon-yes">
+                            <i class="fa fa-circle" style="color: steelblue"></i>
+                          </span>
+                          <span class="radio-btn-icon-no">
+                            <i class="fa fa-circle-o" style="color: steelblue"></i>
+                          </span>
+                          <input type="radio" autocomplete="off" name="summaryviewlayer" value="Count of Impacted Addresses"/>
+                          Count of Impacted Addresses
+                        </button>
+                      </div>
+                      <div class="btn-group btn-group-toggle" role="group">
+                        <button class="btn radiobtn btn-default">
+                          <span class="radio-btn-icon-yes">
+                            <i class="fa fa-circle" style="color: steelblue"></i>
+                          </span>
+                          <span class="radio-btn-icon-no">
+                            <i class="fa fa-circle-o" style="color: steelblue"></i>
+                          </span>
+                          <input type="radio" autocomplete="off" name="summaryviewlayer" value="Maximum Impact Depth"/>
+                          Maximum Impact Depth
+                        </button>
+                      </div>
+                      <div class="btn-group btn-group-toggle" role="group">
+                        <button class="btn radiobtn btn-default">
+                          <span class="radio-btn-icon-yes">
+                            <i class="fa fa-circle" style="color: steelblue"></i>
+                          </span>
+                          <span class="radio-btn-icon-no">
+                            <i class="fa fa-circle-o" style="color: steelblue"></i>
+                          </span>
+                          <input type="radio" autocomplete="off" name="summaryviewlayer" value="Individual Points"/>
+                          Individual Points
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="box box-primary">
+                    <div class="box-header">
+                      <h3 class="box-title">Credits &amp; Warnings</h3>
+                    </div>
+                    <div class="box-body">SOURCES: TIGER 2018, OpenStreetMaps, OpenAddresses, and the Free and Open Source Community <br> DISCLAIMER OF WARRANTY: The University disclaims all warranties, including all implied warranties of accuracy, merchantability, and fitness for a particular purpose. User expressly waives any claim that it may have 
+against the University, its employees or agents and shall not be liable for any direct, indirect, consequential, special, punitive or other damages arising from or related to the use of the FOSSFlood application and 
+the decisions made based on its outputs.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-8">
+                <div>
+                  <div class="box">
+                    <div class="box-header">
+                      <h3 class="box-title">
+                        <i class="fa fa-chart-line" role="presentation" aria-label="chart-line icon"></i>
+                        Time series
+                      </h3>
+                    </div>
+                    <div class="box-body">
+                      <div id="summarychart" style="width:100%; height:287px; " class="dygraphs html-widget html-widget-output"></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="box box-warning">
+                    <div class="box-body">
+                      <div id="summary_map" style="width:100%; height:400px; " class="leaflet html-widget html-widget-output"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="shiny-tab-Swiper" value="Swiper">
+            <div class="row">
+              <div class="col-sm-8">
+                <div>
+                  <div class="box box-primary">
+                    <div class="box-header">
+                      <h3 class="box-title">time series</h3>
+                    </div>
+                    <div class="box-body">
+                      <div id="dygraphswiperchart" style="width:100%; height:400px; " class="dygraphs html-widget html-widget-output"></div>
+                      <div class="row">
+                        <div class="col-sm-10">
+                          <div class="box">
+                            <div class="box-body">
+                              <div class="form-group shiny-input-container">
+                                <label class="control-label" for="timeslider">Timestep to view:</label>
+                                <input class="js-range-slider sw-slider-text" data-data-type="text" data-force-edges="true" data-from="0" data-from-fixed="false" data-from-shadow="false" data-grid="true" data-hide-min-max="false" data-keyboard="true" data-prettify-enabled="false" data-skin="shiny" data-swvalues="[&quot;2021-07-27 04:00:00 UTC&quot;,&quot;2021-07-27 05:00:00 UTC&quot;,&quot;2021-07-27 06:00:00 UTC&quot;,&quot;2021-07-27 07:00:00 UTC&quot;,&quot;2021-07-27 08:00:00 UTC&quot;,&quot;2021-07-27 09:00:00 UTC&quot;]" data-to-fixed="false" data-to-shadow="false" id="timeslider"/>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="box">
+                            <div class="box-body">
+                              <div class="form-group shiny-input-container shiny-input-radiogroup shiny-input-container-inline">
+                                <label id="uislidertime-label" class="control-label" for="uislidertime">Slider time labels:</label>
+                                <br/>
+                                <div id="uislidertime" class="radioGroupButtons">
+                                  <div aria-labelledby="uislidertime-label" class="btn-group btn-group-container-sw" data-toggle="buttons" role="group">
+                                    <div class="btn-group btn-group-toggle" role="group">
+                                      <button class="btn radiobtn btn-default active">
+                                        <input type="radio" autocomplete="off" name="uislidertime" value="Zulu" checked="checked"/>
+                                        Zulu
+                                      </button>
+                                    </div>
+                                    <div class="btn-group btn-group-toggle" role="group">
+                                      <button class="btn radiobtn btn-default">
+                                        <input type="radio" autocomplete="off" name="uislidertime" value="Local"/>
+                                        Local
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="box box-primary">
+                    <div class="box-header">
+                      <h3 class="box-title">SwiperMap</h3>
+                    </div>
+                    <div class="box-body">
+                      <div id="swiper_map" style="width:100%; height:400px; " class="leaflet html-widget html-widget-output"></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="box box-primary">
+                    <div class="box-header">
+                      <h3 class="box-title">Impacted features</h3>
+                    </div>
+                    <div class="box-body">
+                      <div class="col-sm-">
+                        <div class="nav-tabs-custom">
+                          <ul class="nav nav-tabs" data-tabsetid="9234">
+                            <li class="active">
+                              <a href="#tab-9234-1" data-toggle="tab" data-value="&lt;i class=&quot;fa fa-home&quot; role=&quot;presentation&quot; aria-label=&quot;home icon&quot;&gt;&lt;/i&gt;&#10;Addresses impacted">
+                                <i class="fa fa-home" role="presentation" aria-label="home icon"></i>
+                                Addresses impacted
+                              </a>
+                            </li>
+                            <li>
+                              <a href="#tab-9234-2" data-toggle="tab" data-value="&lt;i class=&quot;fa fa-road&quot; role=&quot;presentation&quot; aria-label=&quot;road icon&quot;&gt;&lt;/i&gt;&#10;Roads impacted">
+                                <i class="fa fa-road" role="presentation" aria-label="road icon"></i>
+                                Roads impacted
+                              </a>
+                            </li>
+                            <li class="header pull-right">
+                              <i class="fa fa-gear" role="presentation" aria-label="gear icon"></i>
+                              Summary Tables
+                            </li>
+                          </ul>
+                          <div class="tab-content" data-tabsetid="9234">
+                            <div class="tab-pane active" data-value="&lt;i class=&quot;fa fa-home&quot; role=&quot;presentation&quot; aria-label=&quot;home icon&quot;&gt;&lt;/i&gt;&#10;Addresses impacted" id="tab-9234-1">
+                              <div id="filteraddressimpacts" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+                            </div>
+                            <div class="tab-pane" data-value="&lt;i class=&quot;fa fa-road&quot; role=&quot;presentation&quot; aria-label=&quot;road icon&quot;&gt;&lt;/i&gt;&#10;Roads impacted" id="tab-9234-2">
+                              <div id="filterroadimpacts" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div id="swipermaintitleblock" class="shiny-image-output" style="width:100%;height:400px;"></div>
+                <div>
+                  <div class="box box-primary">
+                    <div class="box-header">
+                      <h3 class="box-title">Map index</h3>
+                    </div>
+                    <div class="box-body">
+                      <div id="index_map" style="width:100%; height:400px; " class="leaflet html-widget html-widget-output"></div>
+                      <div class="row" align="center">
+                        <button class="action-button bttn bttn-pill bttn-md bttn-danger bttn-no-outline" id="backbutton" type="button">Back-Previous</button>
+                        <button class="action-button bttn bttn-pill bttn-md bttn-danger bttn-no-outline" id="forwardbutton" type="button">Forward-Next</button>
+                        <div id="activeIndexLabel" class="shiny-text-output"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="box box-primary">
+                    <div class="box-header">
+                      <h3 class="box-title">Warnings</h3>
+                    </div>
+                    <div class="box-body">SOURCES: TIGER 2018, OpenStreetMaps, OpenAddresses, and the Free and Open Source Community <br> DISCLAIMER OF WARRANTY: The University disclaims all warranties, including all implied warranties of accuracy, merchantability, and fitness for a particular purpose. User expressly waives any claim that it may have 
+against the University, its employees or agents and shall not be liable for any direct, indirect, consequential, special, punitive or other damages arising from or related to the use of the FOSSFlood application and 
+the decisions made based on its outputs.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
